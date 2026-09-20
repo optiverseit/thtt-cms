@@ -10,3 +10,8 @@ export const googleLogin = (idToken) => {
         id_token: idToken,
     });
 };
+
+//CATEGORIES
+export const getAllCategoriesCms = () => {
+    return axiosInstance.get("/categories/cms");
+};

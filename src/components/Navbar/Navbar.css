@@ -1,0 +1,236 @@
+.dashboard-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+
+  height: 80px;
+
+  padding: 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e9e4ec;
+
+  box-shadow:
+    0 1px 5px rgba(53, 18, 85, 0.04);
+}
+
+.navbar-title h3 {
+  margin: 0;
+
+  color: #351255;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* PROFILE */
+
+.navbar-profile {
+  position: relative;
+}
+
+.profile-button {
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+}
+
+.profile-image,
+.profile-placeholder {
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+
+  border: 2px solid #eee8f1;
+}
+
+.profile-image {
+  object-fit: cover;
+}
+
+.profile-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+
+  background: linear-gradient(
+    135deg,
+    #f52d91,
+    #8b2bd9
+  );
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* DROPDOWN */
+
+.profile-dropdown {
+  position: absolute;
+
+  top: 58px;
+  right: 0;
+
+  width: 290px;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e4dfe7;
+  border-radius: 15px;
+
+  box-shadow:
+    0 12px 35px rgba(53, 18, 85, 0.15);
+}
+
+.profile-dropdown-header {
+  padding: 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-dropdown-header img,
+.dropdown-placeholder {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+.profile-dropdown-header img {
+  object-fit: cover;
+}
+
+.dropdown-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+
+  background: linear-gradient(
+    135deg,
+    #f52d91,
+    #8b2bd9
+  );
+
+  font-weight: 700;
+}
+
+.profile-info {
+  min-width: 0;
+}
+
+.profile-dropdown-header strong {
+  display: block;
+
+  color: #351255;
+
+  font-size: 14px;
+}
+
+.profile-dropdown-header span {
+  display: block;
+
+  max-width: 175px;
+
+  margin-top: 4px;
+
+  overflow: hidden;
+
+  color: #817888;
+
+  font-size: 11px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-divider {
+  height: 1px;
+
+  background: #eee9f0;
+}
+
+.profile-dropdown > button {
+  width: 100%;
+
+  padding: 14px 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: #3c3142;
+  background: #ffffff;
+
+  border: none;
+
+  font-size: 14px;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.profile-dropdown > button:hover {
+  background: #faf7fb;
+}
+
+.profile-dropdown .logout-option {
+  color: #f52d5e;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .dashboard-navbar {
+    padding: 0 20px;
+  }
+
+  .navbar-title h3 {
+    font-size: 16px;
+  }
+
+  .profile-dropdown {
+    width: 270px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-navbar {
+    padding: 0 15px;
+  }
+
+  .navbar-title h3 {
+    font-size: 14px;
+  }
+
+  .profile-image,
+  .profile-placeholder {
+    width: 40px;
+    height: 40px;
+  }
+
+  .profile-dropdown {
+    width: 250px;
+  }
+}
