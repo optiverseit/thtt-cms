@@ -1,0 +1,662 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  color: #2f183e;
+  background: #ffffff;
+}
+
+/* =========================
+   MAIN PAGE
+========================= */
+
+.login-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* =========================
+   LEFT
+========================= */
+
+.login-left {
+  width: 55%;
+  min-height: 100vh;
+
+  padding: 38px 70px;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #ffffff;
+}
+
+/* =========================
+   BRAND
+========================= */
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* THTT purple */
+  background: #351255;
+
+  border-radius: 50%;
+}
+
+.brand-icon span {
+  color: #ffffff;
+  font-size: 19px;
+}
+
+.brand-text h2 {
+  margin: 0;
+
+  color: #351255;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  line-height: 1.1;
+}
+
+.brand-text p {
+  margin: 4px 0 0;
+
+  /* THTT pink */
+  color: #f52d91;
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: 1.6px;
+}
+
+/* =========================
+   LOGIN CONTAINER
+========================= */
+
+.login-container {
+  width: 100%;
+  max-width: 450px;
+
+  margin: auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.login-header {
+  margin-bottom: 32px;
+}
+
+.welcome-label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  /* Pink accent like the website */
+  color: #f52d91;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.login-header h1 {
+  margin: 0 0 12px;
+
+  color: #351255;
+
+  font-size: 36px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+.login-header p {
+  max-width: 410px;
+
+  margin: 0;
+
+  color: #77717d;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error-message {
+  width: 100%;
+
+  margin-bottom: 20px;
+  padding: 12px 14px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  color: #c5224f;
+  background: #fff2f7;
+
+  border: 1px solid #ffc7dc;
+  border-radius: 8px;
+
+  font-size: 13px;
+}
+
+.error-icon {
+  width: 19px;
+  height: 19px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #c5224f;
+  border-radius: 50%;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.form-group {
+  margin-bottom: 21px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #3d3045;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 15px;
+
+  color: #2f183e;
+  background: #ffffff;
+
+  border: 1px solid #ddd8e2;
+  border-radius: 8px;
+
+  outline: none;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.form-group input::placeholder {
+  color: #aaa3ae;
+}
+
+/* Pink focus like website buttons */
+.form-group input:focus {
+  border-color: #f52d91;
+
+  box-shadow:
+    0 0 0 3px rgba(245, 45, 145, 0.1);
+}
+
+.form-group input:disabled {
+  cursor: not-allowed;
+  background: #f8f6fa;
+}
+
+/* =========================
+   PASSWORD
+========================= */
+
+.password-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.password-label label {
+  margin-bottom: 8px;
+}
+
+.forgot-password {
+  margin-bottom: 8px;
+  padding: 0;
+
+  color: #f52d91;
+  background: none;
+
+  border: none;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  color: #db247f;
+  text-decoration: underline;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 65px;
+}
+
+.show-password {
+  position: absolute;
+
+  right: 14px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  padding: 5px;
+
+  color: #f52d91;
+  background: transparent;
+
+  border: none;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.show-password:hover {
+  color: #db247f;
+}
+
+/* =========================
+   LOGIN BUTTON
+========================= */
+
+.login-button {
+  width: 100%;
+  height: 51px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  color: #ffffff;
+
+  /* Same pink/magenta visual language
+     as Get Quote/Search Packages */
+  background: linear-gradient(
+    90deg,
+    #f52d91,
+    #b42df2
+  );
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s,
+    opacity 0.2s;
+}
+
+.login-button:hover:not(:disabled) {
+  box-shadow:
+    0 8px 20px rgba(245, 45, 145, 0.25);
+
+  transform: translateY(-1px);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* =========================
+   LOADING SPINNER
+========================= */
+
+.spinner {
+  width: 17px;
+  height: 17px;
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================
+   DIVIDER
+========================= */
+
+.divider {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  margin: 25px 0;
+}
+
+.divider span {
+  flex: 1;
+
+  height: 1px;
+
+  background: #e7e2ea;
+}
+
+.divider p {
+  margin: 0;
+
+  color: #99919e;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* =========================
+   GOOGLE
+========================= */
+
+.google-button {
+  width: 100%;
+  height: 51px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 11px;
+
+  color: #3b2a45;
+  background: #ffffff;
+
+  border: 1px solid #ddd8e2;
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.google-button:hover:not(:disabled) {
+  background: #faf8fb;
+  border-color: #bcaec5;
+
+  box-shadow:
+    0 3px 10px rgba(53, 18, 85, 0.06);
+}
+
+.google-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cms-label {
+  margin: 30px 0 0;
+
+  text-align: center;
+
+  color: #9d95a1;
+
+  font-size: 11px;
+}
+
+/* =========================
+   RIGHT SIDE
+========================= */
+
+.login-right {
+  position: relative;
+
+  width: 45%;
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  /*
+   * Purple overlay matching the
+   * THTT hero/banner appearance.
+   */
+  background-image:
+    linear-gradient(
+      to top,
+      rgba(43, 13, 67, 0.9),
+      rgba(69, 39, 102, 0.25)
+    ),
+    url("https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1500&q=85");
+
+  background-position: center;
+  background-size: cover;
+}
+
+.image-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(53, 18, 85, 0.08),
+      rgba(245, 45, 145, 0.14)
+    );
+}
+
+.right-content {
+  position: absolute;
+
+  z-index: 2;
+
+  right: 55px;
+  bottom: 70px;
+  left: 55px;
+
+  color: #ffffff;
+}
+
+.trip-label {
+  display: inline-block;
+
+  margin-bottom: 18px;
+  padding: 7px 13px;
+
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.1);
+
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 30px;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 1.5px;
+}
+
+.right-content h2 {
+  margin: 0 0 16px;
+
+  color: #ffffff;
+
+  font-size: 40px;
+  font-weight: 700;
+
+  line-height: 1.15;
+}
+
+.right-content p {
+  max-width: 420px;
+
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+/* Pink accent line */
+.right-content::before {
+  content: "";
+
+  display: block;
+
+  width: 46px;
+  height: 4px;
+
+  margin-bottom: 20px;
+
+  background: #f52d91;
+
+  border-radius: 10px;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 950px) {
+  .login-right {
+    width: 40%;
+  }
+
+  .login-left {
+    width: 60%;
+    padding: 35px 45px;
+  }
+
+  .right-content {
+    right: 35px;
+    left: 35px;
+  }
+
+  .right-content h2 {
+    font-size: 32px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .login-right {
+    display: none;
+  }
+
+  .login-left {
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 28px;
+  }
+
+  .login-container {
+    margin-top: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-left {
+    padding: 22px 20px;
+  }
+
+  .login-container {
+    margin-top: 55px;
+  }
+
+  .login-header h1 {
+    font-size: 29px;
+  }
+
+  .login-header p {
+    font-size: 13px;
+  }
+
+  .form-group input {
+    font-size: 16px;
+  }
+}
