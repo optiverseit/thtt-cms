@@ -1,0 +1,278 @@
+.edit-category-page {
+    width: 100%;
+}
+
+.edit-category-header {
+    margin-bottom: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.edit-category-header h1 {
+    margin: 0 0 6px;
+
+    color: #351255;
+
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.edit-category-header p {
+    margin: 0;
+
+    color: #847b89;
+
+    font-size: 13px;
+}
+
+.back-button {
+    height: 43px;
+    padding: 0 18px;
+
+    color: #351255;
+    background: #ffffff;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.back-button:hover {
+    background: #f8f6fa;
+    border-color: #351255;
+}
+
+.edit-category-card {
+    width: 100%;
+    max-width: 750px;
+
+    background: #ffffff;
+
+    border: 1px solid #eee9f0;
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px rgba(53, 18, 85, 0.04);
+
+    overflow: hidden;
+}
+
+.edit-category-card-header {
+    padding: 20px 22px;
+
+    border-bottom: 1px solid #eee9f0;
+}
+
+.edit-category-card-header h2 {
+    margin: 0 0 4px;
+
+    color: #351255;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.edit-category-card-header p {
+    margin: 0;
+
+    color: #918995;
+
+    font-size: 11px;
+}
+
+.edit-category-form {
+    padding: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #351255;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+
+    color: #f52d91;
+}
+
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    color: #554b5a;
+    background: #ffffff;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #b42df2;
+
+    box-shadow:
+        0 0 0 3px rgba(180, 45, 242, 0.08);
+}
+
+.form-group input:disabled {
+    background: #f8f6fa;
+    cursor: not-allowed;
+}
+
+.form-actions {
+    margin-top: 28px;
+    padding-top: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+
+    border-top: 1px solid #eee9f0;
+}
+
+.cancel-button {
+    height: 40px;
+    padding: 0 17px;
+
+    color: #351255;
+    background: #ffffff;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background: #f8f6fa;
+}
+
+.update-category-button {
+    height: 40px;
+    padding: 0 18px;
+
+    color: #ffffff;
+
+    background: linear-gradient(
+        90deg,
+        #f52d91,
+        #b42df2
+    );
+
+    border: none;
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.update-category-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 15px rgba(245, 45, 145, 0.2);
+}
+
+.update-category-button:disabled,
+.cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.edit-category-loading {
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    color: #918995;
+
+    font-size: 13px;
+}
+
+.edit-category-loader {
+    width: 23px;
+    height: 23px;
+
+    margin-bottom: 10px;
+
+    border: 2px solid #eee5f1;
+    border-top-color: #f52d91;
+    border-radius: 50%;
+
+    animation: edit-category-spin 0.7s linear infinite;
+}
+
+@keyframes edit-category-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 600px) {
+    .edit-category-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .edit-category-header h1 {
+        font-size: 23px;
+    }
+
+    .back-button {
+        width: 100%;
+    }
+
+    .edit-category-card {
+        max-width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .cancel-button,
+    .update-category-button {
+        width: 100%;
+    }
+}
