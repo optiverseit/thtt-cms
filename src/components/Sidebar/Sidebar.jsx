@@ -51,6 +51,26 @@ const Sidebar = () => {
           <span>Packages</span>
         </button>
 
+         <button
+          className={`menu-item ${
+            isActive("/vehicles") ? "active" : ""
+          }`}
+          onClick={() => navigate("/vehicles")}
+        >
+          <span className="menu-icon">▤</span>
+          <span>Vehicles</span>
+        </button>
+
+        <button
+          className={`menu-item ${
+            isActive("/helis") ? "active" : ""
+          }`}
+          onClick={() => navigate("/helis")}
+        >
+          <span className="menu-icon">✈</span>
+          <span>Helis</span>
+        </button>
+
         <button
           className={`menu-item ${
             isActive("/bookings") ? "active" : ""
@@ -71,25 +91,6 @@ const Sidebar = () => {
           <span>Users</span>
         </button>
 
-        <button
-          className={`menu-item ${
-            isActive("/vehicles") ? "active" : ""
-          }`}
-          onClick={() => navigate("/vehicles")}
-        >
-          <span className="menu-icon">▤</span>
-          <span>Vehicles</span>
-        </button>
-
-        <button
-          className={`menu-item ${
-            isActive("/helis") ? "active" : ""
-          }`}
-          onClick={() => navigate("/helis")}
-        >
-          <span className="menu-icon">✈</span>
-          <span>Helis</span>
-        </button>
       </nav>
 
       <div className="sidebar-bottom">

@@ -1,0 +1,679 @@
+.create-package-page {
+    width: 100%;
+}
+
+.create-package-header {
+    margin-bottom: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.create-package-header h1 {
+    margin: 0 0 6px;
+
+    color: #351255;
+
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.create-package-header p {
+    margin: 0;
+
+    color: #847b89;
+
+    font-size: 13px;
+}
+
+
+/* BACK BUTTON */
+
+.package-back-button {
+    height: 43px;
+    padding: 0 18px;
+
+    color: #351255;
+    background: #ffffff;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.package-back-button:hover {
+    background: #f8f6fa;
+    border-color: #351255;
+}
+
+
+/* FORM */
+
+.create-package-form {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+/* CARD */
+
+.package-form-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #eee9f0;
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 12px rgba(53, 18, 85, 0.04);
+
+    overflow: hidden;
+}
+
+.package-form-card-header {
+    padding: 18px 22px;
+
+    border-bottom: 1px solid #eee9f0;
+}
+
+.package-form-card-header h2 {
+    margin: 0 0 4px;
+
+    color: #351255;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.package-form-card-header p {
+    margin: 0;
+
+    color: #918995;
+
+    font-size: 11px;
+}
+
+.package-form-body {
+    padding: 22px;
+}
+
+
+/* GRID */
+
+.package-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+
+/* FORM GROUP */
+
+.package-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.package-form-group label,
+.package-image-upload label {
+    color: #351255;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+
+    color: #f52d91;
+}
+
+
+/* INPUT */
+
+.package-form-group input,
+.package-form-group select,
+.package-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 11px 13px;
+
+    color: #554b5a;
+    background: #ffffff;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.package-form-group input,
+.package-form-group select {
+    height: 42px;
+}
+
+.package-form-group textarea {
+    min-height: 140px;
+
+    resize: vertical;
+}
+
+.package-form-group input:focus,
+.package-form-group select:focus,
+.package-form-group textarea:focus {
+    border-color: #b42df2;
+
+    box-shadow:
+        0 0 0 3px rgba(180, 45, 242, 0.08);
+}
+
+.package-form-group input:disabled,
+.package-form-group select:disabled,
+.package-form-group textarea:disabled {
+    background: #f8f6fa;
+
+    cursor: not-allowed;
+}
+
+
+/* FEATURED */
+
+.package-featured-group {
+    min-height: 42px;
+    padding: 10px 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    box-sizing: border-box;
+
+    background: #faf8fb;
+
+    border: 1px solid #eee9f0;
+    border-radius: 8px;
+}
+
+.package-featured-group label {
+    color: #351255;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.package-featured-group p {
+    margin: 3px 0 0;
+
+    color: #918995;
+
+    font-size: 10px;
+}
+
+
+/* SWITCH */
+
+.package-switch {
+    position: relative;
+
+    width: 40px;
+    height: 22px;
+
+    flex-shrink: 0;
+}
+
+.package-switch input {
+    width: 0;
+    height: 0;
+
+    opacity: 0;
+}
+
+.package-slider {
+    position: absolute;
+
+    inset: 0;
+
+    background: #d8d2dc;
+
+    border-radius: 30px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.package-slider::before {
+    content: "";
+
+    position: absolute;
+
+    width: 16px;
+    height: 16px;
+
+    left: 3px;
+    top: 3px;
+
+    background: #ffffff;
+
+    border-radius: 50%;
+
+    transition: 0.2s;
+}
+
+.package-switch input:checked + .package-slider {
+    background: #f52d91;
+}
+
+.package-switch input:checked + .package-slider::before {
+    transform: translateX(18px);
+}
+
+
+/* IMAGE */
+
+.package-image-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+.package-image-upload {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.package-image-upload input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 10px;
+
+    color: #554b5a;
+    background: #faf8fb;
+
+    border: 1px dashed #cfc6d5;
+    border-radius: 8px;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.package-image-upload
+input[type="file"]::file-selector-button {
+    margin-right: 10px;
+    padding: 7px 12px;
+
+    color: #ffffff;
+    background: #351255;
+
+    border: none;
+    border-radius: 5px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.package-image-preview {
+    width: 220px;
+    height: 140px;
+
+    overflow: hidden;
+
+    border: 1px solid #eee9f0;
+    border-radius: 9px;
+
+    flex-shrink: 0;
+}
+
+.package-image-preview img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+/* VEHICLES / HELICOPTERS */
+
+.package-option-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.package-option-item {
+    padding: 15px;
+
+    background: #ffffff;
+
+    border: 1px solid #eee9f0;
+    border-radius: 9px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.package-option-item:hover {
+    border-color: #d8cddd;
+}
+
+.package-option-selected {
+    background: #fffafd;
+
+    border-color: #f52d91;
+
+    box-shadow:
+        0 2px 8px rgba(245, 45, 145, 0.06);
+}
+
+
+/* VEHICLE / HELI MAIN INFO */
+
+.package-option-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.package-option-main input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+
+    accent-color: #f52d91;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+}
+
+.package-option-main h4 {
+    margin: 0 0 3px;
+
+    color: #351255;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.package-option-main p {
+    margin: 0;
+
+    color: #918995;
+
+    font-size: 10px;
+}
+
+
+/* SELECTED OPTION SETTINGS */
+
+.package-option-settings {
+    margin-top: 14px;
+    padding-top: 13px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 15px;
+
+    border-top: 1px solid #eee9f0;
+}
+
+.package-included-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #554b5a;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.package-included-checkbox input {
+    width: 15px;
+    height: 15px;
+
+    accent-color: #f52d91;
+
+    cursor: pointer;
+}
+
+
+/* ADDITIONAL PRICE */
+
+.package-additional-price {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.package-additional-price label {
+    color: #746b7a;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.package-additional-price input {
+    width: 130px;
+    height: 35px;
+
+    box-sizing: border-box;
+
+    padding: 7px 10px;
+
+    color: #554b5a;
+    background: #ffffff;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 6px;
+
+    font-size: 11px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.package-additional-price input:focus {
+    border-color: #b42df2;
+
+    box-shadow:
+        0 0 0 3px rgba(180, 45, 242, 0.08);
+}
+
+.package-additional-price input:disabled {
+    background: #f8f6fa;
+
+    cursor: not-allowed;
+}
+
+
+/* EMPTY VEHICLE / HELI */
+
+.package-empty-option {
+    margin: 0;
+
+    color: #918995;
+
+    font-size: 12px;
+}
+
+
+/* ACTION BUTTONS */
+
+.package-form-actions {
+    padding: 5px 0 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.package-cancel-button,
+.package-submit-button {
+    height: 42px;
+    padding: 0 20px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.package-cancel-button {
+    color: #351255;
+    background: #ffffff;
+
+    border: 1px solid #ddd8e2;
+}
+
+.package-cancel-button:hover:not(:disabled) {
+    background: #f8f6fa;
+}
+
+.package-submit-button {
+    color: #ffffff;
+
+    background: linear-gradient(
+        90deg,
+        #f52d91,
+        #b42df2
+    );
+
+    border: none;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.package-submit-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 7px 18px rgba(245, 45, 145, 0.22);
+}
+
+.package-cancel-button:disabled,
+.package-submit-button:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    .package-option-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 800px) {
+    .package-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .package-image-section {
+        flex-direction: column;
+    }
+
+    .package-image-preview {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    .create-package-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .create-package-header h1 {
+        font-size: 23px;
+    }
+
+    .package-back-button {
+        width: 100%;
+    }
+
+    .package-form-body {
+        padding: 17px;
+    }
+
+    .package-form-card-header {
+        padding: 16px 17px;
+    }
+
+    .package-option-settings {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .package-additional-price {
+        width: 100%;
+    }
+
+    .package-additional-price input {
+        width: 100%;
+    }
+
+    .package-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .package-cancel-button,
+    .package-submit-button {
+        width: 100%;
+    }
+}

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaPen, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { getAllCategoriesCms } from "../../../api/BackendApi";
+import {
+    getAllCategoriesCms,
+    changeCategoryStatus,
+    deleteCategory
+} from "../../../api/BackendApi";
 import "./Category.css";
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/SideBar/SideBar";
@@ -40,6 +45,96 @@ const Category = () => {
     useEffect(() => {
         fetchCategories();
     }, []);
+
+    const handleStatusChange = async (category) => {
+        const newStatus =
+            category.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+
+        const result = await Swal.fire({
+            icon: "warning",
+            title: "Change Status?",
+            text: `Are you sure you want to change this category to ${newStatus}?`,
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#351255",
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        try {
+            const response = await changeCategoryStatus(category.id);
+
+            if (response.data?.status) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Status Updated",
+                    text: `Category status changed to ${response.data.data.status}.`,
+                    confirmButtonColor: "#351255",
+                });
+
+                fetchCategories();
+            }
+        } catch (error) {
+            console.error("Category status change error:", error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text:
+                    error.response?.data?.message ||
+                    "Unable to change category status.",
+                confirmButtonColor: "#351255",
+            });
+        }
+    };
+
+    const handleDelete = async (category) => {
+        const result = await Swal.fire({
+            icon: "warning",
+            title: "Delete Category?",
+            text: `Are you sure you want to delete "${category.name}"?`,
+            showCancelButton: true,
+            confirmButtonText: "Yes, Delete",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#351255",
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        try {
+            const response = await deleteCategory(category.id);
+
+            if (response.data?.status) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Deleted",
+                    text:
+                        response.data?.message ||
+                        "Category deleted successfully.",
+                    confirmButtonColor: "#351255",
+                });
+
+                fetchCategories();
+            }
+        } catch (error) {
+            console.error("Category delete error:", error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Delete Failed",
+                text:
+                    error.response?.data?.message ||
+                    "Unable to delete category.",
+                confirmButtonColor: "#351255",
+            });
+        }
+    };
 
     return (
         <div className="dashboard-layout">
@@ -140,6 +235,12 @@ const Category = () => {
                                                                     ? "status-active"
                                                                     : "status-inactive"
                                                                 }`}
+                                                            onClick={() =>
+                                                                handleStatusChange(category)
+                                                            }
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
                                                         >
                                                             {category.status}
                                                         </span>
@@ -162,25 +263,32 @@ const Category = () => {
                                                                 )
                                                             }
                                                         >
-                                                            Edit
+                                                            <FaPen />
                                                         </button>
-                                                    </td>
+
+                                                        <button
+                                                        className="delete-button"
+                                                        onClick={() => handleDelete(category)}
+        >
+                                                         <FaTrash />
+                                                    </button>
+                                                </td>
 
                                                 </tr>
-                                            ))
+                                    ))
                                         )}
-                                    </tbody>
+                                </tbody>
 
-                                </table>
-                            </div>
+                            </table>
                         </div>
-
                     </div>
 
-                </main>
-
             </div>
-        </div>
+
+        </main>
+
+            </div >
+        </div >
     );
 };
 
