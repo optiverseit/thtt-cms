@@ -130,11 +130,134 @@
   font-size: 17px;
 }
 
+
+/* PACKAGE DROPDOWN */
+
+.sidebar-dropdown {
+  width: 100%;
+}
+
+.menu-label {
+  flex: 1;
+
+  text-align: left;
+}
+
+.dropdown-arrow {
+  margin-left: auto;
+
+  color: rgba(255, 255, 255, 0.7);
+
+  font-size: 8px;
+
+  transition: transform 0.25s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+
+/* PACKAGE SUBMENU */
+
+.submenu {
+  margin: -2px 0 10px 27px;
+  padding: 3px 0 3px 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.submenu-item {
+  width: 100%;
+  min-height: 35px;
+
+  padding: 7px 12px;
+
+  display: flex;
+  align-items: center;
+
+  color: rgba(255, 255, 255, 0.62);
+  background: transparent;
+
+  border: none;
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 400;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    padding-left 0.2s ease;
+}
+
+.submenu-item:hover {
+  padding-left: 15px;
+
+  color: #ffffff;
+
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.submenu-item.active {
+  color: #ffffff;
+
+  background: rgba(245, 45, 145, 0.2);
+
+  font-weight: 600;
+}
+
+.submenu-item.active::before {
+  content: "";
+
+  width: 5px;
+  height: 5px;
+
+  margin-right: 8px;
+
+  flex-shrink: 0;
+
+  background: #f52d91;
+
+  border-radius: 50%;
+}
+
+
+/* SCROLLBAR */
+
+.sidebar-menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+
+/* BOTTOM */
+
 .sidebar-bottom {
   padding: 15px;
 
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 
 /* TABLET / MOBILE */
 
@@ -171,8 +294,21 @@
     display: none;
   }
 
+  .menu-label {
+    display: none;
+  }
+
+  .dropdown-arrow {
+    display: none;
+  }
+
   .menu-icon {
     width: auto;
+
     font-size: 18px;
+  }
+
+  .submenu {
+    display: none;
   }
 }
