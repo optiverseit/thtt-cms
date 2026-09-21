@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser, googleLogin } from "../../api/BackendApi";
 import Swal from "sweetalert2";
+import { GoogleLogin } from "@react-oauth/google";
 import "./Login.css";
 
 const Login = () => {
@@ -351,41 +352,19 @@ const Login = () => {
                         <span></span>
                     </div>
 
-                    <button
-                        type="button"
-                        className="google-button"
-                        onClick={handleGoogleLogin}
-                        disabled={loading}
-                    >
-                        <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path
-                                fill="#4285F4"
-                                d="M21.35 12.2c0-.64-.06-1.25-.16-1.84H12v3.48h5.25a4.49 4.49 0 0 1-1.95 2.94v2.26h3.16c1.85-1.7 2.89-4.21 2.89-6.84Z"
-                            />
-
-                            <path
-                                fill="#34A853"
-                                d="M12 21.75c2.64 0 4.86-.87 6.48-2.37l-3.16-2.45c-.88.59-2 .94-3.32.94-2.55 0-4.71-1.72-5.49-4.04H3.25v2.52A9.75 9.75 0 0 0 12 21.75Z"
-                            />
-
-                            <path
-                                fill="#FBBC05"
-                                d="M6.51 13.83A5.86 5.86 0 0 1 6.2 12c0-.64.11-1.26.31-1.83V7.65H3.25A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.06 1 4.35l3.26-2.52Z"
-                            />
-
-                            <path
-                                fill="#EA4335"
-                                d="M12 6.13c1.44 0 2.73.49 3.74 1.46l2.8-2.8C16.85 3.22 14.64 2.25 12 2.25a9.75 9.75 0 0 0-8.75 5.4l3.26 2.52C7.29 7.85 9.45 6.13 12 6.13Z"
-                            />
-                        </svg>
-
-                        Continue with Google
-                    </button>
+                    <GoogleLogin
+                        onSuccess={(credentialResponse) => {
+                            handleGoogleLogin(credentialResponse.credential);
+                        }}
+                        onError={() => {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Google Login Failed",
+                                text: "Unable to authenticate with Google.",
+                                confirmButtonColor: "#351255",
+                            });
+                        }}
+                    />
 
                     <p className="cms-label">
                         THTT Content Management System
