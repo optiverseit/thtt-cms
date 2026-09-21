@@ -101,11 +101,21 @@ export const getAllHelisCms = () => {
 };
 
 export const createHeli = (data) => {
-    return axiosInstance.post("/helis", data);
+    return axiosInstance.post("/helis", data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 };
 
 export const updateHeli = (id, data) => {
-    return axiosInstance.put(`/helis/${id}`, data);
+    data.append("_method", "PUT");
+
+    return axiosInstance.post(`/helis/${id}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 };
 
 export const changeHeliStatus = (id) => {

@@ -16,6 +16,9 @@ import EditPackage from './pages/Admin/Package/EditPackage';
 import Vehicle from './pages/Admin/Vehicle/Vehicle';
 import CreateVehicle from './pages/Admin/Vehicle/CreateVehicle';
 import EditVehicle from './pages/Admin/Vehicle/EditVehicle';
+import Heli from './pages/Admin/Heli/Heli';
+import CreateHeli from './pages/Admin/Heli/CreateHeli';
+import EditHeli from './pages/Admin/Heli/EditHeli';
 
 function App() {
 
@@ -107,6 +110,34 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <EditVehicle />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* HELLI */}
+        <Route
+          path="/helis"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Heli />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/helis/create"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <CreateHeli />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/helis/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <EditHeli />
             </ProtectedRoute>
           }
         />
