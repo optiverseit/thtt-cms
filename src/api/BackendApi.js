@@ -146,3 +146,37 @@ export const updateInclusion = (id, data) => {
 export const deleteInclusion = (id) => {
     return axiosInstance.delete(`/inclusions/${id}`);
 };
+
+// EXCLUSION
+export const getAllExclusionsCms = (page = 1) => {
+    return axiosInstance.get(`/exclusions/cms?page=${page}`);
+};
+
+export const createExclusion = (packageId, data) => {
+    return axiosInstance.post(`/exclusions/packages/${packageId}`, data);
+};
+
+export const updateExclusion = (id, data) => {
+    return axiosInstance.put(`/exclusions/${id}`, data);
+};
+
+export const deleteExclusion = (id) => {
+    return axiosInstance.delete(`/exclusions/${id}`);
+};
+
+// RESTRICTIONS
+export const getAllRestrictionsCms = (page = 1) => {
+    return axiosInstance.get(`/restrictions/cms?page=${page}`);
+};
+
+export const createRestriction = (packageId, data) => {
+    return axiosInstance.post(`/restrictions/packages/${packageId}`, data);
+};
+
+export const updateRestriction = (id, data) => {
+    return axiosInstance.put(`/restrictions/${id}`, data);
+};
+
+export const deleteRestriction = (id) => {
+    return axiosInstance.delete(`/restrictions/${id}`);
+};

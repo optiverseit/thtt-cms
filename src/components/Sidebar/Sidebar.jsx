@@ -9,15 +9,15 @@ const Sidebar = () => {
   const [packageOpen, setPackageOpen] = useState(
     location.pathname.startsWith("/packages") ||
     location.pathname.startsWith("/packages/inclusions") ||
-    location.pathname.startsWith("/exclusions") ||
-    location.pathname.startsWith("/restrictions") ||
-    location.pathname.startsWith("/what-to-bring") ||
-    location.pathname.startsWith("/faqs") ||
-    location.pathname.startsWith("/pricing-tiers") ||
-    location.pathname.startsWith("/itineraries") ||
-    location.pathname.startsWith("/testimonials") ||
-    location.pathname.startsWith("/gallery") ||
-    location.pathname.startsWith("/highlights")
+    location.pathname.startsWith("/packages/exclusions") ||
+    location.pathname.startsWith("/packages/restrictions") ||
+    location.pathname.startsWith("/packages/what-to-bring") ||
+    location.pathname.startsWith("/packages/faqs") ||
+    location.pathname.startsWith("/packages/pricing-tiers") ||
+    location.pathname.startsWith("/packages/itineraries") ||
+    location.pathname.startsWith("/packages/testimonials") ||
+    location.pathname.startsWith("/packages/gallery") ||
+    location.pathname.startsWith("/packages/highlights")
   );
 
   const isActive = (path) => {
@@ -28,15 +28,15 @@ const Sidebar = () => {
     return (
       location.pathname.startsWith("/packages") ||
       location.pathname.startsWith("/packages/inclusions") ||
-      location.pathname.startsWith("/exclusions") ||
-      location.pathname.startsWith("/restrictions") ||
-      location.pathname.startsWith("/what-to-bring") ||
-      location.pathname.startsWith("/faqs") ||
-      location.pathname.startsWith("/pricing-tiers") ||
-      location.pathname.startsWith("/itineraries") ||
-      location.pathname.startsWith("/testimonials") ||
-      location.pathname.startsWith("/gallery") ||
-      location.pathname.startsWith("/highlights")
+      location.pathname.startsWith("/packages/exclusions") ||
+      location.pathname.startsWith("/packages/restrictions") ||
+      location.pathname.startsWith("/packages/what-to-bring") ||
+      location.pathname.startsWith("/packages/faqs") ||
+      location.pathname.startsWith("/packages/pricing-tiers") ||
+      location.pathname.startsWith("/packages/itineraries") ||
+      location.pathname.startsWith("/packages/testimonials") ||
+      location.pathname.startsWith("/packages/gallery") ||
+      location.pathname.startsWith("/packages/highlights")
     );
   };
 
@@ -115,9 +115,9 @@ const Sidebar = () => {
 
               <button
                 className={`submenu-item ${
-                  isActive("/exclusions") ? "active" : ""
+                  isActive("/packages/exclusions") ? "active" : ""
                 }`}
-                onClick={() => navigate("/exclusions")}
+                onClick={() => navigate("/packages/exclusions")}
               >
                 Exclusions
               </button>

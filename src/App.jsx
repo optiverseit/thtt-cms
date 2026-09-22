@@ -20,6 +20,7 @@ import Heli from './pages/Admin/Heli/Heli';
 import CreateHeli from './pages/Admin/Heli/CreateHeli';
 import EditHeli from './pages/Admin/Heli/EditHeli';
 import Inclusion from './pages/Admin/Inclusion/Inclusion';
+import Exclusion from './pages/Admin/Exclusion/Exclusion';
 
 function App() {
 
@@ -149,6 +150,16 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Inclusion />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* EXCLUSION */}
+        <Route
+          path="/packages/exclusions"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Exclusion />
             </ProtectedRoute>
           }
         />
