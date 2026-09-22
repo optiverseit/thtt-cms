@@ -368,3 +368,189 @@
         padding: 12px 14px;
     }
 }
+
+/* =========================================
+   MULTIPLE FAQ CREATE FORM
+========================================= */
+
+.faq-package-section {
+    padding: 20px 20px 0;
+}
+
+.faq-package-section select {
+    min-width: 300px;
+}
+
+.faq-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+}
+
+.faq-item-row {
+    display: flex;
+    gap: 14px;
+    padding: 16px;
+    background: #fcfbfd;
+    border: 1px solid #e6e1e9;
+    border-radius: 9px;
+}
+
+.faq-number {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 32px;
+    flex-shrink: 0;
+    padding-top: 31px;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.faq-row-fields {
+    flex: 1;
+    min-width: 0;
+}
+
+.faq-row-top {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.faq-row-top .faq-question-field {
+    flex: 1;
+}
+
+.faq-row-top .faq-order-field {
+    width: 140px;
+    flex: none;
+}
+
+.faq-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    padding: 0;
+    background: #fdeaf3;
+    border: none;
+    border-radius: 7px;
+    color: #f52d91;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.faq-remove-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.faq-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.faq-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+.faq-add-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    background: #f1edf5;
+    border: none;
+    border-radius: 7px;
+    color: #351255;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.faq-add-more-btn:hover:not(:disabled) {
+    background: #e5ddeb;
+}
+
+.faq-add-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+    .faq-item-row {
+        flex-direction: column;
+    }
+
+    .faq-number {
+        width: 100%;
+        padding-top: 0;
+        justify-content: flex-start;
+    }
+
+    .faq-row-top {
+        flex-wrap: wrap;
+    }
+
+    .faq-row-top .faq-question-field {
+        width: 100%;
+        flex: none;
+    }
+
+    .faq-row-top .faq-order-field {
+        flex: 1;
+        width: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .faq-package-section {
+        padding: 16px 16px 0;
+    }
+
+    .faq-package-section select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .faq-items-list {
+        padding: 16px;
+    }
+
+    .faq-row-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .faq-row-top .faq-order-field {
+        width: 100%;
+    }
+
+    .faq-remove-btn {
+        width: 100%;
+    }
+
+    .faq-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 16px 16px;
+    }
+
+    .faq-create-actions button {
+        width: 100%;
+    }
+}
