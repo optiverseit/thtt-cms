@@ -180,3 +180,20 @@ export const updateRestriction = (id, data) => {
 export const deleteRestriction = (id) => {
     return axiosInstance.delete(`/restrictions/${id}`);
 };
+
+// WHAT TO BRING
+export const getAllWhatToBringCms = (page = 1) => {
+    return axiosInstance.get(`/what-to-bring/cms?page=${page}`);
+};
+
+export const createWhatToBring = (packageId, data) => {
+    return axiosInstance.post(`/what-to-bring/packages/${packageId}`, data);
+};
+
+export const updateWhatToBring = (id, data) => {
+    return axiosInstance.put(`/what-to-bring/${id}`, data);
+};
+
+export const deleteWhatToBring = (id) => {
+    return axiosInstance.delete(`/what-to-bring/${id}`);
+};

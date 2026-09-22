@@ -22,6 +22,7 @@ import EditHeli from './pages/Admin/Heli/EditHeli';
 import Inclusion from './pages/Admin/Inclusion/Inclusion';
 import Exclusion from './pages/Admin/Exclusion/Exclusion';
 import Restriction from './pages/Admin/Restriction/Restriction';
+import WhatToBring from './pages/Admin/WhatToBring/WhatToBring'
 
 function App() {
 
@@ -171,6 +172,16 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Restriction />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WHAT TO BRING */}
+        <Route
+          path="/packages/what-to-bring"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <WhatToBring />
             </ProtectedRoute>
           }
         />

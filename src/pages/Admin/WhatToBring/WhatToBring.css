@@ -1,0 +1,302 @@
+.what-to-bring-page {
+    width: 100%;
+}
+
+.what-to-bring-header {
+    margin-bottom: 24px;
+}
+
+.what-to-bring-header h1 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.what-to-bring-header p {
+    margin: 6px 0 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+/* Cards */
+
+.what-to-bring-form-card,
+.what-to-bring-table-card {
+    margin-bottom: 24px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.what-to-bring-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #eeeaf1;
+}
+
+.what-to-bring-card-header h2 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.what-to-bring-card-header p {
+    margin: 5px 0 0;
+    color: #77717d;
+    font-size: 13px;
+}
+
+/* Form */
+
+.what-to-bring-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px;
+}
+
+.what-to-bring-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.what-to-bring-form-group label {
+    color: #2f183e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+    color: #f52d91;
+}
+
+.what-to-bring-form-group input,
+.what-to-bring-form-group select {
+    height: 42px;
+    padding: 0 12px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+    color: #2f183e;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.what-to-bring-form-group input:focus,
+.what-to-bring-form-group select:focus {
+    border-color: #351255;
+}
+
+.what-to-bring-form-group input:disabled,
+.what-to-bring-form-group select:disabled {
+    background: #f5f3f6;
+    color: #77717d;
+    cursor: not-allowed;
+}
+
+.what-to-bring-form-group select {
+    min-width: 230px;
+}
+
+.what-to-bring-item-field {
+    flex: 1;
+}
+
+/* Form Buttons */
+
+.what-to-bring-form-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.what-to-bring-save-btn,
+.what-to-bring-cancel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.what-to-bring-save-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.what-to-bring-save-btn:hover:not(:disabled) {
+    background: #481a6d;
+}
+
+.what-to-bring-save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.what-to-bring-cancel-btn {
+    background: #f1eef3;
+    color: #2f183e;
+}
+
+.what-to-bring-cancel-btn:hover:not(:disabled) {
+    background: #e5e0e8;
+}
+
+/* Table */
+
+.what-to-bring-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.what-to-bring-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.what-to-bring-table th {
+    padding: 14px 18px;
+    background: #f8f6fa;
+    color: #746b91;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.what-to-bring-table td {
+    padding: 15px 18px;
+    border-top: 1px solid #eeeaf1;
+    color: #2f183e;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.what-to-bring-table tbody tr:hover {
+    background: #fcfbfd;
+}
+
+.what-to-bring-table th:first-child,
+.what-to-bring-table td:first-child {
+    width: 75px;
+}
+
+.what-to-bring-table th:nth-child(2),
+.what-to-bring-table td:nth-child(2) {
+    width: 230px;
+}
+
+.what-to-bring-table th:last-child,
+.what-to-bring-table td:last-child {
+    width: 120px;
+}
+
+/* Package */
+
+.what-to-bring-package-name {
+    color: #351255;
+    font-weight: 600;
+}
+
+/* Actions */
+
+.what-to-bring-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.what-to-bring-edit-btn,
+.what-to-bring-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.what-to-bring-edit-btn {
+    background: #f1edf5;
+    color: #351255;
+}
+
+.what-to-bring-edit-btn:hover {
+    background: #351255;
+    color: #ffffff;
+}
+
+.what-to-bring-delete-btn {
+    background: #fdeaf3;
+    color: #f52d91;
+}
+
+.what-to-bring-delete-btn:hover {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+/* Empty State */
+
+.what-to-bring-empty {
+    padding: 45px 20px;
+    color: #77717d;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .what-to-bring-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .what-to-bring-form-group select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .what-to-bring-form-buttons {
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 600px) {
+    .what-to-bring-header h1 {
+        font-size: 23px;
+    }
+
+    .what-to-bring-form {
+        padding: 16px;
+    }
+
+    .what-to-bring-card-header {
+        padding: 16px;
+    }
+
+    .what-to-bring-table th,
+    .what-to-bring-table td {
+        padding: 12px 14px;
+    }
+}
