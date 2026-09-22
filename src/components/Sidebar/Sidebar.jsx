@@ -124,9 +124,9 @@ const Sidebar = () => {
 
               <button
                 className={`submenu-item ${
-                  isActive("/restrictions") ? "active" : ""
+                  isActive("/packages/restrictions") ? "active" : ""
                 }`}
-                onClick={() => navigate("/restrictions")}
+                onClick={() => navigate("/packages/restrictions")}
               >
                 Restrictions
               </button>

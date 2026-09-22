@@ -21,6 +21,7 @@ import CreateHeli from './pages/Admin/Heli/CreateHeli';
 import EditHeli from './pages/Admin/Heli/EditHeli';
 import Inclusion from './pages/Admin/Inclusion/Inclusion';
 import Exclusion from './pages/Admin/Exclusion/Exclusion';
+import Restriction from './pages/Admin/Restriction/Restriction';
 
 function App() {
 
@@ -160,6 +161,16 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Exclusion />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Restriction */}
+        <Route
+          path="/packages/restrictions"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Restriction />
             </ProtectedRoute>
           }
         />
