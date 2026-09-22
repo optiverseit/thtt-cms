@@ -197,3 +197,28 @@ export const updateWhatToBring = (id, data) => {
 export const deleteWhatToBring = (id) => {
     return axiosInstance.delete(`/what-to-bring/${id}`);
 };
+
+
+// FAQ
+
+export const getAllFaqsCms = (page = 1) => {
+    return axiosInstance.get(`/faqs/cms?page=${page}`);
+};
+
+export const createFaq = (packageId, data) => {
+    return axiosInstance.post(
+        `/faqs/packages/${packageId}`,
+        data
+    );
+};
+
+export const updateFaq = (id, data) => {
+    return axiosInstance.put(
+        `/faqs/${id}`,
+        data
+    );
+};
+
+export const deleteFaq = (id) => {
+    return axiosInstance.delete(`/faqs/${id}`);
+};

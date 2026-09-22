@@ -23,6 +23,7 @@ import Inclusion from './pages/Admin/Inclusion/Inclusion';
 import Exclusion from './pages/Admin/Exclusion/Exclusion';
 import Restriction from './pages/Admin/Restriction/Restriction';
 import WhatToBring from './pages/Admin/WhatToBring/WhatToBring'
+import Faq from './pages/Admin/Faq/Faq'
 
 function App() {
 
@@ -182,6 +183,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <WhatToBring />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/packages/faqs"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Faq />
             </ProtectedRoute>
           }
         />
