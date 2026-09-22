@@ -10,7 +10,7 @@ import ProtectedRoute from './components/ProtectedRoutes/ProtectedRoute';
 import Category from './pages/Admin/Category/Category';
 import CreateCategory from './pages/Admin/Category/CreateCategory';
 import EditCategory from './pages/Admin/Category/EditCategory';
-import Package from './pages/Admin/Package/Package';
+import Package from './pages/Admin/Package/package';
 import CreatePackage from './pages/Admin/Package/CreatePackage';
 import EditPackage from './pages/Admin/Package/EditPackage';
 import Vehicle from './pages/Admin/Vehicle/Vehicle';

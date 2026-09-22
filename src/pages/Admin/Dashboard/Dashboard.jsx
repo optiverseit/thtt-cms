@@ -1,6 +1,6 @@
 import "./Dashboard.css";
 
-import Sidebar from "../../../components/SideBar/SideBar";
+import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 
 const Dashboard = () => {

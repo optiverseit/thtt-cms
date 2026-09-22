@@ -6,7 +6,7 @@ import {
     updateCategory
 } from "../../../api/BackendApi";
 import Navbar from "../../../components/Navbar/Navbar";
-import Sidebar from "../../../components/SideBar/SideBar";
+import Sidebar from "../../../components/Sidebar/Sidebar";
 import "./EditCategory.css";
 
 const EditCategory = () => {

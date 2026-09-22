@@ -9,7 +9,7 @@ import {
 } from "../../../api/BackendApi";
 import "./Package.css";
 import Navbar from "../../../components/Navbar/Navbar";
-import Sidebar from "../../../components/SideBar/SideBar";
+import Sidebar from "../../../components/Sidebar/Sidebar";
 
 const Package = () => {
     const navigate = useNavigate();
