@@ -1,0 +1,339 @@
+.pricing-tier-page {
+    width: 100%;
+}
+
+.pricing-tier-header {
+    margin-bottom: 24px;
+}
+
+.pricing-tier-header h1 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.pricing-tier-header p {
+    margin: 6px 0 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+/* Cards */
+
+.pricing-tier-form-card,
+.pricing-tier-table-card {
+    margin-bottom: 24px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.pricing-tier-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #eeeaf1;
+}
+
+.pricing-tier-card-header h2 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.pricing-tier-card-header p {
+    margin: 5px 0 0;
+    color: #77717d;
+    font-size: 13px;
+}
+
+/* Form */
+
+.pricing-tier-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px;
+}
+
+.pricing-tier-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.pricing-tier-form-group label {
+    color: #2f183e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+    color: #f52d91;
+}
+
+.pricing-tier-form-group input,
+.pricing-tier-form-group select {
+    height: 42px;
+    padding: 0 12px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+    color: #2f183e;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.pricing-tier-form-group input:focus,
+.pricing-tier-form-group select:focus {
+    border-color: #351255;
+}
+
+.pricing-tier-form-group input:disabled,
+.pricing-tier-form-group select:disabled {
+    background: #f5f3f6;
+    color: #77717d;
+    cursor: not-allowed;
+}
+
+.pricing-tier-form-group select {
+    min-width: 220px;
+}
+
+.pricing-tier-service-field {
+    flex: 1;
+    min-width: 180px;
+}
+
+.pricing-tier-age-field {
+    min-width: 160px;
+}
+
+.pricing-tier-price-field {
+    width: 150px;
+}
+
+/* Form Buttons */
+
+.pricing-tier-form-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pricing-tier-save-btn,
+.pricing-tier-cancel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pricing-tier-save-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.pricing-tier-save-btn:hover:not(:disabled) {
+    background: #481a6d;
+}
+
+.pricing-tier-save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.pricing-tier-cancel-btn {
+    background: #f1eef3;
+    color: #2f183e;
+}
+
+.pricing-tier-cancel-btn:hover:not(:disabled) {
+    background: #e5e0e8;
+}
+
+/* Table */
+
+.pricing-tier-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.pricing-tier-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pricing-tier-table th {
+    padding: 14px 18px;
+    background: #f8f6fa;
+    color: #746b91;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.pricing-tier-table td {
+    padding: 15px 18px;
+    border-top: 1px solid #eeeaf1;
+    color: #2f183e;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.pricing-tier-table tbody tr:hover {
+    background: #fcfbfd;
+}
+
+.pricing-tier-table th:first-child,
+.pricing-tier-table td:first-child {
+    width: 75px;
+}
+
+.pricing-tier-table th:last-child,
+.pricing-tier-table td:last-child {
+    width: 120px;
+}
+
+/* Package */
+
+.pricing-tier-package-name {
+    color: #351255;
+    font-weight: 600;
+}
+
+/* Price */
+
+.pricing-tier-price {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Actions */
+
+.pricing-tier-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pricing-tier-edit-btn,
+.pricing-tier-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pricing-tier-edit-btn {
+    background: #f1edf5;
+    color: #351255;
+}
+
+.pricing-tier-edit-btn:hover {
+    background: #351255;
+    color: #ffffff;
+}
+
+.pricing-tier-delete-btn {
+    background: #fdeaf3;
+    color: #f52d91;
+}
+
+.pricing-tier-delete-btn:hover {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+/* Empty */
+
+.pricing-tier-empty {
+    padding: 45px 20px;
+    color: #77717d;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .pricing-tier-form {
+        align-items: stretch;
+    }
+
+    .pricing-tier-form-group {
+        flex: 1 1 220px;
+    }
+
+    .pricing-tier-price-field {
+        width: auto;
+    }
+
+    .pricing-tier-form-buttons {
+        flex: 1 1 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 600px) {
+    .pricing-tier-header h1 {
+        font-size: 23px;
+    }
+
+    .pricing-tier-form {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+    }
+
+    .pricing-tier-form-group,
+    .pricing-tier-service-field,
+    .pricing-tier-age-field,
+    .pricing-tier-price-field {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .pricing-tier-form-group select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .pricing-tier-form-buttons {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .pricing-tier-card-header {
+        padding: 16px;
+    }
+
+    .pricing-tier-table th,
+    .pricing-tier-table td {
+        padding: 12px 14px;
+    }
+}

@@ -24,6 +24,7 @@ import Exclusion from './pages/Admin/Exclusion/Exclusion';
 import Restriction from './pages/Admin/Restriction/Restriction';
 import WhatToBring from './pages/Admin/WhatToBring/WhatToBring'
 import Faq from './pages/Admin/Faq/Faq'
+import PricingTier from './pages/Admin/PricingTier/PricingTier';
 
 function App() {
 
@@ -187,11 +188,23 @@ function App() {
           }
         />
 
+        {/* FAQ */}
         <Route
           path="/packages/faqs"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Faq />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* PRICING TIER */}
+
+        <Route
+          path="/packages/pricing-tiers"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PricingTier />
             </ProtectedRoute>
           }
         />

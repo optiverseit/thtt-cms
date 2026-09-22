@@ -151,9 +151,9 @@ const Sidebar = () => {
 
               <button
                 className={`submenu-item ${
-                  isActive("/pricing-tiers") ? "active" : ""
+                  isActive("/packages/pricing-tiers") ? "active" : ""
                 }`}
-                onClick={() => navigate("/pricing-tiers")}
+                onClick={() => navigate("/packages/pricing-tiers")}
               >
                 Pricing Tiers
               </button>

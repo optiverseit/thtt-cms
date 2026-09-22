@@ -222,3 +222,28 @@ export const updateFaq = (id, data) => {
 export const deleteFaq = (id) => {
     return axiosInstance.delete(`/faqs/${id}`);
 };
+
+
+// PRICING TIERS
+
+export const getAllPricingTiersCms = (page = 1) => {
+    return axiosInstance.get(`/pricing-tiers/cms?page=${page}`);
+};
+
+export const createPricingTier = (packageId, data) => {
+    return axiosInstance.post(
+        `/pricing-tiers/packages/${packageId}`,
+        data
+    );
+};
+
+export const updatePricingTier = (id, data) => {
+    return axiosInstance.put(
+        `/pricing-tiers/${id}`,
+        data
+    );
+};
+
+export const deletePricingTier = (id) => {
+    return axiosInstance.delete(`/pricing-tiers/${id}`);
+};
