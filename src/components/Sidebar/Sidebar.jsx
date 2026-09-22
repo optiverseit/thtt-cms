@@ -8,7 +8,7 @@ const Sidebar = () => {
 
   const [packageOpen, setPackageOpen] = useState(
     location.pathname.startsWith("/packages") ||
-    location.pathname.startsWith("/inclusions") ||
+    location.pathname.startsWith("/packages/inclusions") ||
     location.pathname.startsWith("/exclusions") ||
     location.pathname.startsWith("/restrictions") ||
     location.pathname.startsWith("/what-to-bring") ||
@@ -27,7 +27,7 @@ const Sidebar = () => {
   const isPackageActive = () => {
     return (
       location.pathname.startsWith("/packages") ||
-      location.pathname.startsWith("/inclusions") ||
+      location.pathname.startsWith("/packages/inclusions") ||
       location.pathname.startsWith("/exclusions") ||
       location.pathname.startsWith("/restrictions") ||
       location.pathname.startsWith("/what-to-bring") ||
@@ -106,9 +106,9 @@ const Sidebar = () => {
 
               <button
                 className={`submenu-item ${
-                  isActive("/inclusions") ? "active" : ""
+                  isActive("/packages/inclusions") ? "active" : ""
                 }`}
-                onClick={() => navigate("/inclusions")}
+                onClick={() => navigate("/packages/inclusions")}
               >
                 Inclusions
               </button>

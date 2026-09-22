@@ -19,6 +19,7 @@ import EditVehicle from './pages/Admin/Vehicle/EditVehicle';
 import Heli from './pages/Admin/Heli/Heli';
 import CreateHeli from './pages/Admin/Heli/CreateHeli';
 import EditHeli from './pages/Admin/Heli/EditHeli';
+import Inclusion from './pages/Admin/Inclusion/Inclusion';
 
 function App() {
 
@@ -138,6 +139,16 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <EditHeli />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* INCLUSIONS */}
+        <Route
+          path="/packages/inclusions"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Inclusion />
             </ProtectedRoute>
           }
         />
