@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPen, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+
 import {
     getAllCategoriesCms,
     changeCategoryStatus,
     deleteCategory
 } from "../../../api/BackendApi";
+
 import "./Category.css";
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
+import Pagination from "../../../components/Pagination/Pagination";
 
 const Category = () => {
     const navigate = useNavigate();
@@ -17,14 +20,21 @@ const Category = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Pagination
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCategories, setTotalCategories] = useState(0);
+
     const fetchCategories = async () => {
         try {
             setLoading(true);
 
-            const response = await getAllCategoriesCms();
+            const response = await getAllCategoriesCms(page);
 
             if (response.data?.status) {
-                setCategories(response.data.data || []);
+                setCategories(response.data.data.data || []);
+                setTotalPages(response.data.data.last_page || 1);
+                setTotalCategories(response.data.data.total || 0);
             }
         } catch (error) {
             console.error("Category fetch error:", error);
@@ -44,7 +54,7 @@ const Category = () => {
 
     useEffect(() => {
         fetchCategories();
-    }, []);
+    }, [page]);
 
     const handleStatusChange = async (category) => {
         const newStatus =
@@ -138,17 +148,13 @@ const Category = () => {
 
     return (
         <div className="dashboard-layout">
-
             <Sidebar />
 
             <div className="dashboard-main">
-
                 <Navbar />
 
                 <main className="dashboard-content">
-
                     <div className="category-page">
-
                         <div className="category-header">
                             <div>
                                 <h1>Categories</h1>
@@ -168,14 +174,13 @@ const Category = () => {
                         </div>
 
                         <div className="category-table-card">
-
                             <div className="category-table-header">
                                 <div>
                                     <h2>Category List</h2>
 
                                     <p>
-                                        {categories.length}{" "}
-                                        {categories.length === 1
+                                        {totalCategories}{" "}
+                                        {totalCategories === 1
                                             ? "category"
                                             : "categories"}
                                     </p>
@@ -184,7 +189,6 @@ const Category = () => {
 
                             <div className="table-responsive">
                                 <table className="category-table">
-
                                     <thead>
                                         <tr>
                                             <th>S.N.</th>
@@ -220,8 +224,9 @@ const Category = () => {
                                         ) : (
                                             categories.map((category, index) => (
                                                 <tr key={category.id}>
-
-                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        {(page - 1) * 10 + index + 1}
+                                                    </td>
 
                                                     <td>
                                                         <span className="category-name">
@@ -231,10 +236,11 @@ const Category = () => {
 
                                                     <td>
                                                         <span
-                                                            className={`status-badge ${category.status === "ACTIVE"
+                                                            className={`status-badge ${
+                                                                category.status === "ACTIVE"
                                                                     ? "status-active"
                                                                     : "status-inactive"
-                                                                }`}
+                                                            }`}
                                                             onClick={() =>
                                                                 handleStatusChange(category)
                                                             }
@@ -249,8 +255,8 @@ const Category = () => {
                                                     <td>
                                                         {category.created_at
                                                             ? new Date(
-                                                                category.created_at
-                                                            ).toLocaleDateString()
+                                                                  category.created_at
+                                                              ).toLocaleDateString()
                                                             : "-"}
                                                     </td>
 
@@ -267,28 +273,31 @@ const Category = () => {
                                                         </button>
 
                                                         <button
-                                                        className="delete-button"
-                                                        onClick={() => handleDelete(category)}
-        >
-                                                         <FaTrash />
-                                                    </button>
-                                                </td>
-
+                                                            className="delete-button"
+                                                            onClick={() =>
+                                                                handleDelete(category)
+                                                            }
+                                                        >
+                                                            <FaTrash />
+                                                        </button>
+                                                    </td>
                                                 </tr>
-                                    ))
+                                            ))
                                         )}
-                                </tbody>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                            </table>
+                            <Pagination
+                                page={page}
+                                totalPages={totalPages}
+                                onPageChange={setPage}
+                            />
                         </div>
                     </div>
-
+                </main>
             </div>
-
-        </main>
-
-            </div >
-        </div >
+        </div>
     );
 };
 

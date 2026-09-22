@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
+import Pagination from "../../../components/Pagination/Pagination";
 
 import {
     getAllInclusionsCms,
@@ -27,19 +28,26 @@ const Inclusion = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
     useEffect(() => {
-        fetchInclusions();
         fetchPackages();
     }, []);
+
+    useEffect(() => {
+        fetchInclusions();
+    }, [page]);
 
     const fetchInclusions = async () => {
         try {
             setLoading(true);
 
-            const response = await getAllInclusionsCms();
+            const response = await getAllInclusionsCms(page);
 
             if (response.data.status) {
-                setInclusions(response.data.data || []);
+                setInclusions(response.data.data.data || []);
+                setTotalPages(response.data.data.last_page || 1);
             }
         } catch (error) {
             console.error("Error fetching inclusions:", error);
@@ -62,7 +70,7 @@ const Inclusion = () => {
             const response = await getAllPackagesCms();
 
             if (response.data.status) {
-                setPackages(response.data.data || []);
+                setPackages(response.data.data.data || []);
             }
         } catch (error) {
             console.error("Error fetching packages:", error);
@@ -177,10 +185,13 @@ const Inclusion = () => {
 
     const handleEdit = (inclusion) => {
         setEditingId(inclusion.id);
+
         setPackageId(
             inclusion.package_id?.toString() || ""
         );
+
         setItem(inclusion.item || "");
+
         setDisplayOrder(
             inclusion.display_order?.toString() || ""
         );
@@ -253,6 +264,7 @@ const Inclusion = () => {
 
                 <main className="dashboard-content">
                     <div className="inclusion-page">
+
                         <div className="inclusion-header">
                             <div>
                                 <h1>
@@ -311,16 +323,10 @@ const Inclusion = () => {
                                         {packages.map(
                                             (pkg) => (
                                                 <option
-                                                    key={
-                                                        pkg.id
-                                                    }
-                                                    value={
-                                                        pkg.id
-                                                    }
+                                                    key={pkg.id}
+                                                    value={pkg.id}
                                                 >
-                                                    {
-                                                        pkg.title
-                                                    }
+                                                    {pkg.title}
                                                 </option>
                                             )
                                         )}
@@ -405,129 +411,123 @@ const Inclusion = () => {
                                 <h2>
                                     All Inclusions
                                 </h2>
-
-                                <p>
-                                    {inclusions.length}{" "}
-                                    inclusion
-                                    {inclusions.length !==
-                                    1
-                                        ? "s"
-                                        : ""}
-                                </p>
                             </div>
 
                             {loading ? (
                                 <div className="inclusion-empty">
-                                    Loading
-                                    inclusions...
+                                    Loading inclusions...
                                 </div>
-                            ) : inclusions.length ===
-                              0 ? (
+                            ) : inclusions.length === 0 ? (
                                 <div className="inclusion-empty">
-                                    No inclusions
-                                    found.
+                                    No inclusions found.
                                 </div>
                             ) : (
-                                <div className="inclusion-table-wrapper">
-                                    <table className="inclusion-table">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    S.N.
-                                                </th>
+                                <>
+                                    <div className="inclusion-table-wrapper">
+                                        <table className="inclusion-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        S.N.
+                                                    </th>
 
-                                                <th>
-                                                    Package
-                                                </th>
+                                                    <th>
+                                                        Package
+                                                    </th>
 
-                                                <th>
-                                                    Inclusion
-                                                </th>
+                                                    <th>
+                                                        Inclusion
+                                                    </th>
 
-                                                <th>
-                                                    Display
-                                                    Order
-                                                </th>
+                                                    <th>
+                                                        Display Order
+                                                    </th>
 
-                                                <th>
-                                                    Actions
-                                                </th>
-                                            </tr>
-                                        </thead>
+                                                    <th>
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                                        <tbody>
-                                            {inclusions.map(
-                                                (
-                                                    inclusion,
-                                                    index
-                                                ) => (
-                                                    <tr
-                                                        key={
-                                                            inclusion.id
-                                                        }
-                                                    >
-                                                        <td>
-                                                            {index +
-                                                                1}
-                                                        </td>
-
-                                                        <td>
-                                                            <span className="inclusion-package-name">
-                                                                {inclusion
-                                                                    .package
-                                                                    ?.title ||
-                                                                    "N/A"}
-                                                            </span>
-                                                        </td>
-
-                                                        <td>
-                                                            {
-                                                                inclusion.item
+                                            <tbody>
+                                                {inclusions.map(
+                                                    (
+                                                        inclusion,
+                                                        index
+                                                    ) => (
+                                                        <tr
+                                                            key={
+                                                                inclusion.id
                                                             }
-                                                        </td>
+                                                        >
+                                                            <td>
+                                                                {(page - 1) * 10 + index + 1}
+                                                            </td>
 
-                                                        <td>
-                                                            <span className="inclusion-order">
-                                                                {inclusion.display_order ??
-                                                                    0}
-                                                            </span>
-                                                        </td>
+                                                            <td>
+                                                                <span className="inclusion-package-name">
+                                                                    {inclusion
+                                                                        .package
+                                                                        ?.title ||
+                                                                        "N/A"}
+                                                                </span>
+                                                            </td>
 
-                                                        <td>
-                                                            <div className="inclusion-actions">
-                                                                <button
-                                                                    type="button"
-                                                                    className="inclusion-edit-btn"
-                                                                    onClick={() =>
-                                                                        handleEdit(
-                                                                            inclusion
-                                                                        )
-                                                                    }
-                                                                    title="Edit"
-                                                                >
-                                                                    <FaPen />
-                                                                </button>
+                                                            <td>
+                                                                {
+                                                                    inclusion.item
+                                                                }
+                                                            </td>
 
-                                                                <button
-                                                                    type="button"
-                                                                    className="inclusion-delete-btn"
-                                                                    onClick={() =>
-                                                                        handleDelete(
-                                                                            inclusion.id
-                                                                        )
-                                                                    }
-                                                                    title="Delete"
-                                                                >
-                                                                    <FaTrash />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                            <td>
+                                                                <span className="inclusion-order">
+                                                                    {inclusion.display_order ??
+                                                                        0}
+                                                                </span>
+                                                            </td>
+
+                                                            <td>
+                                                                <div className="inclusion-actions">
+                                                                    <button
+                                                                        type="button"
+                                                                        className="inclusion-edit-btn"
+                                                                        onClick={() =>
+                                                                            handleEdit(
+                                                                                inclusion
+                                                                            )
+                                                                        }
+                                                                        title="Edit"
+                                                                    >
+                                                                        <FaPen />
+                                                                    </button>
+
+                                                                    <button
+                                                                        type="button"
+                                                                        className="inclusion-delete-btn"
+                                                                        onClick={() =>
+                                                                            handleDelete(
+                                                                                inclusion.id
+                                                                            )
+                                                                        }
+                                                                        title="Delete"
+                                                                    >
+                                                                        <FaTrash />
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <Pagination
+                                        page={page}
+                                        totalPages={totalPages}
+                                        onPageChange={setPage}
+                                    />
+                                </>
                             )}
                         </div>
                     </div>

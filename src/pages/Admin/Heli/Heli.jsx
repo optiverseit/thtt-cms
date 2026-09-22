@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FaPen, FaTrash } from "react-icons/fa";
+
 import {
     getAllHelisCms,
     changeHeliStatus,
     deleteHeli,
 } from "../../../api/BackendApi";
+
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
+import Pagination from "../../../components/Pagination/Pagination";
 import "./Heli.css";
 
 const Heli = () => {
@@ -18,18 +21,22 @@ const Heli = () => {
     const [loading, setLoading] = useState(true);
     const [statusLoadingId, setStatusLoadingId] = useState(null);
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
     useEffect(() => {
         fetchHelis();
-    }, []);
+    }, [page]);
 
     const fetchHelis = async () => {
         try {
             setLoading(true);
 
-            const response = await getAllHelisCms();
+            const response = await getAllHelisCms(page);
 
             if (response.data?.status) {
-                setHelis(response.data.data || []);
+                setHelis(response.data.data.data || []);
+                setTotalPages(response.data.data.last_page || 1);
             }
         } catch (error) {
             console.error("Heli fetch error:", error);
@@ -201,191 +208,197 @@ const Heli = () => {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="heli-table-wrapper">
+                                <>
+                                    <div className="heli-table-wrapper">
 
-                                    <table className="heli-table">
-                                        <thead>
-                                            <tr>
-                                                <th>S.N.</th>
-                                                <th>
-                                                    Helicopter
-                                                </th>
-                                                <th>Route</th>
-                                                <th>
-                                                    Capacity
-                                                </th>
-                                                <th>
-                                                    Duration
-                                                </th>
-                                                <th>Price</th>
-                                                <th>Status</th>
-                                                <th className="action-column">
-                                                    Actions
-                                                </th>
-                                            </tr>
-                                        </thead>
+                                        <table className="heli-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>S.N.</th>
+                                                    <th>
+                                                        Helicopter
+                                                    </th>
+                                                    <th>Route</th>
+                                                    <th>
+                                                        Capacity
+                                                    </th>
+                                                    <th>
+                                                        Duration
+                                                    </th>
+                                                    <th>Price</th>
+                                                    <th>Status</th>
+                                                    <th className="action-column">
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                                        <tbody>
-                                            {helis.map(
-                                                (heli, index) => (
-                                                    <tr
-                                                        key={
-                                                            heli.id
-                                                        }
-                                                    >
-                                                        <td>
-                                                            {index +
-                                                                1}
-                                                        </td>
+                                            <tbody>
+                                                {helis.map(
+                                                    (heli, index) => (
+                                                        <tr
+                                                            key={
+                                                                heli.id
+                                                            }
+                                                        >
+                                                            <td>
+                                                                {(page - 1) * 10 + index + 1}
+                                                            </td>
 
-                                                        <td>
-                                                            <div className="heli-info">
+                                                            <td>
+                                                                <div className="heli-info">
 
-                                                                <div className="heli-image">
-                                                                    {heli.image ? (
-                                                                        <img
-                                                                            src={
-                                                                                heli.image
-                                                                            }
-                                                                            alt={
+                                                                    <div className="heli-image">
+                                                                        {heli.image ? (
+                                                                            <img
+                                                                                src={
+                                                                                    heli.image
+                                                                                }
+                                                                                alt={
+                                                                                    heli.name
+                                                                                }
+                                                                            />
+                                                                        ) : (
+                                                                            <div className="heli-image-placeholder">
+                                                                                {heli.name
+                                                                                    ?.charAt(
+                                                                                        0
+                                                                                    )
+                                                                                    .toUpperCase()}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div className="heli-details">
+                                                                        <span className="heli-name">
+                                                                            {
                                                                                 heli.name
                                                                             }
-                                                                        />
-                                                                    ) : (
-                                                                        <div className="heli-image-placeholder">
-                                                                            {heli.name
-                                                                                ?.charAt(
-                                                                                    0
-                                                                                )
-                                                                                .toUpperCase()}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
+                                                                        </span>
 
-                                                                <div className="heli-details">
-                                                                    <span className="heli-name">
+                                                                        {heli.description && (
+                                                                            <span className="heli-description">
+                                                                                {
+                                                                                    heli.description
+                                                                                }
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+
+                                                                </div>
+                                                            </td>
+
+                                                            <td>
+                                                                <div className="heli-route">
+                                                                    <span>
                                                                         {
-                                                                            heli.name
+                                                                            heli.from_location
                                                                         }
                                                                     </span>
 
-                                                                    {heli.description && (
-                                                                        <span className="heli-description">
-                                                                            {
-                                                                                heli.description
-                                                                            }
-                                                                        </span>
-                                                                    )}
+                                                                    <span className="heli-route-arrow">
+                                                                        →
+                                                                    </span>
+
+                                                                    <span>
+                                                                        {
+                                                                            heli.to_location
+                                                                        }
+                                                                    </span>
                                                                 </div>
+                                                            </td>
 
-                                                            </div>
-                                                        </td>
-
-                                                        <td>
-                                                            <div className="heli-route">
-                                                                <span>
+                                                            <td>
+                                                                <span className="heli-capacity">
                                                                     {
-                                                                        heli.from_location
-                                                                    }
+                                                                        heli.capacity
+                                                                    }{" "}
+                                                                    people
                                                                 </span>
+                                                            </td>
 
-                                                                <span className="heli-route-arrow">
-                                                                    →
-                                                                </span>
+                                                            <td>
+                                                                {heli.duration ||
+                                                                    "-"}
+                                                            </td>
 
-                                                                <span>
+                                                            <td>
+                                                                <span className="heli-price">
+                                                                    Rs.{" "}
                                                                     {
-                                                                        heli.to_location
+                                                                        heli.price
                                                                     }
                                                                 </span>
-                                                            </div>
-                                                        </td>
+                                                            </td>
 
-                                                        <td>
-                                                            <span className="heli-capacity">
-                                                                {
-                                                                    heli.capacity
-                                                                }{" "}
-                                                                people
-                                                            </span>
-                                                        </td>
-
-                                                        <td>
-                                                            {heli.duration ||
-                                                                "-"}
-                                                        </td>
-
-                                                        <td>
-                                                            <span className="heli-price">
-                                                                Rs.{" "}
-                                                                {
-                                                                    heli.price
-                                                                }
-                                                            </span>
-                                                        </td>
-
-                                                        <td>
-                                                            <button
-                                                                className={`heli-status ${
-                                                                    heli.status ===
-                                                                    "ACTIVE"
-                                                                        ? "heli-status-active"
-                                                                        : "heli-status-inactive"
-                                                                }`}
-                                                                onClick={() =>
-                                                                    handleStatusChange(
-                                                                        heli
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    statusLoadingId ===
-                                                                    heli.id
-                                                                }
-                                                            >
-                                                                {statusLoadingId ===
-                                                                heli.id
-                                                                    ? "Updating..."
-                                                                    : heli.status}
-                                                            </button>
-                                                        </td>
-
-                                                        <td className="action-column">
-                                                            <div className="action-buttons">
-
+                                                            <td>
                                                                 <button
-                                                                    className="edit-button"
+                                                                    className={`heli-status ${
+                                                                        heli.status ===
+                                                                        "ACTIVE"
+                                                                            ? "heli-status-active"
+                                                                            : "heli-status-inactive"
+                                                                    }`}
                                                                     onClick={() =>
-                                                                        navigate(
-                                                                            `/helis/edit/${heli.id}`
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <FaPen />
-                                                                    Edit
-                                                                </button>
-
-                                                                <button
-                                                                    className="delete-button"
-                                                                    onClick={() =>
-                                                                        handleDelete(
+                                                                        handleStatusChange(
                                                                             heli
                                                                         )
                                                                     }
+                                                                    disabled={
+                                                                        statusLoadingId ===
+                                                                        heli.id
+                                                                    }
                                                                 >
-                                                                    <FaTrash />
-                                                                    Delete
+                                                                    {statusLoadingId ===
+                                                                    heli.id
+                                                                        ? "Updating..."
+                                                                        : heli.status}
                                                                 </button>
+                                                            </td>
 
-                                                            </div>
-                                                        </td>
+                                                            <td className="action-column">
+                                                                <div className="action-buttons">
 
-                                                    </tr>
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
+                                                                    <button
+                                                                        className="edit-button"
+                                                                        onClick={() =>
+                                                                            navigate(
+                                                                                `/helis/edit/${heli.id}`
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <FaPen />
+                                                                        Edit
+                                                                    </button>
 
-                                </div>
+                                                                    <button
+                                                                        className="delete-button"
+                                                                        onClick={() =>
+                                                                            handleDelete(
+                                                                                heli
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <FaTrash />
+                                                                        Delete
+                                                                    </button>
+
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <Pagination
+                                        page={page}
+                                        totalPages={totalPages}
+                                        onPageChange={setPage}
+                                    />
+                                </>
                             )}
 
                         </div>
