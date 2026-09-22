@@ -169,27 +169,27 @@ const Sidebar = () => {
 
               <button
                 className={`submenu-item ${
-                  isActive("/testimonials") ? "active" : ""
+                  isActive("/packages/testimonials") ? "active" : ""
                 }`}
-                onClick={() => navigate("/testimonials")}
+                onClick={() => navigate("/packages/testimonials")}
               >
                 Testimonials
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/gallery") ? "active" : ""
+                  isActive("/packages/gallery") ? "active" : ""
                 }`}
-                onClick={() => navigate("/gallery")}
+                onClick={() => navigate("/packages/gallery")}
               >
                 Gallery
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/highlights") ? "active" : ""
+                  isActive("/packages/highlights") ? "active" : ""
                 }`}
-                onClick={() => navigate("/highlights")}
+                onClick={() => navigate("/packages/highlights")}
               >
                 Highlights
               </button>
