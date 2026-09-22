@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FaPen, FaTrash } from "react-icons/fa";
+
 import {
     getAllVehiclesCms,
     changeVehicleStatus,
     deleteVehicle,
 } from "../../../api/BackendApi";
+
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
+import Pagination from "../../../components/Pagination/Pagination";
 import "./Vehicle.css";
 
 const Vehicle = () => {
@@ -18,18 +21,22 @@ const Vehicle = () => {
     const [loading, setLoading] = useState(true);
     const [statusLoadingId, setStatusLoadingId] = useState(null);
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
     useEffect(() => {
         fetchVehicles();
-    }, []);
+    }, [page]);
 
     const fetchVehicles = async () => {
         try {
             setLoading(true);
 
-            const response = await getAllVehiclesCms();
+            const response = await getAllVehiclesCms(page);
 
             if (response.data?.status) {
-                setVehicles(response.data.data || []);
+                setVehicles(response.data.data.data || []);
+                setTotalPages(response.data.data.last_page || 1);
             }
         } catch (error) {
             console.error("Vehicle fetch error:", error);
@@ -165,6 +172,7 @@ const Vehicle = () => {
                         <div className="vehicle-header">
                             <div>
                                 <h1>Vehicles</h1>
+
                                 <p>
                                     Manage vehicles available for
                                     travel packages.
@@ -191,183 +199,195 @@ const Vehicle = () => {
                             ) : vehicles.length === 0 ? (
                                 <div className="vehicle-empty">
                                     <h3>No Vehicles Found</h3>
+
                                     <p>
                                         Create your first vehicle
                                         to get started.
                                     </p>
                                 </div>
                             ) : (
-                                <div className="vehicle-table-wrapper">
-                                    <table className="vehicle-table">
-                                        <thead>
-                                            <tr>
-                                                <th>S.N.</th>
-                                                <th>Vehicle</th>
-                                                <th>Route</th>
-                                                <th>Capacity</th>
-                                                <th>Duration</th>
-                                                <th>Price</th>
-                                                <th>Status</th>
-                                                <th className="action-column">
-                                                    Actions
-                                                </th>
-                                            </tr>
-                                        </thead>
+                                <>
+                                    <div className="vehicle-table-wrapper">
+                                        <table className="vehicle-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>S.N.</th>
+                                                    <th>Vehicle</th>
+                                                    <th>Route</th>
+                                                    <th>Capacity</th>
+                                                    <th>Duration</th>
+                                                    <th>Price</th>
+                                                    <th>Status</th>
 
-                                        <tbody>
-                                            {vehicles.map(
-                                                (vehicle, index) => (
-                                                    <tr key={vehicle.id}>
+                                                    <th className="action-column">
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
 
-                                                        <td>
-                                                            {index + 1}
-                                                        </td>
+                                            <tbody>
+                                                {vehicles.map(
+                                                    (vehicle, index) => (
+                                                        <tr key={vehicle.id}>
 
-                                                        <td>
-                                                            <div className="vehicle-info">
-                                                                <div className="vehicle-image">
-                                                                    {vehicle.image ? (
-                                                                        <img
-                                                                            src={
-                                                                                vehicle.image
-                                                                            }
-                                                                            alt={
+                                                            <td>
+                                                                {(page - 1) * 10 + index + 1}
+                                                            </td>
+
+                                                            <td>
+                                                                <div className="vehicle-info">
+
+                                                                    <div className="vehicle-image">
+                                                                        {vehicle.image ? (
+                                                                            <img
+                                                                                src={
+                                                                                    vehicle.image
+                                                                                }
+                                                                                alt={
+                                                                                    vehicle.name
+                                                                                }
+                                                                            />
+                                                                        ) : (
+                                                                            <div className="vehicle-image-placeholder">
+                                                                                {vehicle.name
+                                                                                    ?.charAt(
+                                                                                        0
+                                                                                    )
+                                                                                    .toUpperCase()}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div className="vehicle-details">
+                                                                        <span className="vehicle-name">
+                                                                            {
                                                                                 vehicle.name
                                                                             }
-                                                                        />
-                                                                    ) : (
-                                                                        <div className="vehicle-image-placeholder">
-                                                                            {vehicle.name
-                                                                                ?.charAt(
-                                                                                    0
-                                                                                )
-                                                                                .toUpperCase()}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
+                                                                        </span>
 
-                                                                <div className="vehicle-details">
-                                                                    <span className="vehicle-name">
+                                                                        {vehicle.description && (
+                                                                            <span className="vehicle-description">
+                                                                                {
+                                                                                    vehicle.description
+                                                                                }
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+
+                                                                </div>
+                                                            </td>
+
+                                                            <td>
+                                                                <div className="vehicle-route">
+                                                                    <span>
                                                                         {
-                                                                            vehicle.name
+                                                                            vehicle.from_location
                                                                         }
                                                                     </span>
 
-                                                                    {vehicle.description && (
-                                                                        <span className="vehicle-description">
-                                                                            {
-                                                                                vehicle.description
-                                                                            }
-                                                                        </span>
-                                                                    )}
+                                                                    <span className="route-arrow">
+                                                                        →
+                                                                    </span>
+
+                                                                    <span>
+                                                                        {
+                                                                            vehicle.to_location
+                                                                        }
+                                                                    </span>
                                                                 </div>
-                                                            </div>
-                                                        </td>
+                                                            </td>
 
-                                                        <td>
-                                                            <div className="vehicle-route">
-                                                                <span>
+                                                            <td>
+                                                                <span className="vehicle-capacity">
                                                                     {
-                                                                        vehicle.from_location
-                                                                    }
+                                                                        vehicle.capacity
+                                                                    }{" "}
+                                                                    people
                                                                 </span>
+                                                            </td>
 
-                                                                <span className="route-arrow">
-                                                                    →
-                                                                </span>
+                                                            <td>
+                                                                {vehicle.duration ||
+                                                                    "-"}
+                                                            </td>
 
-                                                                <span>
+                                                            <td>
+                                                                <span className="vehicle-price">
+                                                                    Rs.{" "}
                                                                     {
-                                                                        vehicle.to_location
+                                                                        vehicle.price
                                                                     }
                                                                 </span>
-                                                            </div>
-                                                        </td>
+                                                            </td>
 
-                                                        <td>
-                                                            <span className="vehicle-capacity">
-                                                                {
-                                                                    vehicle.capacity
-                                                                }{" "}
-                                                                people
-                                                            </span>
-                                                        </td>
-
-                                                        <td>
-                                                            {vehicle.duration ||
-                                                                "-"}
-                                                        </td>
-
-                                                        <td>
-                                                            <span className="vehicle-price">
-                                                                Rs.{" "}
-                                                                {
-                                                                    vehicle.price
-                                                                }
-                                                            </span>
-                                                        </td>
-
-                                                        <td>
-                                                            <button
-                                                                className={`vehicle-status ${
-                                                                    vehicle.status ===
-                                                                    "ACTIVE"
-                                                                        ? "vehicle-status-active"
-                                                                        : "vehicle-status-inactive"
-                                                                }`}
-                                                                onClick={() =>
-                                                                    handleStatusChange(
-                                                                        vehicle
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    statusLoadingId ===
-                                                                    vehicle.id
-                                                                }
-                                                            >
-                                                                {statusLoadingId ===
-                                                                vehicle.id
-                                                                    ? "Updating..."
-                                                                    : vehicle.status}
-                                                            </button>
-                                                        </td>
-
-                                                        <td className="action-column">
-                                                            <div className="action-buttons">
-
+                                                            <td>
                                                                 <button
-                                                                    className="edit-button"
+                                                                    className={`vehicle-status ${
+                                                                        vehicle.status ===
+                                                                        "ACTIVE"
+                                                                            ? "vehicle-status-active"
+                                                                            : "vehicle-status-inactive"
+                                                                    }`}
                                                                     onClick={() =>
-                                                                        navigate(
-                                                                            `/vehicles/edit/${vehicle.id}`
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <FaPen />
-                                                                    Edit
-                                                                </button>
-
-                                                                <button
-                                                                    className="delete-button"
-                                                                    onClick={() =>
-                                                                        handleDelete(
+                                                                        handleStatusChange(
                                                                             vehicle
                                                                         )
                                                                     }
+                                                                    disabled={
+                                                                        statusLoadingId ===
+                                                                        vehicle.id
+                                                                    }
                                                                 >
-                                                                    <FaTrash />
-                                                                    Delete
+                                                                    {statusLoadingId ===
+                                                                    vehicle.id
+                                                                        ? "Updating..."
+                                                                        : vehicle.status}
                                                                 </button>
+                                                            </td>
 
-                                                            </div>
-                                                        </td>
+                                                            <td className="action-column">
+                                                                <div className="action-buttons">
 
-                                                    </tr>
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                                    <button
+                                                                        className="edit-button"
+                                                                        onClick={() =>
+                                                                            navigate(
+                                                                                `/vehicles/edit/${vehicle.id}`
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <FaPen />
+                                                                        Edit
+                                                                    </button>
+
+                                                                    <button
+                                                                        className="delete-button"
+                                                                        onClick={() =>
+                                                                            handleDelete(
+                                                                                vehicle
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <FaTrash />
+                                                                        Delete
+                                                                    </button>
+
+                                                                </div>
+                                                            </td>
+
+                                                        </tr>
+                                                    )
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <Pagination
+                                        page={page}
+                                        totalPages={totalPages}
+                                        onPageChange={setPage}
+                                    />
+                                </>
                             )}
 
                         </div>

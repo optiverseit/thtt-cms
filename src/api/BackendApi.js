@@ -11,9 +11,10 @@ export const googleLogin = (idToken) => {
     });
 };
 
-//CATEGORIES
-export const getAllCategoriesCms = () => {
-    return axiosInstance.get("/categories/cms");
+
+// CATEGORIES
+export const getAllCategoriesCms = (page = 1) => {
+    return axiosInstance.get(`/categories/cms?page=${page}`);
 };
 
 export const createCategory = (data) => {
@@ -32,9 +33,10 @@ export const deleteCategory = (id) => {
     return axiosInstance.delete(`/categories/${id}`);
 };
 
+
 // PACKAGES
-export const getAllPackagesCms = () => {
-    return axiosInstance.get("/packages/cms");
+export const getAllPackagesCms = (page = 1) => {
+    return axiosInstance.get(`/packages/cms?page=${page}`);
 };
 
 export const createPackage = (data) => {
@@ -63,9 +65,10 @@ export const deletePackage = (id) => {
     return axiosInstance.delete(`/packages/${id}`);
 };
 
+
 // VEHICLES
-export const getAllVehiclesCms = () => {
-    return axiosInstance.get("/vehicles/cms");
+export const getAllVehiclesCms = (page = 1) => {
+    return axiosInstance.get(`/vehicles/cms?page=${page}`);
 };
 
 export const createVehicle = (data) => {
@@ -96,8 +99,8 @@ export const deleteVehicle = (id) => {
 
 
 // HELIS
-export const getAllHelisCms = () => {
-    return axiosInstance.get("/helis/cms");
+export const getAllHelisCms = (page = 1) => {
+    return axiosInstance.get(`/helis/cms?page=${page}`);
 };
 
 export const createHeli = (data) => {
@@ -124,4 +127,56 @@ export const changeHeliStatus = (id) => {
 
 export const deleteHeli = (id) => {
     return axiosInstance.delete(`/helis/${id}`);
+};
+
+
+// INCLUSIONS
+export const getAllInclusionsCms = (page = 1) => {
+    return axiosInstance.get(`/inclusions/cms?page=${page}`);
+};
+
+export const createInclusion = (packageId, data) => {
+    return axiosInstance.post(`/inclusions/packages/${packageId}`, data);
+};
+
+export const updateInclusion = (id, data) => {
+    return axiosInstance.put(`/inclusions/${id}`, data);
+};
+
+export const deleteInclusion = (id) => {
+    return axiosInstance.delete(`/inclusions/${id}`);
+};
+
+// EXCLUSION
+export const getAllExclusionsCms = (page = 1) => {
+    return axiosInstance.get(`/exclusions/cms?page=${page}`);
+};
+
+export const createExclusion = (packageId, data) => {
+    return axiosInstance.post(`/exclusions/packages/${packageId}`, data);
+};
+
+export const updateExclusion = (id, data) => {
+    return axiosInstance.put(`/exclusions/${id}`, data);
+};
+
+export const deleteExclusion = (id) => {
+    return axiosInstance.delete(`/exclusions/${id}`);
+};
+
+// RESTRICTIONS
+export const getAllRestrictionsCms = (page = 1) => {
+    return axiosInstance.get(`/restrictions/cms?page=${page}`);
+};
+
+export const createRestriction = (packageId, data) => {
+    return axiosInstance.post(`/restrictions/packages/${packageId}`, data);
+};
+
+export const updateRestriction = (id, data) => {
+    return axiosInstance.put(`/restrictions/${id}`, data);
+};
+
+export const deleteRestriction = (id) => {
+    return axiosInstance.delete(`/restrictions/${id}`);
 };

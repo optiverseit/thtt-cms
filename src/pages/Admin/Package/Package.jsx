@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FaPen, FaTrash } from "react-icons/fa";
+
 import {
     getAllPackagesCms,
     changePackageStatus,
     deletePackage
 } from "../../../api/BackendApi";
+
 import "./Package.css";
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
+import Pagination from "../../../components/Pagination/Pagination";
 
 const Package = () => {
     const navigate = useNavigate();
@@ -17,14 +20,18 @@ const Package = () => {
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
     const fetchPackages = async () => {
         try {
             setLoading(true);
 
-            const response = await getAllPackagesCms();
+            const response = await getAllPackagesCms(page);
 
             if (response.data?.status) {
-                setPackages(response.data.data || []);
+                setPackages(response.data.data.data || []);
+                setTotalPages(response.data.data.last_page || 1);
             }
         } catch (error) {
             console.error("Package fetch error:", error);
@@ -44,7 +51,7 @@ const Package = () => {
 
     useEffect(() => {
         fetchPackages();
-    }, []);
+    }, [page]);
 
     const handleStatusChange = async (packageItem) => {
         const newStatus =
@@ -229,7 +236,9 @@ const Package = () => {
                                             packages.map((packageItem, index) => (
                                                 <tr key={packageItem.id}>
 
-                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        {(page - 1) * 10 + index + 1}
+                                                    </td>
 
                                                     <td>
                                                         <div className="package-info">
@@ -351,6 +360,12 @@ const Package = () => {
                                 </table>
 
                             </div>
+
+                            <Pagination
+                                page={page}
+                                totalPages={totalPages}
+                                onPageChange={setPage}
+                            />
 
                         </div>
 

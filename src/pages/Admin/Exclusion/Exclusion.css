@@ -1,0 +1,405 @@
+/* =========================
+   EXCLUSION PAGE
+========================= */
+
+.exclusion-page {
+    width: 100%;
+}
+
+.exclusion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.exclusion-header h1 {
+    margin: 0 0 6px;
+    color: #2f183e;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.exclusion-header p {
+    margin: 0;
+    color: #77717d;
+    font-size: 15px;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.exclusion-form-card,
+.exclusion-table-card {
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.exclusion-card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #ddd8e2;
+}
+
+.exclusion-card-header h2 {
+    margin: 0 0 5px;
+    color: #2f183e;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.exclusion-card-header p {
+    margin: 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.exclusion-form {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 180px;
+    gap: 20px;
+    align-items: end;
+}
+
+.exclusion-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.exclusion-form-group label {
+    color: #2f183e;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.exclusion-form-group .required {
+    color: #f52d91;
+    margin-left: 3px;
+}
+
+
+/* =========================
+   INPUT + SELECT
+========================= */
+
+.exclusion-form-group input,
+.exclusion-form-group select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+
+    background-color: #ffffff;
+    color: #2f183e;
+
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 400;
+
+    outline: none;
+    box-sizing: border-box;
+}
+
+.exclusion-form-group input::placeholder {
+    color: #8a8490;
+    opacity: 1;
+}
+
+.exclusion-form-group input:focus,
+.exclusion-form-group select:focus {
+    border-color: #351255;
+    box-shadow: 0 0 0 2px rgba(53, 18, 85, 0.08);
+}
+
+
+/* =========================
+   SELECT FIX
+========================= */
+
+.exclusion-form-group select {
+    background-color: #ffffff !important;
+    color: #2f183e !important;
+
+    appearance: auto;
+    -webkit-appearance: menulist;
+
+    cursor: pointer;
+}
+
+.exclusion-form-group select option {
+    background-color: #ffffff !important;
+    color: #2f183e !important;
+    font-size: 14px;
+}
+
+.exclusion-form-group select:disabled {
+    background-color: #f3f1f5 !important;
+    color: #77717d !important;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+.exclusion-form-group input:disabled {
+    background-color: #f3f1f5;
+    color: #77717d;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.exclusion-form-buttons {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.exclusion-save-btn,
+.exclusion-cancel-btn {
+    height: 42px;
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+}
+
+.exclusion-save-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.exclusion-save-btn:hover:not(:disabled) {
+    background: #481a6d;
+}
+
+.exclusion-cancel-btn {
+    background: #f1eef4;
+    color: #351255;
+}
+
+.exclusion-cancel-btn:hover:not(:disabled) {
+    background: #e4ddea;
+}
+
+.exclusion-save-btn:disabled,
+.exclusion-cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.exclusion-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.exclusion-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.exclusion-table th,
+.exclusion-table td {
+    padding: 15px 20px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #eeeaf1;
+}
+
+.exclusion-table th {
+    background: #f8f6fa;
+    color: #351255;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.exclusion-table td {
+    color: #2f183e;
+    font-size: 14px;
+}
+
+.exclusion-table tbody tr:hover {
+    background-color: #fcfbfd;
+}
+
+.exclusion-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================
+   PACKAGE NAME
+========================= */
+
+.exclusion-package-name {
+    color: #351255;
+    font-weight: 600;
+}
+
+
+/* =========================
+   DISPLAY ORDER
+========================= */
+
+.exclusion-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 30px;
+
+    color: #2f183e;
+    font-weight: 500;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.exclusion-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.exclusion-edit-btn,
+.exclusion-delete-btn {
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+}
+
+.exclusion-edit-btn {
+    background: #eee8f4;
+    color: #351255;
+}
+
+.exclusion-edit-btn:hover {
+    background: #ddd1e8;
+}
+
+.exclusion-delete-btn {
+    background: #fde7f2;
+    color: #f52d91;
+}
+
+.exclusion-delete-btn:hover {
+    background: #fbd4e8;
+}
+
+
+/* =========================
+   EMPTY / LOADING
+========================= */
+
+.exclusion-empty {
+    padding: 45px 20px;
+
+    text-align: center;
+
+    color: #77717d;
+    font-size: 14px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+    .exclusion-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .exclusion-order-field {
+        grid-column: 1 / 2;
+    }
+
+    .exclusion-form-buttons {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 700px) {
+    .exclusion-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .exclusion-header h1 {
+        font-size: 24px;
+    }
+
+    .exclusion-form {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .exclusion-item-field,
+    .exclusion-order-field,
+    .exclusion-form-buttons {
+        grid-column: 1;
+    }
+
+    .exclusion-form-buttons {
+        justify-content: flex-start;
+    }
+
+    .exclusion-card-header {
+        padding: 18px;
+    }
+
+    .exclusion-table th,
+    .exclusion-table td {
+        padding: 12px 14px;
+        white-space: nowrap;
+    }
+}

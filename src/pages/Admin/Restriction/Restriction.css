@@ -1,0 +1,324 @@
+.restriction-page {
+    width: 100%;
+}
+
+.restriction-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.restriction-header h1 {
+    margin: 0 0 6px;
+    color: #2f183e;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.restriction-header p {
+    margin: 0;
+    color: #77717d;
+    font-size: 15px;
+}
+
+.restriction-form-card,
+.restriction-table-card {
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.restriction-card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #ddd8e2;
+}
+
+.restriction-card-header h2 {
+    margin: 0 0 5px;
+    color: #2f183e;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.restriction-card-header p {
+    margin: 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+.restriction-form {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 180px;
+    gap: 20px;
+    align-items: end;
+}
+
+.restriction-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.restriction-form-group label {
+    color: #2f183e;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.restriction-form-group .required {
+    color: #f52d91;
+    margin-left: 3px;
+}
+
+.restriction-form-group input,
+.restriction-form-group select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+    background-color: #ffffff;
+    color: #2f183e;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 400;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.restriction-form-group input::placeholder {
+    color: #8a8490;
+    opacity: 1;
+}
+
+.restriction-form-group input:focus,
+.restriction-form-group select:focus {
+    border-color: #351255;
+    box-shadow: 0 0 0 2px rgba(53, 18, 85, 0.08);
+}
+
+.restriction-form-group select {
+    background-color: #ffffff !important;
+    color: #2f183e !important;
+    appearance: auto;
+    -webkit-appearance: menulist;
+    cursor: pointer;
+}
+
+.restriction-form-group select option {
+    background-color: #ffffff !important;
+    color: #2f183e !important;
+    font-size: 14px;
+}
+
+.restriction-form-group select:disabled {
+    background-color: #f3f1f5 !important;
+    color: #77717d !important;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+.restriction-form-group input:disabled {
+    background-color: #f3f1f5;
+    color: #77717d;
+    cursor: not-allowed;
+}
+
+.restriction-form-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.restriction-save-btn,
+.restriction-cancel-btn {
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.restriction-save-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.restriction-save-btn:hover:not(:disabled) {
+    background: #481a6d;
+}
+
+.restriction-cancel-btn {
+    background: #f1eef4;
+    color: #351255;
+}
+
+.restriction-cancel-btn:hover:not(:disabled) {
+    background: #e4ddea;
+}
+
+.restriction-save-btn:disabled,
+.restriction-cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.restriction-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.restriction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.restriction-table th,
+.restriction-table td {
+    padding: 15px 20px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #eeeaf1;
+}
+
+.restriction-table th {
+    background: #f8f6fa;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.restriction-table td {
+    color: #2f183e;
+    font-size: 14px;
+}
+
+.restriction-table tbody tr:hover {
+    background-color: #fcfbfd;
+}
+
+.restriction-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.restriction-package-name {
+    color: #351255;
+    font-weight: 600;
+}
+
+.restriction-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    color: #2f183e;
+    font-weight: 500;
+}
+
+.restriction-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.restriction-edit-btn,
+.restriction-delete-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.restriction-edit-btn {
+    background: #eee8f4;
+    color: #351255;
+}
+
+.restriction-edit-btn:hover {
+    background: #ddd1e8;
+}
+
+.restriction-delete-btn {
+    background: #fde7f2;
+    color: #f52d91;
+}
+
+.restriction-delete-btn:hover {
+    background: #fbd4e8;
+}
+
+.restriction-empty {
+    padding: 45px 20px;
+    text-align: center;
+    color: #77717d;
+    font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+    .restriction-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .restriction-order-field {
+        grid-column: 1 / 2;
+    }
+
+    .restriction-form-buttons {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 700px) {
+    .restriction-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .restriction-header h1 {
+        font-size: 24px;
+    }
+
+    .restriction-form {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .restriction-item-field,
+    .restriction-order-field,
+    .restriction-form-buttons {
+        grid-column: 1;
+    }
+
+    .restriction-form-buttons {
+        justify-content: flex-start;
+    }
+
+    .restriction-card-header {
+        padding: 18px;
+    }
+
+    .restriction-table th,
+    .restriction-table td {
+        padding: 12px 14px;
+        white-space: nowrap;
+    }
+}
