@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
+import { FaPlus, FaPen, FaTrash, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 import Navbar from "../../../components/Navbar/Navbar";
@@ -16,13 +16,23 @@ import {
 
 import "./Restriction.css";
 
+const createEmptyRestriction = () => ({
+    restriction: "",
+});
+
 const Restriction = () => {
     const [restrictions, setRestrictions] = useState([]);
     const [packages, setPackages] = useState([]);
 
     const [packageId, setPackageId] = useState("");
-    const [item, setItem] = useState("");
-    const [displayOrder, setDisplayOrder] = useState("");
+
+    // Multiple restrictions for create
+    const [restrictionItems, setRestrictionItems] = useState([
+        createEmptyRestriction(),
+    ]);
+
+    // Single restriction for edit
+    const [restriction, setRestriction] = useState("");
 
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -77,14 +87,46 @@ const Restriction = () => {
         }
     };
 
-    const resetForm = () => {
-        setPackageId("");
-        setItem("");
-        setDisplayOrder("");
-        setEditingId(null);
+    // ==================================
+    // CREATE
+    // ==================================
+
+    const addRestrictionRow = () => {
+        setRestrictionItems([
+            ...restrictionItems,
+            createEmptyRestriction(),
+        ]);
     };
 
-    const handleSubmit = async (e) => {
+    const removeRestrictionRow = (index) => {
+        if (restrictionItems.length === 1) {
+            return;
+        }
+
+        setRestrictionItems(
+            restrictionItems.filter((_, i) => i !== index)
+        );
+    };
+
+    const handleRestrictionChange = (index, value) => {
+        const updatedItems = [...restrictionItems];
+
+        updatedItems[index] = {
+            ...updatedItems[index],
+            restriction: value,
+        };
+
+        setRestrictionItems(updatedItems);
+    };
+
+    const resetCreateForm = () => {
+        setPackageId("");
+        setRestrictionItems([
+            createEmptyRestriction(),
+        ]);
+    };
+
+    const handleCreate = async (e) => {
         e.preventDefault();
 
         if (!packageId) {
@@ -98,67 +140,55 @@ const Restriction = () => {
             return;
         }
 
-        if (!item.trim()) {
-            Swal.fire({
-                icon: "warning",
-                title: "Restriction Required",
-                text: "Please enter a restriction.",
-                confirmButtonColor: "#351255",
-            });
+        for (let i = 0; i < restrictionItems.length; i++) {
+            if (!restrictionItems[i].restriction.trim()) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Restriction Required",
+                    text: `Please enter restriction ${i + 1}.`,
+                    confirmButtonColor: "#351255",
+                });
 
-            return;
+                return;
+            }
         }
 
         const data = {
-            item: item.trim(),
-            display_order: displayOrder
-                ? Number(displayOrder)
-                : 0,
+            restrictions: restrictionItems.map((entry) => ({
+                restriction: entry.restriction.trim(),
+            })),
         };
 
         try {
             setSaving(true);
 
-            let response;
-
-            if (editingId) {
-                response = await updateRestriction(
-                    editingId,
-                    data
-                );
-            } else {
-                response = await createRestriction(
-                    packageId,
-                    data
-                );
-            }
+            const response = await createRestriction(
+                packageId,
+                data
+            );
 
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
-                    title: editingId
-                        ? "Restriction Updated"
-                        : "Restriction Added",
+                    title: "Restrictions Added",
                     text:
                         response.data.message ||
-                        (editingId
-                            ? "Restriction updated successfully."
-                            : "Restriction added successfully."),
+                        "Package restrictions created successfully.",
                     confirmButtonColor: "#351255",
                 });
 
-                resetForm();
+                resetCreateForm();
                 fetchRestrictions();
             }
         } catch (error) {
             console.error(
-                "Error saving restriction:",
+                "Error creating restrictions:",
                 error
             );
 
             let errorMessage =
                 error.response?.data?.message ||
-                "Unable to save restriction.";
+                "Unable to create restrictions.";
 
             const validationErrors =
                 error.response?.data?.errors;
@@ -183,17 +213,19 @@ const Restriction = () => {
         }
     };
 
-    const handleEdit = (restriction) => {
-        setEditingId(restriction.id);
+    // ==================================
+    // EDIT
+    // ==================================
+
+    const handleEdit = (restrictionData) => {
+        setEditingId(restrictionData.id);
 
         setPackageId(
-            restriction.package_id?.toString() || ""
+            restrictionData.package_id?.toString() || ""
         );
 
-        setItem(restriction.item || "");
-
-        setDisplayOrder(
-            restriction.display_order?.toString() || ""
+        setRestriction(
+            restrictionData.restriction || ""
         );
 
         window.scrollTo({
@@ -201,6 +233,88 @@ const Restriction = () => {
             behavior: "smooth",
         });
     };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setPackageId("");
+        setRestriction("");
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+
+        if (!restriction.trim()) {
+            Swal.fire({
+                icon: "warning",
+                title: "Restriction Required",
+                text: "Please enter a restriction.",
+                confirmButtonColor: "#351255",
+            });
+
+            return;
+        }
+
+        const data = {
+            restriction: restriction.trim(),
+        };
+
+        try {
+            setSaving(true);
+
+            const response = await updateRestriction(
+                editingId,
+                data
+            );
+
+            if (response.data.status) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Restriction Updated",
+                    text:
+                        response.data.message ||
+                        "Restriction updated successfully.",
+                    confirmButtonColor: "#351255",
+                });
+
+                cancelEdit();
+                fetchRestrictions();
+            }
+        } catch (error) {
+            console.error(
+                "Error updating restriction:",
+                error
+            );
+
+            let errorMessage =
+                error.response?.data?.message ||
+                "Unable to update restriction.";
+
+            const validationErrors =
+                error.response?.data?.errors;
+
+            if (validationErrors) {
+                const firstError =
+                    Object.values(validationErrors)[0];
+
+                if (Array.isArray(firstError)) {
+                    errorMessage = firstError[0];
+                }
+            }
+
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: errorMessage,
+                confirmButtonColor: "#351255",
+            });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // ==================================
+    // DELETE
+    // ==================================
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
@@ -219,8 +333,7 @@ const Restriction = () => {
         }
 
         try {
-            const response =
-                await deleteRestriction(id);
+            const response = await deleteRestriction(id);
 
             if (response.data.status) {
                 await Swal.fire({
@@ -233,7 +346,7 @@ const Restriction = () => {
                 });
 
                 if (editingId === id) {
-                    resetForm();
+                    cancelEdit();
                 }
 
                 fetchRestrictions();
@@ -267,7 +380,9 @@ const Restriction = () => {
 
                         <div className="restriction-header">
                             <div>
-                                <h1>Package Restrictions</h1>
+                                <h1>
+                                    Package Restrictions
+                                </h1>
 
                                 <p>
                                     Manage restrictions and requirements
@@ -277,128 +392,236 @@ const Restriction = () => {
                         </div>
 
                         <div className="restriction-form-card">
+
                             <div className="restriction-card-header">
                                 <h2>
                                     {editingId
                                         ? "Edit Restriction"
-                                        : "Add Restriction"}
+                                        : "Add Restrictions"}
                                 </h2>
 
                                 <p>
                                     {editingId
                                         ? "Update the selected restriction."
-                                        : "Add a new restriction to a package."}
+                                        : "Add multiple restrictions to a package."}
                                 </p>
                             </div>
 
-                            <form
-                                className="restriction-form"
-                                onSubmit={handleSubmit}
-                            >
-                                <div className="restriction-form-group">
-                                    <label>
-                                        Package
-                                        <span className="required">
-                                            *
-                                        </span>
-                                    </label>
+                            {editingId ? (
+                                /* ========================
+                                   EDIT ONE RESTRICTION
+                                ======================== */
 
-                                    <select
-                                        value={packageId}
-                                        onChange={(e) =>
-                                            setPackageId(
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={
-                                            editingId !== null
-                                        }
-                                    >
-                                        <option value="">
-                                            Select Package
-                                        </option>
+                                <form
+                                    className="restriction-form"
+                                    onSubmit={handleUpdate}
+                                >
+                                    <div className="restriction-form-group">
+                                        <label>
+                                            Package
+                                            <span className="required">
+                                                *
+                                            </span>
+                                        </label>
 
-                                        {packages.map((pkg) => (
-                                            <option
-                                                key={pkg.id}
-                                                value={pkg.id}
-                                            >
-                                                {pkg.title}
+                                        <select
+                                            value={packageId}
+                                            disabled
+                                        >
+                                            <option value="">
+                                                Select Package
                                             </option>
-                                        ))}
-                                    </select>
-                                </div>
 
-                                <div className="restriction-form-group restriction-item-field">
-                                    <label>
-                                        Restriction
-                                        <span className="required">
-                                            *
-                                        </span>
-                                    </label>
+                                            {packages.map((pkg) => (
+                                                <option
+                                                    key={pkg.id}
+                                                    value={pkg.id}
+                                                >
+                                                    {pkg.title}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
 
-                                    <input
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) =>
-                                            setItem(
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="e.g. Minimum age 18 years"
-                                        disabled={saving}
-                                    />
-                                </div>
+                                    <div className="restriction-form-group restriction-item-field">
+                                        <label>
+                                            Restriction
+                                            <span className="required">
+                                                *
+                                            </span>
+                                        </label>
 
-                                <div className="restriction-form-group restriction-order-field">
-                                    <label>
-                                        Display Order
-                                    </label>
+                                        <input
+                                            type="text"
+                                            value={restriction}
+                                            onChange={(e) =>
+                                                setRestriction(
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder="e.g. Minimum age 18 years"
+                                            disabled={saving}
+                                        />
+                                    </div>
 
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={displayOrder}
-                                        onChange={(e) =>
-                                            setDisplayOrder(
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="0"
-                                        disabled={saving}
-                                    />
-                                </div>
-
-                                <div className="restriction-form-buttons">
-                                    {editingId && (
+                                    <div className="restriction-form-buttons">
                                         <button
                                             type="button"
                                             className="restriction-cancel-btn"
-                                            onClick={resetForm}
+                                            onClick={cancelEdit}
                                             disabled={saving}
                                         >
                                             Cancel
                                         </button>
-                                    )}
 
-                                    <button
-                                        type="submit"
-                                        className="restriction-save-btn"
-                                        disabled={saving}
-                                    >
-                                        <FaPlus />
+                                        <button
+                                            type="submit"
+                                            className="restriction-save-btn"
+                                            disabled={saving}
+                                        >
+                                            <FaPen />
 
-                                        {saving
-                                            ? "Saving..."
-                                            : editingId
-                                              ? "Update"
-                                              : "Add"}
-                                    </button>
-                                </div>
-                            </form>
+                                            {saving
+                                                ? "Saving..."
+                                                : "Update"}
+                                        </button>
+                                    </div>
+                                </form>
+                            ) : (
+                                /* ========================
+                                   CREATE MULTIPLE
+                                ======================== */
+
+                                <form onSubmit={handleCreate}>
+
+                                    <div className="restriction-package-section">
+                                        <div className="restriction-form-group">
+                                            <label>
+                                                Package
+                                                <span className="required">
+                                                    *
+                                                </span>
+                                            </label>
+
+                                            <select
+                                                value={packageId}
+                                                onChange={(e) =>
+                                                    setPackageId(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                disabled={saving}
+                                            >
+                                                <option value="">
+                                                    Select Package
+                                                </option>
+
+                                                {packages.map((pkg) => (
+                                                    <option
+                                                        key={pkg.id}
+                                                        value={pkg.id}
+                                                    >
+                                                        {pkg.title}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="restriction-items-list">
+
+                                        {restrictionItems.map(
+                                            (entry, index) => (
+                                                <div
+                                                    className="restriction-item-row"
+                                                    key={index}
+                                                >
+                                                    <div className="restriction-number">
+                                                        {index + 1}
+                                                    </div>
+
+                                                    <div className="restriction-form-group restriction-item-field">
+                                                        <label>
+                                                            Restriction
+                                                            <span className="required">
+                                                                *
+                                                            </span>
+                                                        </label>
+
+                                                        <input
+                                                            type="text"
+                                                            value={
+                                                                entry.restriction
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleRestrictionChange(
+                                                                    index,
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            placeholder="e.g. Minimum age 18 years"
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        className="restriction-remove-btn"
+                                                        onClick={() =>
+                                                            removeRestrictionRow(
+                                                                index
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            restrictionItems.length ===
+                                                                1 ||
+                                                            saving
+                                                        }
+                                                        title="Remove Restriction"
+                                                    >
+                                                        <FaTimes />
+                                                    </button>
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+
+                                    <div className="restriction-create-actions">
+
+                                        <button
+                                            type="button"
+                                            className="restriction-add-more-btn"
+                                            onClick={
+                                                addRestrictionRow
+                                            }
+                                            disabled={saving}
+                                        >
+                                            <FaPlus />
+                                            Add Restriction
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            className="restriction-save-btn"
+                                            disabled={saving}
+                                        >
+                                            <FaPlus />
+
+                                            {saving
+                                                ? "Saving..."
+                                                : "Save Restrictions"}
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
                         </div>
 
+                        {/* ========================
+                            TABLE
+                        ======================== */}
+
                         <div className="restriction-table-card">
+
                             <div className="restriction-card-header">
                                 <h2>
                                     All Restrictions
@@ -421,30 +644,37 @@ const Restriction = () => {
                                                 <tr>
                                                     <th>S.N.</th>
                                                     <th>Package</th>
-                                                    <th>Restriction</th>
-                                                    <th>Display Order</th>
-                                                    <th>Actions</th>
+                                                    <th>
+                                                        Restriction
+                                                    </th>
+                                                    <th>
+                                                        Actions
+                                                    </th>
                                                 </tr>
                                             </thead>
 
                                             <tbody>
                                                 {restrictions.map(
                                                     (
-                                                        restriction,
+                                                        restrictionData,
                                                         index
                                                     ) => (
                                                         <tr
                                                             key={
-                                                                restriction.id
+                                                                restrictionData.id
                                                             }
                                                         >
                                                             <td>
-                                                                {(page - 1) * 10 + index + 1}
+                                                                {(page -
+                                                                    1) *
+                                                                    10 +
+                                                                    index +
+                                                                    1}
                                                             </td>
 
                                                             <td>
                                                                 <span className="restriction-package-name">
-                                                                    {restriction
+                                                                    {restrictionData
                                                                         .package
                                                                         ?.title ||
                                                                         "N/A"}
@@ -453,25 +683,19 @@ const Restriction = () => {
 
                                                             <td>
                                                                 {
-                                                                    restriction.item
+                                                                    restrictionData.restriction
                                                                 }
                                                             </td>
 
                                                             <td>
-                                                                <span className="restriction-order">
-                                                                    {restriction.display_order ??
-                                                                        0}
-                                                                </span>
-                                                            </td>
-
-                                                            <td>
                                                                 <div className="restriction-actions">
+
                                                                     <button
                                                                         type="button"
                                                                         className="restriction-edit-btn"
                                                                         onClick={() =>
                                                                             handleEdit(
-                                                                                restriction
+                                                                                restrictionData
                                                                             )
                                                                         }
                                                                         title="Edit"
@@ -484,13 +708,14 @@ const Restriction = () => {
                                                                         className="restriction-delete-btn"
                                                                         onClick={() =>
                                                                             handleDelete(
-                                                                                restriction.id
+                                                                                restrictionData.id
                                                                             )
                                                                         }
                                                                         title="Delete"
                                                                     >
                                                                         <FaTrash />
                                                                     </button>
+
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -508,7 +733,6 @@ const Restriction = () => {
                                 </>
                             )}
                         </div>
-
                     </div>
                 </main>
             </div>

@@ -322,3 +322,183 @@
         white-space: nowrap;
     }
 }
+
+/* =========================================
+   MULTIPLE RESTRICTION CREATE FORM
+========================================= */
+
+.restriction-package-section {
+    padding: 20px 20px 0;
+}
+
+.restriction-package-section select {
+    min-width: 300px;
+}
+
+.restriction-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+}
+
+.restriction-item-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+
+    padding: 16px;
+
+    background: #fcfbfd;
+    border: 1px solid #e6e1e9;
+    border-radius: 9px;
+}
+
+.restriction-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 42px;
+    flex-shrink: 0;
+
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.restriction-item-row
+.restriction-item-field {
+    flex: 1;
+}
+
+.restriction-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+
+    padding: 0;
+
+    background: #fdeaf3;
+    border: none;
+    border-radius: 7px;
+
+    color: #f52d91;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.restriction-remove-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.restriction-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.restriction-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 0 20px 20px;
+}
+
+.restriction-add-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    height: 42px;
+    padding: 0 18px;
+
+    background: #f1edf5;
+    border: none;
+    border-radius: 7px;
+
+    color: #351255;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.restriction-add-more-btn:hover:not(:disabled) {
+    background: #e5ddeb;
+}
+
+.restriction-add-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+    .restriction-item-row {
+        flex-wrap: wrap;
+    }
+
+    .restriction-number {
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+    }
+
+    .restriction-item-row
+    .restriction-item-field {
+        width: auto;
+        flex: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .restriction-package-section {
+        padding: 16px 16px 0;
+    }
+
+    .restriction-package-section select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .restriction-items-list {
+        padding: 16px;
+    }
+
+    .restriction-item-row {
+        align-items: stretch;
+    }
+
+    .restriction-item-row
+    .restriction-item-field {
+        width: 100%;
+        flex: none;
+    }
+
+    .restriction-remove-btn {
+        width: 100%;
+    }
+
+    .restriction-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+
+        padding: 0 16px 16px;
+    }
+
+    .restriction-create-actions button {
+        width: 100%;
+    }
+}

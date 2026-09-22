@@ -22,6 +22,11 @@ import EditHeli from './pages/Admin/Heli/EditHeli';
 import Inclusion from './pages/Admin/Inclusion/Inclusion';
 import Exclusion from './pages/Admin/Exclusion/Exclusion';
 import Restriction from './pages/Admin/Restriction/Restriction';
+import WhatToBring from './pages/Admin/WhatToBring/WhatToBring'
+import Faq from './pages/Admin/Faq/Faq'
+import PricingTier from './pages/Admin/PricingTier/PricingTier';
+import Itinerary from './pages/Admin/Itinerary/Itinerary';
+import Highlight from './pages/Admin/Highlight/Highlight';
 
 function App() {
 
@@ -171,6 +176,59 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Restriction />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WHAT TO BRING */}
+        <Route
+          path="/packages/what-to-bring"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <WhatToBring />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* FAQ */}
+        <Route
+          path="/packages/faqs"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Faq />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* PRICING TIER */}
+
+        <Route
+          path="/packages/pricing-tiers"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PricingTier />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ITINERARY */}
+
+        <Route
+          path="/packages/itineraries"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Itinerary />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* HIGHLIGHT */}
+
+        <Route
+          path="/packages/highlights"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Highlight />
             </ProtectedRoute>
           }
         />

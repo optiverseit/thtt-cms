@@ -133,63 +133,63 @@ const Sidebar = () => {
 
               <button
                 className={`submenu-item ${
-                  isActive("/what-to-bring") ? "active" : ""
+                  isActive("/packages/what-to-bring") ? "active" : ""
                 }`}
-                onClick={() => navigate("/what-to-bring")}
+                onClick={() => navigate("/packages/what-to-bring")}
               >
                 What to Bring
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/faqs") ? "active" : ""
+                  isActive("/packages/faqs") ? "active" : ""
                 }`}
-                onClick={() => navigate("/faqs")}
+                onClick={() => navigate("/packages/faqs")}
               >
                 FAQs
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/pricing-tiers") ? "active" : ""
+                  isActive("/packages/pricing-tiers") ? "active" : ""
                 }`}
-                onClick={() => navigate("/pricing-tiers")}
+                onClick={() => navigate("/packages/pricing-tiers")}
               >
                 Pricing Tiers
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/itineraries") ? "active" : ""
+                  isActive("/packages/itineraries") ? "active" : ""
                 }`}
-                onClick={() => navigate("/itineraries")}
+                onClick={() => navigate("/packages/itineraries")}
               >
                 Itineraries
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/testimonials") ? "active" : ""
+                  isActive("/packages/testimonials") ? "active" : ""
                 }`}
-                onClick={() => navigate("/testimonials")}
+                onClick={() => navigate("/packages/testimonials")}
               >
                 Testimonials
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/gallery") ? "active" : ""
+                  isActive("/packages/gallery") ? "active" : ""
                 }`}
-                onClick={() => navigate("/gallery")}
+                onClick={() => navigate("/packages/gallery")}
               >
                 Gallery
               </button>
 
               <button
                 className={`submenu-item ${
-                  isActive("/highlights") ? "active" : ""
+                  isActive("/packages/highlights") ? "active" : ""
                 }`}
-                onClick={() => navigate("/highlights")}
+                onClick={() => navigate("/packages/highlights")}
               >
                 Highlights
               </button>

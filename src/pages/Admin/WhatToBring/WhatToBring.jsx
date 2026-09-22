@@ -7,34 +7,32 @@ import Sidebar from "../../../components/Sidebar/Sidebar";
 import Pagination from "../../../components/Pagination/Pagination";
 
 import {
-    getAllInclusionsCms,
+    getAllWhatToBringCms,
     getAllPackagesCms,
-    createInclusion,
-    updateInclusion,
-    deleteInclusion,
+    createWhatToBring,
+    updateWhatToBring,
+    deleteWhatToBring,
 } from "../../../api/BackendApi";
 
-import "./Inclusion.css";
+import "./WhatToBring.css";
 
-const createEmptyInclusion = (order = 0) => ({
+const createEmptyItem = () => ({
     item: "",
-    display_order: order,
 });
 
-const Inclusion = () => {
-    const [inclusions, setInclusions] = useState([]);
+const WhatToBring = () => {
+    const [whatToBringItems, setWhatToBringItems] = useState([]);
     const [packages, setPackages] = useState([]);
 
     const [packageId, setPackageId] = useState("");
 
-    // Multiple inclusions for create
-    const [inclusionItems, setInclusionItems] = useState([
-        createEmptyInclusion(0),
+    // Multiple items for create
+    const [items, setItems] = useState([
+        createEmptyItem(),
     ]);
 
-    // Single inclusion for edit
+    // Single item for edit
     const [item, setItem] = useState("");
-    const [displayOrder, setDisplayOrder] = useState("");
 
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -48,28 +46,37 @@ const Inclusion = () => {
     }, []);
 
     useEffect(() => {
-        fetchInclusions();
+        fetchWhatToBring();
     }, [page]);
 
-    const fetchInclusions = async () => {
+    const fetchWhatToBring = async () => {
         try {
             setLoading(true);
 
-            const response = await getAllInclusionsCms(page);
+            const response =
+                await getAllWhatToBringCms(page);
 
             if (response.data.status) {
-                setInclusions(response.data.data.data || []);
-                setTotalPages(response.data.data.last_page || 1);
+                setWhatToBringItems(
+                    response.data.data.data || []
+                );
+
+                setTotalPages(
+                    response.data.data.last_page || 1
+                );
             }
         } catch (error) {
-            console.error("Error fetching inclusions:", error);
+            console.error(
+                "Error fetching what to bring items:",
+                error
+            );
 
             Swal.fire({
                 icon: "error",
                 title: "Failed",
                 text:
                     error.response?.data?.message ||
-                    "Unable to load inclusions.",
+                    "Unable to load what to bring items.",
                 confirmButtonColor: "#351255",
             });
         } finally {
@@ -79,57 +86,61 @@ const Inclusion = () => {
 
     const fetchPackages = async () => {
         try {
-            const response = await getAllPackagesCms();
+            const response =
+                await getAllPackagesCms();
 
             if (response.data.status) {
-                setPackages(response.data.data.data || []);
+                setPackages(
+                    response.data.data.data || []
+                );
             }
         } catch (error) {
-            console.error("Error fetching packages:", error);
+            console.error(
+                "Error fetching packages:",
+                error
+            );
         }
     };
 
-    // ================================
+    // ==============================
     // CREATE
-    // ================================
+    // ==============================
 
-    const addInclusionRow = () => {
-        setInclusionItems([
-            ...inclusionItems,
-            createEmptyInclusion(inclusionItems.length),
+    const addItemRow = () => {
+        setItems([
+            ...items,
+            createEmptyItem(),
         ]);
     };
 
-    const removeInclusionRow = (index) => {
-        if (inclusionItems.length === 1) {
+    const removeItemRow = (index) => {
+        if (items.length === 1) {
             return;
         }
 
-        const updatedItems = inclusionItems
-            .filter((_, i) => i !== index)
-            .map((inclusion, i) => ({
-                ...inclusion,
-                display_order: i,
-            }));
-
-        setInclusionItems(updatedItems);
+        setItems(
+            items.filter((_, i) => i !== index)
+        );
     };
 
-    const handleInclusionChange = (index, field, value) => {
-        const updatedItems = [...inclusionItems];
+    const handleItemChange = (
+        index,
+        value
+    ) => {
+        const updatedItems = [...items];
 
         updatedItems[index] = {
             ...updatedItems[index],
-            [field]: value,
+            item: value,
         };
 
-        setInclusionItems(updatedItems);
+        setItems(updatedItems);
     };
 
     const resetCreateForm = () => {
         setPackageId("");
-        setInclusionItems([
-            createEmptyInclusion(0),
+        setItems([
+            createEmptyItem(),
         ]);
     };
 
@@ -147,12 +158,12 @@ const Inclusion = () => {
             return;
         }
 
-        for (let i = 0; i < inclusionItems.length; i++) {
-            if (!inclusionItems[i].item.trim()) {
+        for (let i = 0; i < items.length; i++) {
+            if (!items[i].item.trim()) {
                 Swal.fire({
                     icon: "warning",
-                    title: "Inclusion Required",
-                    text: `Please enter inclusion ${i + 1}.`,
+                    title: "Item Required",
+                    text: `Please enter item ${i + 1}.`,
                     confirmButtonColor: "#351255",
                 });
 
@@ -161,57 +172,55 @@ const Inclusion = () => {
         }
 
         const data = {
-            inclusions: inclusionItems.map(
-                (inclusion, index) => ({
-                    item: inclusion.item.trim(),
-                    display_order:
-                        inclusion.display_order === ""
-                            ? index
-                            : Number(inclusion.display_order),
-                })
-            ),
+            items: items.map((entry) => ({
+                item: entry.item.trim(),
+            })),
         };
 
         try {
             setSaving(true);
 
-            const response = await createInclusion(
-                packageId,
-                data
-            );
+            const response =
+                await createWhatToBring(
+                    packageId,
+                    data
+                );
 
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
-                    title: "Inclusions Added",
+                    title: "Items Added",
                     text:
                         response.data.message ||
-                        "Inclusions created successfully.",
+                        "What to bring items created successfully.",
                     confirmButtonColor: "#351255",
                 });
 
                 resetCreateForm();
-                fetchInclusions();
+                fetchWhatToBring();
             }
         } catch (error) {
             console.error(
-                "Error creating inclusions:",
+                "Error creating what to bring items:",
                 error
             );
 
             let errorMessage =
                 error.response?.data?.message ||
-                "Unable to create inclusions.";
+                "Unable to create what to bring items.";
 
             const validationErrors =
                 error.response?.data?.errors;
 
             if (validationErrors) {
                 const firstError =
-                    Object.values(validationErrors)[0];
+                    Object.values(
+                        validationErrors
+                    )[0];
 
                 if (Array.isArray(firstError)) {
-                    errorMessage = firstError[0];
+                    errorMessage =
+                        firstError[0];
                 }
             }
 
@@ -226,22 +235,19 @@ const Inclusion = () => {
         }
     };
 
-    // ================================
+    // ==============================
     // EDIT
-    // ================================
+    // ==============================
 
-    const handleEdit = (inclusion) => {
-        setEditingId(inclusion.id);
+    const handleEdit = (whatToBring) => {
+        setEditingId(whatToBring.id);
 
         setPackageId(
-            inclusion.package_id?.toString() || ""
+            whatToBring.package_id?.toString() ||
+                ""
         );
 
-        setItem(inclusion.item || "");
-
-        setDisplayOrder(
-            inclusion.display_order?.toString() || "0"
-        );
+        setItem(whatToBring.item || "");
 
         window.scrollTo({
             top: 0,
@@ -253,7 +259,6 @@ const Inclusion = () => {
         setEditingId(null);
         setPackageId("");
         setItem("");
-        setDisplayOrder("");
     };
 
     const handleUpdate = async (e) => {
@@ -262,8 +267,8 @@ const Inclusion = () => {
         if (!item.trim()) {
             Swal.fire({
                 icon: "warning",
-                title: "Inclusion Required",
-                text: "Please enter an inclusion.",
+                title: "Item Required",
+                text: "Please enter a what to bring item.",
                 confirmButtonColor: "#351255",
             });
 
@@ -272,52 +277,52 @@ const Inclusion = () => {
 
         const data = {
             item: item.trim(),
-            display_order:
-                displayOrder === ""
-                    ? 0
-                    : Number(displayOrder),
         };
 
         try {
             setSaving(true);
 
-            const response = await updateInclusion(
-                editingId,
-                data
-            );
+            const response =
+                await updateWhatToBring(
+                    editingId,
+                    data
+                );
 
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
-                    title: "Inclusion Updated",
+                    title: "Item Updated",
                     text:
                         response.data.message ||
-                        "Inclusion updated successfully.",
+                        "What to bring item updated successfully.",
                     confirmButtonColor: "#351255",
                 });
 
                 cancelEdit();
-                fetchInclusions();
+                fetchWhatToBring();
             }
         } catch (error) {
             console.error(
-                "Error updating inclusion:",
+                "Error updating what to bring item:",
                 error
             );
 
             let errorMessage =
                 error.response?.data?.message ||
-                "Unable to update inclusion.";
+                "Unable to update what to bring item.";
 
             const validationErrors =
                 error.response?.data?.errors;
 
             if (validationErrors) {
                 const firstError =
-                    Object.values(validationErrors)[0];
+                    Object.values(
+                        validationErrors
+                    )[0];
 
                 if (Array.isArray(firstError)) {
-                    errorMessage = firstError[0];
+                    errorMessage =
+                        firstError[0];
                 }
             }
 
@@ -332,15 +337,15 @@ const Inclusion = () => {
         }
     };
 
-    // ================================
+    // ==============================
     // DELETE
-    // ================================
+    // ==============================
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
             icon: "warning",
-            title: "Delete Inclusion?",
-            text: "This inclusion will be permanently deleted.",
+            title: "Delete Item?",
+            text: "This what to bring item will be permanently deleted.",
             showCancelButton: true,
             confirmButtonText: "Delete",
             cancelButtonText: "Cancel",
@@ -354,7 +359,7 @@ const Inclusion = () => {
 
         try {
             const response =
-                await deleteInclusion(id);
+                await deleteWhatToBring(id);
 
             if (response.data.status) {
                 await Swal.fire({
@@ -362,7 +367,7 @@ const Inclusion = () => {
                     title: "Deleted",
                     text:
                         response.data.message ||
-                        "Inclusion deleted successfully.",
+                        "What to bring item deleted successfully.",
                     confirmButtonColor: "#351255",
                 });
 
@@ -370,11 +375,11 @@ const Inclusion = () => {
                     cancelEdit();
                 }
 
-                fetchInclusions();
+                fetchWhatToBring();
             }
         } catch (error) {
             console.error(
-                "Error deleting inclusion:",
+                "Error deleting what to bring item:",
                 error
             );
 
@@ -383,7 +388,7 @@ const Inclusion = () => {
                 title: "Failed",
                 text:
                     error.response?.data?.message ||
-                    "Unable to delete inclusion.",
+                    "Unable to delete what to bring item.",
                 confirmButtonColor: "#351255",
             });
         }
@@ -397,49 +402,50 @@ const Inclusion = () => {
                 <Navbar />
 
                 <main className="dashboard-content">
-                    <div className="inclusion-page">
+                    <div className="what-to-bring-page">
 
-                        <div className="inclusion-header">
+                        <div className="what-to-bring-header">
                             <div>
-                                <h1>Package Inclusions</h1>
+                                <h1>
+                                    What To Bring
+                                </h1>
 
                                 <p>
-                                    Manage items and services
-                                    included in packages.
+                                    Manage items travelers
+                                    should bring for each
+                                    package.
                                 </p>
                             </div>
                         </div>
 
-                        {/* ============================
-                            CREATE / EDIT FORM
-                        ============================ */}
+                        <div className="what-to-bring-form-card">
 
-                        <div className="inclusion-form-card">
-
-                            <div className="inclusion-card-header">
+                            <div className="what-to-bring-card-header">
                                 <h2>
                                     {editingId
-                                        ? "Edit Inclusion"
-                                        : "Add Inclusions"}
+                                        ? "Edit What To Bring"
+                                        : "Add What To Bring"}
                                 </h2>
 
                                 <p>
                                     {editingId
-                                        ? "Update the selected inclusion."
-                                        : "Add multiple inclusions to a package."}
+                                        ? "Update the selected item."
+                                        : "Add multiple items travelers should bring for a package."}
                                 </p>
                             </div>
 
                             {editingId ? (
-                                /* ========================
-                                   EDIT SINGLE INCLUSION
-                                ======================== */
+                                /* ==================
+                                   EDIT ONE ITEM
+                                ================== */
 
                                 <form
-                                    className="inclusion-form"
-                                    onSubmit={handleUpdate}
+                                    className="what-to-bring-form"
+                                    onSubmit={
+                                        handleUpdate
+                                    }
                                 >
-                                    <div className="inclusion-form-group">
+                                    <div className="what-to-bring-form-group">
                                         <label>
                                             Package
                                             <span className="required">
@@ -448,27 +454,37 @@ const Inclusion = () => {
                                         </label>
 
                                         <select
-                                            value={packageId}
+                                            value={
+                                                packageId
+                                            }
                                             disabled
                                         >
                                             <option value="">
                                                 Select Package
                                             </option>
 
-                                            {packages.map((pkg) => (
-                                                <option
-                                                    key={pkg.id}
-                                                    value={pkg.id}
-                                                >
-                                                    {pkg.title}
-                                                </option>
-                                            ))}
+                                            {packages.map(
+                                                (pkg) => (
+                                                    <option
+                                                        key={
+                                                            pkg.id
+                                                        }
+                                                        value={
+                                                            pkg.id
+                                                        }
+                                                    >
+                                                        {
+                                                            pkg.title
+                                                        }
+                                                    </option>
+                                                )
+                                            )}
                                         </select>
                                     </div>
 
-                                    <div className="inclusion-form-group inclusion-item-field">
+                                    <div className="what-to-bring-form-group what-to-bring-item-field">
                                         <label>
-                                            Inclusion
+                                            What To Bring
                                             <span className="required">
                                                 *
                                             </span>
@@ -479,49 +495,40 @@ const Inclusion = () => {
                                             value={item}
                                             onChange={(e) =>
                                                 setItem(
-                                                    e.target.value
+                                                    e.target
+                                                        .value
                                                 )
                                             }
-                                            placeholder="e.g. Airport pickup and drop"
-                                            disabled={saving}
+                                            placeholder="e.g. Warm jacket"
+                                            maxLength={
+                                                255
+                                            }
+                                            disabled={
+                                                saving
+                                            }
                                         />
                                     </div>
 
-                                    <div className="inclusion-form-group inclusion-order-field">
-                                        <label>
-                                            Display Order
-                                            <span className="required">
-                                                *
-                                            </span>
-                                        </label>
-
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            value={displayOrder}
-                                            onChange={(e) =>
-                                                setDisplayOrder(
-                                                    e.target.value
-                                                )
-                                            }
-                                            disabled={saving}
-                                        />
-                                    </div>
-
-                                    <div className="inclusion-form-buttons">
+                                    <div className="what-to-bring-form-buttons">
                                         <button
                                             type="button"
-                                            className="inclusion-cancel-btn"
-                                            onClick={cancelEdit}
-                                            disabled={saving}
+                                            className="what-to-bring-cancel-btn"
+                                            onClick={
+                                                cancelEdit
+                                            }
+                                            disabled={
+                                                saving
+                                            }
                                         >
                                             Cancel
                                         </button>
 
                                         <button
                                             type="submit"
-                                            className="inclusion-save-btn"
-                                            disabled={saving}
+                                            className="what-to-bring-save-btn"
+                                            disabled={
+                                                saving
+                                            }
                                         >
                                             <FaPen />
 
@@ -532,14 +539,17 @@ const Inclusion = () => {
                                     </div>
                                 </form>
                             ) : (
-                                /* ========================
+                                /* ==================
                                    CREATE MULTIPLE
-                                ======================== */
+                                ================== */
 
-                                <form onSubmit={handleCreate}>
-
-                                    <div className="inclusion-package-section">
-                                        <div className="inclusion-form-group">
+                                <form
+                                    onSubmit={
+                                        handleCreate
+                                    }
+                                >
+                                    <div className="what-to-bring-package-section">
+                                        <div className="what-to-bring-form-group">
                                             <label>
                                                 Package
                                                 <span className="required">
@@ -548,44 +558,69 @@ const Inclusion = () => {
                                             </label>
 
                                             <select
-                                                value={packageId}
-                                                onChange={(e) =>
+                                                value={
+                                                    packageId
+                                                }
+                                                onChange={(
+                                                    e
+                                                ) =>
                                                     setPackageId(
-                                                        e.target.value
+                                                        e.target
+                                                            .value
                                                     )
                                                 }
-                                                disabled={saving}
+                                                disabled={
+                                                    saving
+                                                }
                                             >
                                                 <option value="">
                                                     Select Package
                                                 </option>
 
-                                                {packages.map((pkg) => (
-                                                    <option
-                                                        key={pkg.id}
-                                                        value={pkg.id}
-                                                    >
-                                                        {pkg.title}
-                                                    </option>
-                                                ))}
+                                                {packages.map(
+                                                    (
+                                                        pkg
+                                                    ) => (
+                                                        <option
+                                                            key={
+                                                                pkg.id
+                                                            }
+                                                            value={
+                                                                pkg.id
+                                                            }
+                                                        >
+                                                            {
+                                                                pkg.title
+                                                            }
+                                                        </option>
+                                                    )
+                                                )}
                                             </select>
                                         </div>
                                     </div>
 
-                                    <div className="inclusion-items-list">
-                                        {inclusionItems.map(
-                                            (inclusion, index) => (
+                                    <div className="what-to-bring-items-list">
+                                        {items.map(
+                                            (
+                                                entry,
+                                                index
+                                            ) => (
                                                 <div
-                                                    className="inclusion-item-row"
-                                                    key={index}
+                                                    className="what-to-bring-item-row"
+                                                    key={
+                                                        index
+                                                    }
                                                 >
-                                                    <div className="inclusion-number">
-                                                        {index + 1}
+                                                    <div className="what-to-bring-number">
+                                                        {index +
+                                                            1}
                                                     </div>
 
-                                                    <div className="inclusion-form-group inclusion-item-field">
+                                                    <div className="what-to-bring-form-group what-to-bring-item-field">
                                                         <label>
-                                                            Inclusion
+                                                            What
+                                                            To
+                                                            Bring
                                                             <span className="required">
                                                                 *
                                                             </span>
@@ -594,39 +629,21 @@ const Inclusion = () => {
                                                         <input
                                                             type="text"
                                                             value={
-                                                                inclusion.item
+                                                                entry.item
                                                             }
-                                                            onChange={(e) =>
-                                                                handleInclusionChange(
+                                                            onChange={(
+                                                                e
+                                                            ) =>
+                                                                handleItemChange(
                                                                     index,
-                                                                    "item",
-                                                                    e.target.value
+                                                                    e
+                                                                        .target
+                                                                        .value
                                                                 )
                                                             }
-                                                            placeholder="e.g. Airport pickup and drop"
-                                                            disabled={
-                                                                saving
-                                                            }
-                                                        />
-                                                    </div>
-
-                                                    <div className="inclusion-form-group inclusion-order-field">
-                                                        <label>
-                                                            Display Order
-                                                        </label>
-
-                                                        <input
-                                                            type="number"
-                                                            min="0"
-                                                            value={
-                                                                inclusion.display_order
-                                                            }
-                                                            onChange={(e) =>
-                                                                handleInclusionChange(
-                                                                    index,
-                                                                    "display_order",
-                                                                    e.target.value
-                                                                )
+                                                            placeholder="e.g. Warm jacket"
+                                                            maxLength={
+                                                                255
                                                             }
                                                             disabled={
                                                                 saving
@@ -636,18 +653,18 @@ const Inclusion = () => {
 
                                                     <button
                                                         type="button"
-                                                        className="inclusion-remove-btn"
+                                                        className="what-to-bring-remove-btn"
                                                         onClick={() =>
-                                                            removeInclusionRow(
+                                                            removeItemRow(
                                                                 index
                                                             )
                                                         }
                                                         disabled={
-                                                            inclusionItems.length ===
+                                                            items.length ===
                                                                 1 ||
                                                             saving
                                                         }
-                                                        title="Remove Inclusion"
+                                                        title="Remove Item"
                                                     >
                                                         <FaTimes />
                                                     </button>
@@ -656,68 +673,83 @@ const Inclusion = () => {
                                         )}
                                     </div>
 
-                                    <div className="inclusion-create-actions">
-
+                                    <div className="what-to-bring-create-actions">
                                         <button
                                             type="button"
-                                            className="inclusion-add-more-btn"
+                                            className="what-to-bring-add-more-btn"
                                             onClick={
-                                                addInclusionRow
+                                                addItemRow
                                             }
-                                            disabled={saving}
+                                            disabled={
+                                                saving
+                                            }
                                         >
                                             <FaPlus />
-                                            Add Inclusion
+                                            Add Item
                                         </button>
 
                                         <button
                                             type="submit"
-                                            className="inclusion-save-btn"
-                                            disabled={saving}
+                                            className="what-to-bring-save-btn"
+                                            disabled={
+                                                saving
+                                            }
                                         >
                                             <FaPlus />
 
                                             {saving
                                                 ? "Saving..."
-                                                : "Save Inclusions"}
+                                                : "Save Items"}
                                         </button>
                                     </div>
                                 </form>
                             )}
                         </div>
 
-                        {/* ============================
+                        {/* ==================
                             TABLE
-                        ============================ */}
+                        ================== */}
 
-                        <div className="inclusion-table-card">
+                        <div className="what-to-bring-table-card">
 
-                            <div className="inclusion-card-header">
-                                <h2>All Inclusions</h2>
+                            <div className="what-to-bring-card-header">
+                                <h2>
+                                    All What To Bring
+                                    Items
+                                </h2>
                             </div>
 
                             {loading ? (
-                                <div className="inclusion-empty">
-                                    Loading inclusions...
+                                <div className="what-to-bring-empty">
+                                    Loading what to
+                                    bring items...
                                 </div>
-                            ) : inclusions.length === 0 ? (
-                                <div className="inclusion-empty">
-                                    No inclusions found.
+                            ) : whatToBringItems.length ===
+                              0 ? (
+                                <div className="what-to-bring-empty">
+                                    No what to bring
+                                    items found.
                                 </div>
                             ) : (
                                 <>
-                                    <div className="inclusion-table-wrapper">
-                                        <table className="inclusion-table">
+                                    <div className="what-to-bring-table-wrapper">
+                                        <table className="what-to-bring-table">
                                             <thead>
                                                 <tr>
-                                                    <th>S.N.</th>
-                                                    <th>Package</th>
                                                     <th>
-                                                        Inclusion
+                                                        S.N.
                                                     </th>
+
                                                     <th>
-                                                        Display Order
+                                                        Package
                                                     </th>
+
+                                                    <th>
+                                                        What
+                                                        To
+                                                        Bring
+                                                    </th>
+
                                                     <th>
                                                         Actions
                                                     </th>
@@ -725,14 +757,14 @@ const Inclusion = () => {
                                             </thead>
 
                                             <tbody>
-                                                {inclusions.map(
+                                                {whatToBringItems.map(
                                                     (
-                                                        inclusion,
+                                                        whatToBring,
                                                         index
                                                     ) => (
                                                         <tr
                                                             key={
-                                                                inclusion.id
+                                                                whatToBring.id
                                                             }
                                                         >
                                                             <td>
@@ -744,8 +776,8 @@ const Inclusion = () => {
                                                             </td>
 
                                                             <td>
-                                                                <span className="inclusion-package-name">
-                                                                    {inclusion
+                                                                <span className="what-to-bring-package-name">
+                                                                    {whatToBring
                                                                         .package
                                                                         ?.title ||
                                                                         "N/A"}
@@ -754,26 +786,18 @@ const Inclusion = () => {
 
                                                             <td>
                                                                 {
-                                                                    inclusion.item
+                                                                    whatToBring.item
                                                                 }
                                                             </td>
 
                                                             <td>
-                                                                <span className="inclusion-order">
-                                                                    {inclusion.display_order ??
-                                                                        0}
-                                                                </span>
-                                                            </td>
-
-                                                            <td>
-                                                                <div className="inclusion-actions">
-
+                                                                <div className="what-to-bring-actions">
                                                                     <button
                                                                         type="button"
-                                                                        className="inclusion-edit-btn"
+                                                                        className="what-to-bring-edit-btn"
                                                                         onClick={() =>
                                                                             handleEdit(
-                                                                                inclusion
+                                                                                whatToBring
                                                                             )
                                                                         }
                                                                         title="Edit"
@@ -783,17 +807,16 @@ const Inclusion = () => {
 
                                                                     <button
                                                                         type="button"
-                                                                        className="inclusion-delete-btn"
+                                                                        className="what-to-bring-delete-btn"
                                                                         onClick={() =>
                                                                             handleDelete(
-                                                                                inclusion.id
+                                                                                whatToBring.id
                                                                             )
                                                                         }
                                                                         title="Delete"
                                                                     >
                                                                         <FaTrash />
                                                                     </button>
-
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -805,8 +828,12 @@ const Inclusion = () => {
 
                                     <Pagination
                                         page={page}
-                                        totalPages={totalPages}
-                                        onPageChange={setPage}
+                                        totalPages={
+                                            totalPages
+                                        }
+                                        onPageChange={
+                                            setPage
+                                        }
                                     />
                                 </>
                             )}
@@ -818,4 +845,4 @@ const Inclusion = () => {
     );
 };
 
-export default Inclusion;
+export default WhatToBring;

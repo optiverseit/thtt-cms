@@ -180,3 +180,121 @@ export const updateRestriction = (id, data) => {
 export const deleteRestriction = (id) => {
     return axiosInstance.delete(`/restrictions/${id}`);
 };
+
+// WHAT TO BRING
+export const getAllWhatToBringCms = (page = 1) => {
+    return axiosInstance.get(`/what-to-bring/cms?page=${page}`);
+};
+
+export const createWhatToBring = (packageId, data) => {
+    return axiosInstance.post(`/what-to-bring/packages/${packageId}`, data);
+};
+
+export const updateWhatToBring = (id, data) => {
+    return axiosInstance.put(`/what-to-bring/${id}`, data);
+};
+
+export const deleteWhatToBring = (id) => {
+    return axiosInstance.delete(`/what-to-bring/${id}`);
+};
+
+
+// FAQ
+
+export const getAllFaqsCms = (page = 1) => {
+    return axiosInstance.get(`/faqs/cms?page=${page}`);
+};
+
+export const createFaq = (packageId, data) => {
+    return axiosInstance.post(
+        `/faqs/packages/${packageId}`,
+        data
+    );
+};
+
+export const updateFaq = (id, data) => {
+    return axiosInstance.put(
+        `/faqs/${id}`,
+        data
+    );
+};
+
+export const deleteFaq = (id) => {
+    return axiosInstance.delete(`/faqs/${id}`);
+};
+
+
+// PRICING TIERS
+
+export const getAllPricingTiersCms = (page = 1) => {
+    return axiosInstance.get(`/pricing-tiers/cms?page=${page}`);
+};
+
+export const createPricingTier = (packageId, data) => {
+    return axiosInstance.post(
+        `/pricing-tiers/packages/${packageId}`,
+        data
+    );
+};
+
+export const updatePricingTier = (id, data) => {
+    return axiosInstance.put(
+        `/pricing-tiers/${id}`,
+        data
+    );
+};
+
+export const deletePricingTier = (id) => {
+    return axiosInstance.delete(`/pricing-tiers/${id}`);
+};
+
+
+// ITINERAIES
+export const getAllItinerariesCms = (page = 1) => {
+    return axiosInstance.get(`/itineraries/cms?page=${page}`);
+};
+
+export const createItineraries = (packageId, data) => {
+    return axiosInstance.post(
+        `/itineraries/packages/${packageId}`,
+        data
+    );
+};
+
+export const updateItinerary = (id, data) => {
+    return axiosInstance.put(`/itineraries/${id}`, data);
+};
+
+export const deleteItinerary = (id) => {
+    return axiosInstance.delete(`/itineraries/${id}`);
+};
+
+// ==============================
+// PACKAGE HIGHLIGHTS
+// ==============================
+
+export const getAllHighlightsCms = (page = 1) => {
+    return axiosInstance.get(`/highlights/cms?page=${page}`);
+};
+
+export const createHighlight = (packageId, data) => {
+    return axiosInstance.post(`/highlights/packages/${packageId}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updateHighlight = (id, data) => {
+    data.append("_method", "PUT");
+
+    return axiosInstance.post(`/highlights/${id}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const deleteHighlight = (id) => {
+    return axiosInstance.delete(`/highlights/${id}`);
+};

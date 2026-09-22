@@ -1,19 +1,19 @@
-.inclusion-page {
+.faq-page {
     width: 100%;
 }
 
-.inclusion-header {
+.faq-header {
     margin-bottom: 24px;
 }
 
-.inclusion-header h1 {
+.faq-header h1 {
     margin: 0;
     color: #2f183e;
     font-size: 28px;
     font-weight: 700;
 }
 
-.inclusion-header p {
+.faq-header p {
     margin: 6px 0 0;
     color: #77717d;
     font-size: 14px;
@@ -21,8 +21,8 @@
 
 /* Cards */
 
-.inclusion-form-card,
-.inclusion-table-card {
+.faq-form-card,
+.faq-table-card {
     margin-bottom: 24px;
     background: #ffffff;
     border: 1px solid #ddd8e2;
@@ -30,19 +30,19 @@
     overflow: hidden;
 }
 
-.inclusion-card-header {
+.faq-card-header {
     padding: 18px 20px;
     border-bottom: 1px solid #eeeaf1;
 }
 
-.inclusion-card-header h2 {
+.faq-card-header h2 {
     margin: 0;
     color: #2f183e;
     font-size: 18px;
     font-weight: 700;
 }
 
-.inclusion-card-header p {
+.faq-card-header p {
     margin: 5px 0 0;
     color: #77717d;
     font-size: 13px;
@@ -50,20 +50,21 @@
 
 /* Form */
 
-.inclusion-form {
+.faq-form {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-end;
     gap: 16px;
     padding: 20px;
 }
 
-.inclusion-form-group {
+.faq-form-group {
     display: flex;
     flex-direction: column;
     gap: 7px;
 }
 
-.inclusion-form-group label {
+.faq-form-group label {
     color: #2f183e;
     font-size: 13px;
     font-weight: 600;
@@ -74,9 +75,9 @@
     color: #f52d91;
 }
 
-.inclusion-form-group input,
-.inclusion-form-group select {
-    height: 42px;
+.faq-form-group input,
+.faq-form-group select,
+.faq-form-group textarea {
     padding: 0 12px;
     background: #ffffff;
     border: 1px solid #ddd8e2;
@@ -86,42 +87,61 @@
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s;
+    box-sizing: border-box;
 }
 
-.inclusion-form-group input:focus,
-.inclusion-form-group select:focus {
+.faq-form-group input,
+.faq-form-group select {
+    height: 42px;
+}
+
+.faq-form-group textarea {
+    padding: 11px 12px;
+    resize: vertical;
+    min-height: 95px;
+}
+
+.faq-form-group input:focus,
+.faq-form-group select:focus,
+.faq-form-group textarea:focus {
     border-color: #351255;
 }
 
-.inclusion-form-group input:disabled,
-.inclusion-form-group select:disabled {
+.faq-form-group input:disabled,
+.faq-form-group select:disabled,
+.faq-form-group textarea:disabled {
     background: #f5f3f6;
     color: #77717d;
     cursor: not-allowed;
 }
 
-.inclusion-form-group select {
+.faq-form-group select {
     min-width: 230px;
 }
 
-.inclusion-item-field {
+.faq-question-field {
     flex: 1;
 }
 
-.inclusion-order-field input {
+.faq-order-field input {
     width: 120px;
 }
 
-/* Form Buttons */
+.faq-answer-field {
+    width: 100%;
+}
 
-.inclusion-form-buttons {
+/* Buttons */
+
+.faq-form-buttons {
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-left: auto;
 }
 
-.inclusion-save-btn,
-.inclusion-cancel-btn {
+.faq-save-btn,
+.faq-cancel-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -137,42 +157,42 @@
     transition: 0.2s;
 }
 
-.inclusion-save-btn {
+.faq-save-btn {
     background: #351255;
     color: #ffffff;
 }
 
-.inclusion-save-btn:hover:not(:disabled) {
+.faq-save-btn:hover:not(:disabled) {
     background: #481a6d;
 }
 
-.inclusion-save-btn:disabled {
+.faq-save-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.inclusion-cancel-btn {
+.faq-cancel-btn {
     background: #f1eef3;
     color: #2f183e;
 }
 
-.inclusion-cancel-btn:hover:not(:disabled) {
+.faq-cancel-btn:hover:not(:disabled) {
     background: #e5e0e8;
 }
 
 /* Table */
 
-.inclusion-table-wrapper {
+.faq-table-wrapper {
     width: 100%;
     overflow-x: auto;
 }
 
-.inclusion-table {
+.faq-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.inclusion-table th {
+.faq-table th {
     padding: 14px 18px;
     background: #f8f6fa;
     color: #746b91;
@@ -183,48 +203,62 @@
     letter-spacing: 0.3px;
 }
 
-.inclusion-table td {
+.faq-table td {
     padding: 15px 18px;
     border-top: 1px solid #eeeaf1;
     color: #2f183e;
     font-size: 14px;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
-.inclusion-table tbody tr:hover {
+.faq-table tbody tr:hover {
     background: #fcfbfd;
 }
 
-.inclusion-table th:first-child,
-.inclusion-table td:first-child {
+.faq-table th:first-child,
+.faq-table td:first-child {
     width: 75px;
 }
 
-.inclusion-table th:nth-child(2),
-.inclusion-table td:nth-child(2) {
-    width: 230px;
+.faq-table th:nth-child(2),
+.faq-table td:nth-child(2) {
+    width: 200px;
 }
 
-.inclusion-table th:nth-child(4),
-.inclusion-table td:nth-child(4) {
-    width: 150px;
+.faq-table th:nth-child(5),
+.faq-table td:nth-child(5) {
+    width: 130px;
 }
 
-.inclusion-table th:last-child,
-.inclusion-table td:last-child {
+.faq-table th:last-child,
+.faq-table td:last-child {
     width: 120px;
 }
 
 /* Package */
 
-.inclusion-package-name {
+.faq-package-name {
     color: #351255;
     font-weight: 600;
 }
 
+/* FAQ Content */
+
+.faq-question {
+    font-weight: 600;
+    color: #2f183e;
+}
+
+.faq-answer {
+    max-width: 400px;
+    color: #77717d;
+    line-height: 1.5;
+    white-space: normal;
+}
+
 /* Display Order */
 
-.inclusion-order {
+.faq-order {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -240,14 +274,14 @@
 
 /* Actions */
 
-.inclusion-actions {
+.faq-actions {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.inclusion-edit-btn,
-.inclusion-delete-btn {
+.faq-edit-btn,
+.faq-delete-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,29 +294,29 @@
     transition: 0.2s;
 }
 
-.inclusion-edit-btn {
+.faq-edit-btn {
     background: #f1edf5;
     color: #351255;
 }
 
-.inclusion-edit-btn:hover {
+.faq-edit-btn:hover {
     background: #351255;
     color: #ffffff;
 }
 
-.inclusion-delete-btn {
+.faq-delete-btn {
     background: #fdeaf3;
     color: #f52d91;
 }
 
-.inclusion-delete-btn:hover {
+.faq-delete-btn:hover {
     background: #f52d91;
     color: #ffffff;
 }
 
 /* Empty State */
 
-.inclusion-empty {
+.faq-empty {
     padding: 45px 20px;
     color: #77717d;
     font-size: 14px;
@@ -292,66 +326,70 @@
 /* Responsive */
 
 @media (max-width: 900px) {
-    .inclusion-form {
+    .faq-form {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .inclusion-form-group select {
+    .faq-form-group select {
         width: 100%;
         min-width: 0;
     }
 
-    .inclusion-order-field input {
+    .faq-order-field input {
         width: 100%;
     }
 
-    .inclusion-form-buttons {
+    .faq-answer-field {
+        width: 100%;
+    }
+
+    .faq-form-buttons {
         justify-content: flex-end;
+        margin-left: 0;
     }
 }
 
 @media (max-width: 600px) {
-    .inclusion-header h1 {
+    .faq-header h1 {
         font-size: 23px;
     }
 
-    .inclusion-form {
+    .faq-form {
         padding: 16px;
     }
 
-    .inclusion-card-header {
+    .faq-card-header {
         padding: 16px;
     }
 
-    .inclusion-table th,
-    .inclusion-table td {
+    .faq-table th,
+    .faq-table td {
         padding: 12px 14px;
     }
 }
 
 /* =========================================
-   MULTIPLE INCLUSION CREATE FORM
+   MULTIPLE FAQ CREATE FORM
 ========================================= */
 
-.inclusion-package-section {
+.faq-package-section {
     padding: 20px 20px 0;
 }
 
-.inclusion-package-section select {
-    min-width: 260px;
+.faq-package-section select {
+    min-width: 300px;
 }
 
-.inclusion-items-list {
+.faq-items-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     padding: 20px;
 }
 
-.inclusion-item-row {
+.faq-item-row {
     display: flex;
-    align-items: flex-end;
     gap: 14px;
     padding: 16px;
     background: #fcfbfd;
@@ -359,28 +397,40 @@
     border-radius: 9px;
 }
 
-.inclusion-number {
+.faq-number {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     width: 32px;
-    height: 42px;
     flex-shrink: 0;
+    padding-top: 31px;
     color: #351255;
     font-size: 13px;
     font-weight: 700;
 }
 
-.inclusion-item-row .inclusion-item-field {
+.faq-row-fields {
+    flex: 1;
+    min-width: 0;
+}
+
+.faq-row-top {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.faq-row-top .faq-question-field {
     flex: 1;
 }
 
-.inclusion-item-row .inclusion-order-field {
+.faq-row-top .faq-order-field {
     width: 140px;
     flex: none;
 }
 
-.inclusion-remove-btn {
+.faq-remove-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -396,17 +446,17 @@
     transition: 0.2s;
 }
 
-.inclusion-remove-btn:hover:not(:disabled) {
+.faq-remove-btn:hover:not(:disabled) {
     background: #f52d91;
     color: #ffffff;
 }
 
-.inclusion-remove-btn:disabled {
+.faq-remove-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
-.inclusion-create-actions {
+.faq-create-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -414,7 +464,7 @@
     padding: 0 20px 20px;
 }
 
-.inclusion-add-more-btn {
+.faq-add-more-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -432,59 +482,75 @@
     transition: 0.2s;
 }
 
-.inclusion-add-more-btn:hover:not(:disabled) {
+.faq-add-more-btn:hover:not(:disabled) {
     background: #e5ddeb;
 }
 
-.inclusion-add-more-btn:disabled {
+.faq-add-more-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
 @media (max-width: 800px) {
-    .inclusion-item-row {
-        align-items: stretch;
-        flex-wrap: wrap;
+    .faq-item-row {
+        flex-direction: column;
     }
 
-    .inclusion-number {
+    .faq-number {
         width: 100%;
-        height: auto;
+        padding-top: 0;
         justify-content: flex-start;
     }
 
-    .inclusion-item-row .inclusion-item-field {
+    .faq-row-top {
+        flex-wrap: wrap;
+    }
+
+    .faq-row-top .faq-question-field {
         width: 100%;
         flex: none;
     }
 
-    .inclusion-item-row .inclusion-order-field {
+    .faq-row-top .faq-order-field {
         flex: 1;
         width: auto;
     }
 }
 
 @media (max-width: 600px) {
-    .inclusion-package-section {
+    .faq-package-section {
         padding: 16px 16px 0;
     }
 
-    .inclusion-package-section select {
+    .faq-package-section select {
         width: 100%;
         min-width: 0;
     }
 
-    .inclusion-items-list {
+    .faq-items-list {
         padding: 16px;
     }
 
-    .inclusion-create-actions {
+    .faq-row-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .faq-row-top .faq-order-field {
+        width: 100%;
+    }
+
+    .faq-remove-btn {
+        width: 100%;
+    }
+
+    .faq-create-actions {
         flex-direction: column;
         align-items: stretch;
         padding: 0 16px 16px;
     }
 
-    .inclusion-create-actions button {
+    .faq-create-actions button {
         width: 100%;
     }
 }

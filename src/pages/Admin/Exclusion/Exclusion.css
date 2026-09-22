@@ -403,3 +403,162 @@
         white-space: nowrap;
     }
 }
+
+/* =========================================
+   MULTIPLE EXCLUSION CREATE FORM
+========================================= */
+
+.exclusion-package-section {
+    padding: 20px 20px 0;
+}
+
+.exclusion-package-section select {
+    min-width: 260px;
+}
+
+.exclusion-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+}
+
+.exclusion-item-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 16px;
+    background: #fcfbfd;
+    border: 1px solid #e6e1e9;
+    border-radius: 9px;
+}
+
+.exclusion-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 42px;
+    flex-shrink: 0;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.exclusion-item-row .exclusion-item-field {
+    flex: 1;
+}
+
+.exclusion-item-row .exclusion-order-field {
+    width: 140px;
+    flex: none;
+}
+
+.exclusion-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    padding: 0;
+    background: #fdeaf3;
+    border: none;
+    border-radius: 7px;
+    color: #f52d91;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.exclusion-remove-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.exclusion-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.exclusion-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+.exclusion-add-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    background: #f1edf5;
+    border: none;
+    border-radius: 7px;
+    color: #351255;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.exclusion-add-more-btn:hover:not(:disabled) {
+    background: #e5ddeb;
+}
+
+.exclusion-add-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+    .exclusion-item-row {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .exclusion-number {
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+    }
+
+    .exclusion-item-row .exclusion-item-field {
+        width: 100%;
+        flex: none;
+    }
+
+    .exclusion-item-row .exclusion-order-field {
+        flex: 1;
+        width: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .exclusion-package-section {
+        padding: 16px 16px 0;
+    }
+
+    .exclusion-package-section select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .exclusion-items-list {
+        padding: 16px;
+    }
+
+    .exclusion-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 16px 16px;
+    }
+
+    .exclusion-create-actions button {
+        width: 100%;
+    }
+}

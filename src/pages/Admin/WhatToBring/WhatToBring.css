@@ -1,19 +1,19 @@
-.inclusion-page {
+.what-to-bring-page {
     width: 100%;
 }
 
-.inclusion-header {
+.what-to-bring-header {
     margin-bottom: 24px;
 }
 
-.inclusion-header h1 {
+.what-to-bring-header h1 {
     margin: 0;
     color: #2f183e;
     font-size: 28px;
     font-weight: 700;
 }
 
-.inclusion-header p {
+.what-to-bring-header p {
     margin: 6px 0 0;
     color: #77717d;
     font-size: 14px;
@@ -21,8 +21,8 @@
 
 /* Cards */
 
-.inclusion-form-card,
-.inclusion-table-card {
+.what-to-bring-form-card,
+.what-to-bring-table-card {
     margin-bottom: 24px;
     background: #ffffff;
     border: 1px solid #ddd8e2;
@@ -30,19 +30,19 @@
     overflow: hidden;
 }
 
-.inclusion-card-header {
+.what-to-bring-card-header {
     padding: 18px 20px;
     border-bottom: 1px solid #eeeaf1;
 }
 
-.inclusion-card-header h2 {
+.what-to-bring-card-header h2 {
     margin: 0;
     color: #2f183e;
     font-size: 18px;
     font-weight: 700;
 }
 
-.inclusion-card-header p {
+.what-to-bring-card-header p {
     margin: 5px 0 0;
     color: #77717d;
     font-size: 13px;
@@ -50,20 +50,20 @@
 
 /* Form */
 
-.inclusion-form {
+.what-to-bring-form {
     display: flex;
     align-items: flex-end;
     gap: 16px;
     padding: 20px;
 }
 
-.inclusion-form-group {
+.what-to-bring-form-group {
     display: flex;
     flex-direction: column;
     gap: 7px;
 }
 
-.inclusion-form-group label {
+.what-to-bring-form-group label {
     color: #2f183e;
     font-size: 13px;
     font-weight: 600;
@@ -74,8 +74,8 @@
     color: #f52d91;
 }
 
-.inclusion-form-group input,
-.inclusion-form-group select {
+.what-to-bring-form-group input,
+.what-to-bring-form-group select {
     height: 42px;
     padding: 0 12px;
     background: #ffffff;
@@ -88,40 +88,36 @@
     transition: border-color 0.2s;
 }
 
-.inclusion-form-group input:focus,
-.inclusion-form-group select:focus {
+.what-to-bring-form-group input:focus,
+.what-to-bring-form-group select:focus {
     border-color: #351255;
 }
 
-.inclusion-form-group input:disabled,
-.inclusion-form-group select:disabled {
+.what-to-bring-form-group input:disabled,
+.what-to-bring-form-group select:disabled {
     background: #f5f3f6;
     color: #77717d;
     cursor: not-allowed;
 }
 
-.inclusion-form-group select {
+.what-to-bring-form-group select {
     min-width: 230px;
 }
 
-.inclusion-item-field {
+.what-to-bring-item-field {
     flex: 1;
-}
-
-.inclusion-order-field input {
-    width: 120px;
 }
 
 /* Form Buttons */
 
-.inclusion-form-buttons {
+.what-to-bring-form-buttons {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.inclusion-save-btn,
-.inclusion-cancel-btn {
+.what-to-bring-save-btn,
+.what-to-bring-cancel-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -137,42 +133,42 @@
     transition: 0.2s;
 }
 
-.inclusion-save-btn {
+.what-to-bring-save-btn {
     background: #351255;
     color: #ffffff;
 }
 
-.inclusion-save-btn:hover:not(:disabled) {
+.what-to-bring-save-btn:hover:not(:disabled) {
     background: #481a6d;
 }
 
-.inclusion-save-btn:disabled {
+.what-to-bring-save-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.inclusion-cancel-btn {
+.what-to-bring-cancel-btn {
     background: #f1eef3;
     color: #2f183e;
 }
 
-.inclusion-cancel-btn:hover:not(:disabled) {
+.what-to-bring-cancel-btn:hover:not(:disabled) {
     background: #e5e0e8;
 }
 
 /* Table */
 
-.inclusion-table-wrapper {
+.what-to-bring-table-wrapper {
     width: 100%;
     overflow-x: auto;
 }
 
-.inclusion-table {
+.what-to-bring-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.inclusion-table th {
+.what-to-bring-table th {
     padding: 14px 18px;
     background: #f8f6fa;
     color: #746b91;
@@ -183,7 +179,7 @@
     letter-spacing: 0.3px;
 }
 
-.inclusion-table td {
+.what-to-bring-table td {
     padding: 15px 18px;
     border-top: 1px solid #eeeaf1;
     color: #2f183e;
@@ -191,63 +187,42 @@
     vertical-align: middle;
 }
 
-.inclusion-table tbody tr:hover {
+.what-to-bring-table tbody tr:hover {
     background: #fcfbfd;
 }
 
-.inclusion-table th:first-child,
-.inclusion-table td:first-child {
+.what-to-bring-table th:first-child,
+.what-to-bring-table td:first-child {
     width: 75px;
 }
 
-.inclusion-table th:nth-child(2),
-.inclusion-table td:nth-child(2) {
+.what-to-bring-table th:nth-child(2),
+.what-to-bring-table td:nth-child(2) {
     width: 230px;
 }
 
-.inclusion-table th:nth-child(4),
-.inclusion-table td:nth-child(4) {
-    width: 150px;
-}
-
-.inclusion-table th:last-child,
-.inclusion-table td:last-child {
+.what-to-bring-table th:last-child,
+.what-to-bring-table td:last-child {
     width: 120px;
 }
 
 /* Package */
 
-.inclusion-package-name {
+.what-to-bring-package-name {
     color: #351255;
     font-weight: 600;
 }
 
-/* Display Order */
-
-.inclusion-order {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 34px;
-    height: 28px;
-    padding: 0 8px;
-    background: #f1edf5;
-    border-radius: 6px;
-    color: #351255;
-    font-size: 12px;
-    font-weight: 700;
-}
-
 /* Actions */
 
-.inclusion-actions {
+.what-to-bring-actions {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.inclusion-edit-btn,
-.inclusion-delete-btn {
+.what-to-bring-edit-btn,
+.what-to-bring-delete-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -260,29 +235,29 @@
     transition: 0.2s;
 }
 
-.inclusion-edit-btn {
+.what-to-bring-edit-btn {
     background: #f1edf5;
     color: #351255;
 }
 
-.inclusion-edit-btn:hover {
+.what-to-bring-edit-btn:hover {
     background: #351255;
     color: #ffffff;
 }
 
-.inclusion-delete-btn {
+.what-to-bring-delete-btn {
     background: #fdeaf3;
     color: #f52d91;
 }
 
-.inclusion-delete-btn:hover {
+.what-to-bring-delete-btn:hover {
     background: #f52d91;
     color: #ffffff;
 }
 
 /* Empty State */
 
-.inclusion-empty {
+.what-to-bring-empty {
     padding: 45px 20px;
     color: #77717d;
     font-size: 14px;
@@ -292,64 +267,60 @@
 /* Responsive */
 
 @media (max-width: 900px) {
-    .inclusion-form {
+    .what-to-bring-form {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .inclusion-form-group select {
+    .what-to-bring-form-group select {
         width: 100%;
         min-width: 0;
     }
 
-    .inclusion-order-field input {
-        width: 100%;
-    }
-
-    .inclusion-form-buttons {
+    .what-to-bring-form-buttons {
         justify-content: flex-end;
     }
 }
 
 @media (max-width: 600px) {
-    .inclusion-header h1 {
+    .what-to-bring-header h1 {
         font-size: 23px;
     }
 
-    .inclusion-form {
+    .what-to-bring-form {
         padding: 16px;
     }
 
-    .inclusion-card-header {
+    .what-to-bring-card-header {
         padding: 16px;
     }
 
-    .inclusion-table th,
-    .inclusion-table td {
+    .what-to-bring-table th,
+    .what-to-bring-table td {
         padding: 12px 14px;
     }
 }
 
 /* =========================================
-   MULTIPLE INCLUSION CREATE FORM
+   MULTIPLE WHAT TO BRING CREATE FORM
 ========================================= */
 
-.inclusion-package-section {
+.what-to-bring-package-section {
     padding: 20px 20px 0;
 }
 
-.inclusion-package-section select {
-    min-width: 260px;
+.what-to-bring-package-section select {
+    min-width: 300px;
 }
 
-.inclusion-items-list {
+.what-to-bring-items-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding: 20px;
 }
 
-.inclusion-item-row {
+.what-to-bring-item-row {
     display: flex;
     align-items: flex-end;
     gap: 14px;
@@ -359,132 +330,149 @@
     border-radius: 9px;
 }
 
-.inclusion-number {
+.what-to-bring-number {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 32px;
     height: 42px;
     flex-shrink: 0;
+
     color: #351255;
     font-size: 13px;
     font-weight: 700;
 }
 
-.inclusion-item-row .inclusion-item-field {
+.what-to-bring-item-row
+.what-to-bring-item-field {
     flex: 1;
 }
 
-.inclusion-item-row .inclusion-order-field {
-    width: 140px;
-    flex: none;
-}
-
-.inclusion-remove-btn {
+.what-to-bring-remove-btn {
     display: flex;
     align-items: center;
     justify-content: center;
+
     width: 42px;
     height: 42px;
     flex-shrink: 0;
+
     padding: 0;
+
     background: #fdeaf3;
     border: none;
     border-radius: 7px;
+
     color: #f52d91;
+
     cursor: pointer;
     transition: 0.2s;
 }
 
-.inclusion-remove-btn:hover:not(:disabled) {
+.what-to-bring-remove-btn:hover:not(:disabled) {
     background: #f52d91;
     color: #ffffff;
 }
 
-.inclusion-remove-btn:disabled {
+.what-to-bring-remove-btn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
-.inclusion-create-actions {
+.what-to-bring-create-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+
     padding: 0 20px 20px;
 }
 
-.inclusion-add-more-btn {
+.what-to-bring-add-more-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 7px;
+
     height: 42px;
     padding: 0 18px;
+
     background: #f1edf5;
     border: none;
     border-radius: 7px;
+
     color: #351255;
+
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;
+
     cursor: pointer;
     transition: 0.2s;
 }
 
-.inclusion-add-more-btn:hover:not(:disabled) {
+.what-to-bring-add-more-btn:hover:not(:disabled) {
     background: #e5ddeb;
 }
 
-.inclusion-add-more-btn:disabled {
+.what-to-bring-add-more-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
 @media (max-width: 800px) {
-    .inclusion-item-row {
-        align-items: stretch;
+    .what-to-bring-item-row {
         flex-wrap: wrap;
     }
 
-    .inclusion-number {
+    .what-to-bring-number {
         width: 100%;
         height: auto;
         justify-content: flex-start;
     }
 
-    .inclusion-item-row .inclusion-item-field {
-        width: 100%;
-        flex: none;
-    }
-
-    .inclusion-item-row .inclusion-order-field {
+    .what-to-bring-item-row
+    .what-to-bring-item-field {
         flex: 1;
-        width: auto;
     }
 }
 
 @media (max-width: 600px) {
-    .inclusion-package-section {
+    .what-to-bring-package-section {
         padding: 16px 16px 0;
     }
 
-    .inclusion-package-section select {
+    .what-to-bring-package-section select {
         width: 100%;
         min-width: 0;
     }
 
-    .inclusion-items-list {
+    .what-to-bring-items-list {
         padding: 16px;
     }
 
-    .inclusion-create-actions {
+    .what-to-bring-item-row {
+        align-items: stretch;
+    }
+
+    .what-to-bring-item-row
+    .what-to-bring-item-field {
+        width: 100%;
+        flex: none;
+    }
+
+    .what-to-bring-remove-btn {
+        width: 100%;
+    }
+
+    .what-to-bring-create-actions {
         flex-direction: column;
         align-items: stretch;
+
         padding: 0 16px 16px;
     }
 
-    .inclusion-create-actions button {
+    .what-to-bring-create-actions button {
         width: 100%;
     }
 }
