@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
+import { FaPlus, FaPen, FaTrash, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 import Navbar from "../../../components/Navbar/Navbar";
@@ -16,11 +16,23 @@ import {
 
 import "./Exclusion.css";
 
+const createEmptyExclusion = (order = 0) => ({
+    item: "",
+    display_order: order,
+});
+
 const Exclusion = () => {
     const [exclusions, setExclusions] = useState([]);
     const [packages, setPackages] = useState([]);
 
     const [packageId, setPackageId] = useState("");
+
+    // Multiple rows while creating
+    const [exclusionItems, setExclusionItems] = useState([
+        createEmptyExclusion(0),
+    ]);
+
+    // Single row while editing
     const [item, setItem] = useState("");
     const [displayOrder, setDisplayOrder] = useState("");
 
@@ -77,14 +89,51 @@ const Exclusion = () => {
         }
     };
 
-    const resetForm = () => {
-        setPackageId("");
-        setItem("");
-        setDisplayOrder("");
-        setEditingId(null);
+    // ==========================
+    // CREATE
+    // ==========================
+
+    const addExclusionRow = () => {
+        setExclusionItems([
+            ...exclusionItems,
+            createEmptyExclusion(exclusionItems.length),
+        ]);
     };
 
-    const handleSubmit = async (e) => {
+    const removeExclusionRow = (index) => {
+        if (exclusionItems.length === 1) {
+            return;
+        }
+
+        const updatedItems = exclusionItems
+            .filter((_, i) => i !== index)
+            .map((exclusion, i) => ({
+                ...exclusion,
+                display_order: i,
+            }));
+
+        setExclusionItems(updatedItems);
+    };
+
+    const handleExclusionChange = (index, field, value) => {
+        const updatedItems = [...exclusionItems];
+
+        updatedItems[index] = {
+            ...updatedItems[index],
+            [field]: value,
+        };
+
+        setExclusionItems(updatedItems);
+    };
+
+    const resetCreateForm = () => {
+        setPackageId("");
+        setExclusionItems([
+            createEmptyExclusion(0),
+        ]);
+    };
+
+    const handleCreate = async (e) => {
         e.preventDefault();
 
         if (!packageId) {
@@ -98,67 +147,58 @@ const Exclusion = () => {
             return;
         }
 
-        if (!item.trim()) {
-            Swal.fire({
-                icon: "warning",
-                title: "Exclusion Required",
-                text: "Please enter an exclusion.",
-                confirmButtonColor: "#351255",
-            });
+        for (let i = 0; i < exclusionItems.length; i++) {
+            if (!exclusionItems[i].item.trim()) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Exclusion Required",
+                    text: `Please enter exclusion ${i + 1}.`,
+                    confirmButtonColor: "#351255",
+                });
 
-            return;
+                return;
+            }
         }
 
         const data = {
-            item: item.trim(),
-            display_order: displayOrder
-                ? Number(displayOrder)
-                : 0,
+            exclusions: exclusionItems.map(
+                (exclusion, index) => ({
+                    item: exclusion.item.trim(),
+                    display_order:
+                        exclusion.display_order === ""
+                            ? index
+                            : Number(exclusion.display_order),
+                })
+            ),
         };
 
         try {
             setSaving(true);
 
-            let response;
-
-            if (editingId) {
-                response = await updateExclusion(
-                    editingId,
-                    data
-                );
-            } else {
-                response = await createExclusion(
-                    packageId,
-                    data
-                );
-            }
+            const response = await createExclusion(
+                packageId,
+                data
+            );
 
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
-                    title: editingId
-                        ? "Exclusion Updated"
-                        : "Exclusion Added",
+                    title: "Exclusions Added",
                     text:
                         response.data.message ||
-                        (editingId
-                            ? "Exclusion updated successfully."
-                            : "Exclusion added successfully."),
+                        "Exclusions created successfully.",
                     confirmButtonColor: "#351255",
                 });
 
-                resetForm();
+                resetCreateForm();
                 fetchExclusions();
             }
         } catch (error) {
-            console.error(
-                "Error saving exclusion:",
-                error
-            );
+            console.error("Error creating exclusions:", error);
 
             let errorMessage =
                 error.response?.data?.message ||
-                "Unable to save exclusion.";
+                "Unable to create exclusions.";
 
             const validationErrors =
                 error.response?.data?.errors;
@@ -183,6 +223,10 @@ const Exclusion = () => {
         }
     };
 
+    // ==========================
+    // EDIT
+    // ==========================
+
     const handleEdit = (exclusion) => {
         setEditingId(exclusion.id);
 
@@ -193,7 +237,7 @@ const Exclusion = () => {
         setItem(exclusion.item || "");
 
         setDisplayOrder(
-            exclusion.display_order?.toString() || ""
+            exclusion.display_order?.toString() || "0"
         );
 
         window.scrollTo({
@@ -201,6 +245,90 @@ const Exclusion = () => {
             behavior: "smooth",
         });
     };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setPackageId("");
+        setItem("");
+        setDisplayOrder("");
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+
+        if (!item.trim()) {
+            Swal.fire({
+                icon: "warning",
+                title: "Exclusion Required",
+                text: "Please enter an exclusion.",
+                confirmButtonColor: "#351255",
+            });
+
+            return;
+        }
+
+        const data = {
+            item: item.trim(),
+            display_order:
+                displayOrder === ""
+                    ? 0
+                    : Number(displayOrder),
+        };
+
+        try {
+            setSaving(true);
+
+            const response = await updateExclusion(
+                editingId,
+                data
+            );
+
+            if (response.data.status) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Exclusion Updated",
+                    text:
+                        response.data.message ||
+                        "Exclusion updated successfully.",
+                    confirmButtonColor: "#351255",
+                });
+
+                cancelEdit();
+                fetchExclusions();
+            }
+        } catch (error) {
+            console.error("Error updating exclusion:", error);
+
+            let errorMessage =
+                error.response?.data?.message ||
+                "Unable to update exclusion.";
+
+            const validationErrors =
+                error.response?.data?.errors;
+
+            if (validationErrors) {
+                const firstError =
+                    Object.values(validationErrors)[0];
+
+                if (Array.isArray(firstError)) {
+                    errorMessage = firstError[0];
+                }
+            }
+
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: errorMessage,
+                confirmButtonColor: "#351255",
+            });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // ==========================
+    // DELETE
+    // ==========================
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
@@ -219,8 +347,7 @@ const Exclusion = () => {
         }
 
         try {
-            const response =
-                await deleteExclusion(id);
+            const response = await deleteExclusion(id);
 
             if (response.data.status) {
                 await Swal.fire({
@@ -233,16 +360,13 @@ const Exclusion = () => {
                 });
 
                 if (editingId === id) {
-                    resetForm();
+                    cancelEdit();
                 }
 
                 fetchExclusions();
             }
         } catch (error) {
-            console.error(
-                "Error deleting exclusion:",
-                error
-            );
+            console.error("Error deleting exclusion:", error);
 
             Swal.fire({
                 icon: "error",
@@ -267,9 +391,7 @@ const Exclusion = () => {
 
                         <div className="exclusion-header">
                             <div>
-                                <h1>
-                                    Package Exclusions
-                                </h1>
+                                <h1>Package Exclusions</h1>
 
                                 <p>
                                     Manage items and services
@@ -279,134 +401,276 @@ const Exclusion = () => {
                         </div>
 
                         <div className="exclusion-form-card">
+
                             <div className="exclusion-card-header">
                                 <h2>
                                     {editingId
                                         ? "Edit Exclusion"
-                                        : "Add Exclusion"}
+                                        : "Add Exclusions"}
                                 </h2>
 
                                 <p>
                                     {editingId
                                         ? "Update the selected exclusion."
-                                        : "Add a new exclusion to a package."}
+                                        : "Add multiple exclusions to a package."}
                                 </p>
                             </div>
 
-                            <form
-                                className="exclusion-form"
-                                onSubmit={handleSubmit}
-                            >
-                                <div className="exclusion-form-group">
-                                    <label>
-                                        Package
-                                        <span className="required">
-                                            *
-                                        </span>
-                                    </label>
+                            {editingId ? (
+                                /* EDIT ONE */
 
-                                    <select
-                                        value={packageId}
-                                        onChange={(e) =>
-                                            setPackageId(
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={
-                                            editingId !== null
-                                        }
-                                    >
-                                        <option value="">
-                                            Select Package
-                                        </option>
+                                <form
+                                    className="exclusion-form"
+                                    onSubmit={handleUpdate}
+                                >
+                                    <div className="exclusion-form-group">
+                                        <label>
+                                            Package
+                                            <span className="required">
+                                                *
+                                            </span>
+                                        </label>
 
-                                        {packages.map(
-                                            (pkg) => (
+                                        <select
+                                            value={packageId}
+                                            disabled
+                                        >
+                                            <option value="">
+                                                Select Package
+                                            </option>
+
+                                            {packages.map((pkg) => (
                                                 <option
                                                     key={pkg.id}
                                                     value={pkg.id}
                                                 >
                                                     {pkg.title}
                                                 </option>
-                                            )
-                                        )}
-                                    </select>
-                                </div>
+                                            ))}
+                                        </select>
+                                    </div>
 
-                                <div className="exclusion-form-group exclusion-item-field">
-                                    <label>
-                                        Exclusion
-                                        <span className="required">
-                                            *
-                                        </span>
-                                    </label>
+                                    <div className="exclusion-form-group exclusion-item-field">
+                                        <label>
+                                            Exclusion
+                                            <span className="required">
+                                                *
+                                            </span>
+                                        </label>
 
-                                    <input
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) =>
-                                            setItem(
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="e.g. International airfare"
-                                        disabled={saving}
-                                    />
-                                </div>
+                                        <input
+                                            type="text"
+                                            value={item}
+                                            onChange={(e) =>
+                                                setItem(
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder="e.g. International airfare"
+                                            disabled={saving}
+                                        />
+                                    </div>
 
-                                <div className="exclusion-form-group exclusion-order-field">
-                                    <label>
-                                        Display Order
-                                    </label>
+                                    <div className="exclusion-form-group exclusion-order-field">
+                                        <label>
+                                            Display Order
+                                            <span className="required">
+                                                *
+                                            </span>
+                                        </label>
 
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={displayOrder}
-                                        onChange={(e) =>
-                                            setDisplayOrder(
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="0"
-                                        disabled={saving}
-                                    />
-                                </div>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            value={displayOrder}
+                                            onChange={(e) =>
+                                                setDisplayOrder(
+                                                    e.target.value
+                                                )
+                                            }
+                                            disabled={saving}
+                                        />
+                                    </div>
 
-                                <div className="exclusion-form-buttons">
-                                    {editingId && (
+                                    <div className="exclusion-form-buttons">
                                         <button
                                             type="button"
                                             className="exclusion-cancel-btn"
-                                            onClick={resetForm}
+                                            onClick={cancelEdit}
                                             disabled={saving}
                                         >
                                             Cancel
                                         </button>
-                                    )}
 
-                                    <button
-                                        type="submit"
-                                        className="exclusion-save-btn"
-                                        disabled={saving}
-                                    >
-                                        <FaPlus />
+                                        <button
+                                            type="submit"
+                                            className="exclusion-save-btn"
+                                            disabled={saving}
+                                        >
+                                            <FaPen />
 
-                                        {saving
-                                            ? "Saving..."
-                                            : editingId
-                                              ? "Update"
-                                              : "Add"}
-                                    </button>
-                                </div>
-                            </form>
+                                            {saving
+                                                ? "Saving..."
+                                                : "Update"}
+                                        </button>
+                                    </div>
+                                </form>
+                            ) : (
+                                /* CREATE MULTIPLE */
+
+                                <form onSubmit={handleCreate}>
+
+                                    <div className="exclusion-package-section">
+                                        <div className="exclusion-form-group">
+                                            <label>
+                                                Package
+                                                <span className="required">
+                                                    *
+                                                </span>
+                                            </label>
+
+                                            <select
+                                                value={packageId}
+                                                onChange={(e) =>
+                                                    setPackageId(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                disabled={saving}
+                                            >
+                                                <option value="">
+                                                    Select Package
+                                                </option>
+
+                                                {packages.map((pkg) => (
+                                                    <option
+                                                        key={pkg.id}
+                                                        value={pkg.id}
+                                                    >
+                                                        {pkg.title}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="exclusion-items-list">
+                                        {exclusionItems.map(
+                                            (exclusion, index) => (
+                                                <div
+                                                    className="exclusion-item-row"
+                                                    key={index}
+                                                >
+                                                    <div className="exclusion-number">
+                                                        {index + 1}
+                                                    </div>
+
+                                                    <div className="exclusion-form-group exclusion-item-field">
+                                                        <label>
+                                                            Exclusion
+                                                            <span className="required">
+                                                                *
+                                                            </span>
+                                                        </label>
+
+                                                        <input
+                                                            type="text"
+                                                            value={
+                                                                exclusion.item
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleExclusionChange(
+                                                                    index,
+                                                                    "item",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            placeholder="e.g. International airfare"
+                                                            disabled={
+                                                                saving
+                                                            }
+                                                        />
+                                                    </div>
+
+                                                    <div className="exclusion-form-group exclusion-order-field">
+                                                        <label>
+                                                            Display Order
+                                                        </label>
+
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            value={
+                                                                exclusion.display_order
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleExclusionChange(
+                                                                    index,
+                                                                    "display_order",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                saving
+                                                            }
+                                                        />
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        className="exclusion-remove-btn"
+                                                        onClick={() =>
+                                                            removeExclusionRow(
+                                                                index
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            exclusionItems.length ===
+                                                                1 ||
+                                                            saving
+                                                        }
+                                                        title="Remove Exclusion"
+                                                    >
+                                                        <FaTimes />
+                                                    </button>
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+
+                                    <div className="exclusion-create-actions">
+                                        <button
+                                            type="button"
+                                            className="exclusion-add-more-btn"
+                                            onClick={addExclusionRow}
+                                            disabled={saving}
+                                        >
+                                            <FaPlus />
+                                            Add Exclusion
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            className="exclusion-save-btn"
+                                            disabled={saving}
+                                        >
+                                            <FaPlus />
+
+                                            {saving
+                                                ? "Saving..."
+                                                : "Save Exclusions"}
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
                         </div>
 
+                        {/* TABLE */}
+
                         <div className="exclusion-table-card">
+
                             <div className="exclusion-card-header">
-                                <h2>
-                                    All Exclusions
-                                </h2>
+                                <h2>All Exclusions</h2>
                             </div>
 
                             {loading ? (
@@ -445,7 +709,11 @@ const Exclusion = () => {
                                                             }
                                                         >
                                                             <td>
-                                                                {(page - 1) * 10 + index + 1}
+                                                                {(page -
+                                                                    1) *
+                                                                    10 +
+                                                                    index +
+                                                                    1}
                                                             </td>
 
                                                             <td>
@@ -514,7 +782,6 @@ const Exclusion = () => {
                                 </>
                             )}
                         </div>
-
                     </div>
                 </main>
             </div>
