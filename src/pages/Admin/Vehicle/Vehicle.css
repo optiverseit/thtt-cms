@@ -1,0 +1,369 @@
+.vehicle-page {
+    width: 100%;
+}
+
+.vehicle-header {
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.vehicle-header h1 {
+    margin: 0 0 5px;
+    color: #351255;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.vehicle-header p {
+    margin: 0;
+    color: #847b89;
+    font-size: 13px;
+}
+
+.create-vehicle-button {
+    height: 42px;
+    padding: 0 18px;
+    color: #ffffff;
+    background: linear-gradient(90deg, #f52d91, #b42df2);
+    border: none;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.create-vehicle-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(245, 45, 145, 0.22);
+}
+
+
+/* CARD */
+
+.vehicle-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #eee9f0;
+    border-radius: 11px;
+    box-shadow: 0 3px 12px rgba(53, 18, 85, 0.04);
+    overflow: hidden;
+}
+
+
+/* TABLE */
+
+.vehicle-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.vehicle-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1050px;
+}
+
+.vehicle-table th {
+    padding: 13px 15px;
+    color: #746b7a;
+    background: #faf8fb;
+    border-bottom: 1px solid #eee9f0;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.vehicle-table td {
+    padding: 14px 15px;
+    color: #554b5a;
+    border-bottom: 1px solid #f1edf3;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.vehicle-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.vehicle-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.vehicle-table tbody tr:hover {
+    background: #fdfbfe;
+}
+
+
+/* VEHICLE */
+
+.vehicle-info {
+    min-width: 180px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vehicle-image {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+}
+
+.vehicle-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border: 1px solid #eee9f0;
+    border-radius: 7px;
+}
+
+.vehicle-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    background: #351255;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.vehicle-details {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.vehicle-name {
+    color: #351255;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.vehicle-description {
+    max-width: 180px;
+    color: #918995;
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ROUTE */
+
+.vehicle-route {
+    min-width: 160px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #554b5a;
+    font-size: 11px;
+}
+
+.route-arrow {
+    color: #f52d91;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* CAPACITY */
+
+.vehicle-capacity {
+    padding: 5px 8px;
+    color: #351255;
+    background: #f5eff8;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* PRICE */
+
+.vehicle-price {
+    color: #351255;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* STATUS */
+
+.vehicle-status {
+    padding: 5px 9px;
+    border: none;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        opacity 0.2s ease;
+}
+
+.vehicle-status:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.vehicle-status:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.vehicle-status-active {
+    color: #198754;
+    background: #e9f8f0;
+}
+
+.vehicle-status-inactive {
+    color: #dc3545;
+    background: #fff0f2;
+}
+
+
+/* ACTIONS */
+
+.action-column {
+    text-align: right !important;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.edit-button,
+.delete-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.edit-button {
+    color: #f52d91;
+    background: #fff0f7;
+}
+
+.edit-button:hover {
+    color: #ffffff;
+    background: #f52d91;
+    transform: translateY(-1px);
+}
+
+.delete-button {
+    color: #dc3545;
+    background: #fff0f2;
+}
+
+.delete-button:hover {
+    color: #ffffff;
+    background: #dc3545;
+    transform: translateY(-1px);
+}
+
+.edit-button svg,
+.delete-button svg {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+}
+
+
+/* LOADING */
+
+.vehicle-loading {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    color: #918995;
+    font-size: 12px;
+}
+
+.vehicle-loader {
+    width: 27px;
+    height: 27px;
+    border: 3px solid #eee5f1;
+    border-top-color: #f52d91;
+    border-radius: 50%;
+    animation: vehicle-spin 0.7s linear infinite;
+}
+
+@keyframes vehicle-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* EMPTY */
+
+.vehicle-empty {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.vehicle-empty h3 {
+    margin: 0 0 5px;
+    color: #351255;
+    font-size: 15px;
+}
+
+.vehicle-empty p {
+    margin: 0;
+    color: #918995;
+    font-size: 11px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+    .vehicle-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vehicle-header h1 {
+        font-size: 23px;
+    }
+
+    .create-vehicle-button {
+        width: 100%;
+    }
+}

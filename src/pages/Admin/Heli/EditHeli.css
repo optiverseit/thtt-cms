@@ -1,0 +1,358 @@
+.edit-heli-page {
+    width: 100%;
+}
+
+.edit-heli-header {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.edit-heli-header h1 {
+    margin: 0 0 6px;
+    color: #351255;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.edit-heli-header p {
+    margin: 0;
+    color: #847b89;
+    font-size: 13px;
+}
+
+.edit-heli-back-button {
+    height: 43px;
+    padding: 0 18px;
+    color: #351255;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.edit-heli-back-button:hover {
+    background: #f8f6fa;
+    border-color: #351255;
+}
+
+
+/* FORM */
+
+.edit-heli-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+/* CARD */
+
+.edit-heli-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #eee9f0;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(53, 18, 85, 0.04);
+    overflow: hidden;
+}
+
+.edit-heli-card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #eee9f0;
+}
+
+.edit-heli-card-header h2 {
+    margin: 0 0 4px;
+    color: #351255;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.edit-heli-card-header p {
+    margin: 0;
+    color: #918995;
+    font-size: 11px;
+}
+
+.edit-heli-card-body {
+    padding: 22px;
+}
+
+
+/* GRID */
+
+.edit-heli-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+
+/* INPUTS */
+
+.edit-heli-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.edit-heli-group label,
+.edit-heli-image-upload label {
+    color: #351255;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+    color: #f52d91;
+}
+
+.edit-heli-group input,
+.edit-heli-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 13px;
+    color: #554b5a;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.edit-heli-group input {
+    height: 42px;
+}
+
+.edit-heli-group textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.edit-heli-group input:focus,
+.edit-heli-group textarea:focus {
+    border-color: #b42df2;
+    box-shadow: 0 0 0 3px rgba(180, 45, 242, 0.08);
+}
+
+.edit-heli-group input:disabled,
+.edit-heli-group textarea:disabled {
+    background: #f8f6fa;
+    cursor: not-allowed;
+}
+
+
+/* IMAGE */
+
+.edit-heli-image-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 25px;
+}
+
+.edit-heli-image-upload {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.edit-heli-image-upload > span {
+    color: #918995;
+    font-size: 10px;
+}
+
+.edit-heli-image-upload input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    color: #554b5a;
+    background: #faf8fb;
+    border: 1px dashed #cfc6d5;
+    border-radius: 8px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.edit-heli-image-upload
+input[type="file"]::file-selector-button {
+    margin-right: 10px;
+    padding: 7px 12px;
+    color: #ffffff;
+    background: #351255;
+    border: none;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.edit-heli-image-preview {
+    width: 240px;
+    flex-shrink: 0;
+}
+
+.edit-heli-image-preview img {
+    width: 240px;
+    height: 150px;
+    display: block;
+    object-fit: cover;
+    border: 1px solid #eee9f0;
+    border-radius: 9px;
+}
+
+.edit-heli-image-preview p {
+    margin: 6px 0 0;
+    color: #918995;
+    font-size: 10px;
+    text-align: center;
+}
+
+
+/* ACTIONS */
+
+.edit-heli-actions {
+    padding: 5px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.edit-heli-cancel,
+.edit-heli-submit {
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.edit-heli-cancel {
+    color: #351255;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+}
+
+.edit-heli-cancel:hover:not(:disabled) {
+    background: #f8f6fa;
+}
+
+.edit-heli-submit {
+    color: #ffffff;
+    background: linear-gradient(
+        90deg,
+        #f52d91,
+        #b42df2
+    );
+    border: none;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+.edit-heli-submit:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 18px rgba(245, 45, 145, 0.22);
+}
+
+.edit-heli-cancel:disabled,
+.edit-heli-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* LOADING */
+
+.edit-heli-loading {
+    min-height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    color: #918995;
+    font-size: 12px;
+}
+
+.edit-heli-loader {
+    width: 27px;
+    height: 27px;
+    border: 3px solid #eee5f1;
+    border-top-color: #f52d91;
+    border-radius: 50%;
+    animation: edit-heli-spin 0.7s linear infinite;
+}
+
+@keyframes edit-heli-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+    .edit-heli-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-heli-image-section {
+        flex-direction: column;
+    }
+
+    .edit-heli-image-preview {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .edit-heli-image-preview img {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .edit-heli-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .edit-heli-header h1 {
+        font-size: 23px;
+    }
+
+    .edit-heli-back-button {
+        width: 100%;
+    }
+
+    .edit-heli-card-header {
+        padding: 16px 17px;
+    }
+
+    .edit-heli-card-body {
+        padding: 17px;
+    }
+
+    .edit-heli-actions {
+        flex-direction: column-reverse;
+    }
+
+    .edit-heli-cancel,
+    .edit-heli-submit {
+        width: 100%;
+    }
+}
