@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaPlus, FaPen, FaTrash } from "react-icons/fa";
+import { FaPlus, FaPen, FaTrash, FaTimes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 import Navbar from "../../../components/Navbar/Navbar";
@@ -16,11 +16,22 @@ import {
 
 import "./WhatToBring.css";
 
+const createEmptyItem = () => ({
+    item: "",
+});
+
 const WhatToBring = () => {
     const [whatToBringItems, setWhatToBringItems] = useState([]);
     const [packages, setPackages] = useState([]);
 
     const [packageId, setPackageId] = useState("");
+
+    // Multiple items for create
+    const [items, setItems] = useState([
+        createEmptyItem(),
+    ]);
+
+    // Single item for edit
     const [item, setItem] = useState("");
 
     const [editingId, setEditingId] = useState(null);
@@ -42,7 +53,8 @@ const WhatToBring = () => {
         try {
             setLoading(true);
 
-            const response = await getAllWhatToBringCms(page);
+            const response =
+                await getAllWhatToBringCms(page);
 
             if (response.data.status) {
                 setWhatToBringItems(
@@ -74,7 +86,8 @@ const WhatToBring = () => {
 
     const fetchPackages = async () => {
         try {
-            const response = await getAllPackagesCms();
+            const response =
+                await getAllPackagesCms();
 
             if (response.data.status) {
                 setPackages(
@@ -89,13 +102,49 @@ const WhatToBring = () => {
         }
     };
 
-    const resetForm = () => {
-        setPackageId("");
-        setItem("");
-        setEditingId(null);
+    // ==============================
+    // CREATE
+    // ==============================
+
+    const addItemRow = () => {
+        setItems([
+            ...items,
+            createEmptyItem(),
+        ]);
     };
 
-    const handleSubmit = async (e) => {
+    const removeItemRow = (index) => {
+        if (items.length === 1) {
+            return;
+        }
+
+        setItems(
+            items.filter((_, i) => i !== index)
+        );
+    };
+
+    const handleItemChange = (
+        index,
+        value
+    ) => {
+        const updatedItems = [...items];
+
+        updatedItems[index] = {
+            ...updatedItems[index],
+            item: value,
+        };
+
+        setItems(updatedItems);
+    };
+
+    const resetCreateForm = () => {
+        setPackageId("");
+        setItems([
+            createEmptyItem(),
+        ]);
+    };
+
+    const handleCreate = async (e) => {
         e.preventDefault();
 
         if (!packageId) {
@@ -108,6 +157,112 @@ const WhatToBring = () => {
 
             return;
         }
+
+        for (let i = 0; i < items.length; i++) {
+            if (!items[i].item.trim()) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Item Required",
+                    text: `Please enter item ${i + 1}.`,
+                    confirmButtonColor: "#351255",
+                });
+
+                return;
+            }
+        }
+
+        const data = {
+            items: items.map((entry) => ({
+                item: entry.item.trim(),
+            })),
+        };
+
+        try {
+            setSaving(true);
+
+            const response =
+                await createWhatToBring(
+                    packageId,
+                    data
+                );
+
+            if (response.data.status) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Items Added",
+                    text:
+                        response.data.message ||
+                        "What to bring items created successfully.",
+                    confirmButtonColor: "#351255",
+                });
+
+                resetCreateForm();
+                fetchWhatToBring();
+            }
+        } catch (error) {
+            console.error(
+                "Error creating what to bring items:",
+                error
+            );
+
+            let errorMessage =
+                error.response?.data?.message ||
+                "Unable to create what to bring items.";
+
+            const validationErrors =
+                error.response?.data?.errors;
+
+            if (validationErrors) {
+                const firstError =
+                    Object.values(
+                        validationErrors
+                    )[0];
+
+                if (Array.isArray(firstError)) {
+                    errorMessage =
+                        firstError[0];
+                }
+            }
+
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: errorMessage,
+                confirmButtonColor: "#351255",
+            });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // ==============================
+    // EDIT
+    // ==============================
+
+    const handleEdit = (whatToBring) => {
+        setEditingId(whatToBring.id);
+
+        setPackageId(
+            whatToBring.package_id?.toString() ||
+                ""
+        );
+
+        setItem(whatToBring.item || "");
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setPackageId("");
+        setItem("");
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
 
         if (!item.trim()) {
             Swal.fire({
@@ -127,56 +282,47 @@ const WhatToBring = () => {
         try {
             setSaving(true);
 
-            let response;
-
-            if (editingId) {
-                response = await updateWhatToBring(
+            const response =
+                await updateWhatToBring(
                     editingId,
                     data
                 );
-            } else {
-                response = await createWhatToBring(
-                    packageId,
-                    data
-                );
-            }
 
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
-                    title: editingId
-                        ? "Item Updated"
-                        : "Item Added",
+                    title: "Item Updated",
                     text:
                         response.data.message ||
-                        (editingId
-                            ? "What to bring item updated successfully."
-                            : "What to bring item added successfully."),
+                        "What to bring item updated successfully.",
                     confirmButtonColor: "#351255",
                 });
 
-                resetForm();
+                cancelEdit();
                 fetchWhatToBring();
             }
         } catch (error) {
             console.error(
-                "Error saving what to bring item:",
+                "Error updating what to bring item:",
                 error
             );
 
             let errorMessage =
                 error.response?.data?.message ||
-                "Unable to save what to bring item.";
+                "Unable to update what to bring item.";
 
             const validationErrors =
                 error.response?.data?.errors;
 
             if (validationErrors) {
                 const firstError =
-                    Object.values(validationErrors)[0];
+                    Object.values(
+                        validationErrors
+                    )[0];
 
                 if (Array.isArray(firstError)) {
-                    errorMessage = firstError[0];
+                    errorMessage =
+                        firstError[0];
                 }
             }
 
@@ -191,20 +337,9 @@ const WhatToBring = () => {
         }
     };
 
-    const handleEdit = (whatToBring) => {
-        setEditingId(whatToBring.id);
-
-        setPackageId(
-            whatToBring.package_id?.toString() || ""
-        );
-
-        setItem(whatToBring.item || "");
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    };
+    // ==============================
+    // DELETE
+    // ==============================
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
@@ -237,7 +372,7 @@ const WhatToBring = () => {
                 });
 
                 if (editingId === id) {
-                    resetForm();
+                    cancelEdit();
                 }
 
                 fetchWhatToBring();
@@ -268,6 +403,7 @@ const WhatToBring = () => {
 
                 <main className="dashboard-content">
                     <div className="what-to-bring-page">
+
                         <div className="what-to-bring-header">
                             <div>
                                 <h1>
@@ -275,13 +411,15 @@ const WhatToBring = () => {
                                 </h1>
 
                                 <p>
-                                    Manage items travelers should
-                                    bring for each package.
+                                    Manage items travelers
+                                    should bring for each
+                                    package.
                                 </p>
                             </div>
                         </div>
 
                         <div className="what-to-bring-form-card">
+
                             <div className="what-to-bring-card-header">
                                 <h2>
                                     {editingId
@@ -292,79 +430,91 @@ const WhatToBring = () => {
                                 <p>
                                     {editingId
                                         ? "Update the selected item."
-                                        : "Add a new item travelers should bring for a package."}
+                                        : "Add multiple items travelers should bring for a package."}
                                 </p>
                             </div>
 
-                            <form
-                                className="what-to-bring-form"
-                                onSubmit={handleSubmit}
-                            >
-                                <div className="what-to-bring-form-group">
-                                    <label>
-                                        Package
-                                        <span className="required">
-                                            *
-                                        </span>
-                                    </label>
+                            {editingId ? (
+                                /* ==================
+                                   EDIT ONE ITEM
+                                ================== */
 
-                                    <select
-                                        value={packageId}
-                                        onChange={(e) =>
-                                            setPackageId(
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={
-                                            editingId !== null
-                                        }
-                                    >
-                                        <option value="">
-                                            Select Package
-                                        </option>
+                                <form
+                                    className="what-to-bring-form"
+                                    onSubmit={
+                                        handleUpdate
+                                    }
+                                >
+                                    <div className="what-to-bring-form-group">
+                                        <label>
+                                            Package
+                                            <span className="required">
+                                                *
+                                            </span>
+                                        </label>
 
-                                        {packages.map(
-                                            (pkg) => (
-                                                <option
-                                                    key={pkg.id}
-                                                    value={pkg.id}
-                                                >
-                                                    {pkg.title}
-                                                </option>
-                                            )
-                                        )}
-                                    </select>
-                                </div>
+                                        <select
+                                            value={
+                                                packageId
+                                            }
+                                            disabled
+                                        >
+                                            <option value="">
+                                                Select Package
+                                            </option>
 
-                                <div className="what-to-bring-form-group what-to-bring-item-field">
-                                    <label>
-                                        What To Bring
-                                        <span className="required">
-                                            *
-                                        </span>
-                                    </label>
+                                            {packages.map(
+                                                (pkg) => (
+                                                    <option
+                                                        key={
+                                                            pkg.id
+                                                        }
+                                                        value={
+                                                            pkg.id
+                                                        }
+                                                    >
+                                                        {
+                                                            pkg.title
+                                                        }
+                                                    </option>
+                                                )
+                                            )}
+                                        </select>
+                                    </div>
 
-                                    <input
-                                        type="text"
-                                        value={item}
-                                        onChange={(e) =>
-                                            setItem(
-                                                e.target.value
-                                            )
-                                        }
-                                        placeholder="e.g. Warm jacket"
-                                        maxLength={255}
-                                        disabled={saving}
-                                    />
-                                </div>
+                                    <div className="what-to-bring-form-group what-to-bring-item-field">
+                                        <label>
+                                            What To Bring
+                                            <span className="required">
+                                                *
+                                            </span>
+                                        </label>
 
-                                <div className="what-to-bring-form-buttons">
-                                    {editingId && (
+                                        <input
+                                            type="text"
+                                            value={item}
+                                            onChange={(e) =>
+                                                setItem(
+                                                    e.target
+                                                        .value
+                                                )
+                                            }
+                                            placeholder="e.g. Warm jacket"
+                                            maxLength={
+                                                255
+                                            }
+                                            disabled={
+                                                saving
+                                            }
+                                        />
+                                    </div>
+
+                                    <div className="what-to-bring-form-buttons">
                                         <button
                                             type="button"
                                             className="what-to-bring-cancel-btn"
                                             onClick={
-                                                resetForm
+                                                cancelEdit
                                             }
                                             disabled={
                                                 saving
@@ -372,41 +522,213 @@ const WhatToBring = () => {
                                         >
                                             Cancel
                                         </button>
-                                    )}
 
-                                    <button
-                                        type="submit"
-                                        className="what-to-bring-save-btn"
-                                        disabled={saving}
-                                    >
-                                        <FaPlus />
+                                        <button
+                                            type="submit"
+                                            className="what-to-bring-save-btn"
+                                            disabled={
+                                                saving
+                                            }
+                                        >
+                                            <FaPen />
 
-                                        {saving
-                                            ? "Saving..."
-                                            : editingId
-                                              ? "Update"
-                                              : "Add"}
-                                    </button>
-                                </div>
-                            </form>
+                                            {saving
+                                                ? "Saving..."
+                                                : "Update"}
+                                        </button>
+                                    </div>
+                                </form>
+                            ) : (
+                                /* ==================
+                                   CREATE MULTIPLE
+                                ================== */
+
+                                <form
+                                    onSubmit={
+                                        handleCreate
+                                    }
+                                >
+                                    <div className="what-to-bring-package-section">
+                                        <div className="what-to-bring-form-group">
+                                            <label>
+                                                Package
+                                                <span className="required">
+                                                    *
+                                                </span>
+                                            </label>
+
+                                            <select
+                                                value={
+                                                    packageId
+                                                }
+                                                onChange={(
+                                                    e
+                                                ) =>
+                                                    setPackageId(
+                                                        e.target
+                                                            .value
+                                                    )
+                                                }
+                                                disabled={
+                                                    saving
+                                                }
+                                            >
+                                                <option value="">
+                                                    Select Package
+                                                </option>
+
+                                                {packages.map(
+                                                    (
+                                                        pkg
+                                                    ) => (
+                                                        <option
+                                                            key={
+                                                                pkg.id
+                                                            }
+                                                            value={
+                                                                pkg.id
+                                                            }
+                                                        >
+                                                            {
+                                                                pkg.title
+                                                            }
+                                                        </option>
+                                                    )
+                                                )}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="what-to-bring-items-list">
+                                        {items.map(
+                                            (
+                                                entry,
+                                                index
+                                            ) => (
+                                                <div
+                                                    className="what-to-bring-item-row"
+                                                    key={
+                                                        index
+                                                    }
+                                                >
+                                                    <div className="what-to-bring-number">
+                                                        {index +
+                                                            1}
+                                                    </div>
+
+                                                    <div className="what-to-bring-form-group what-to-bring-item-field">
+                                                        <label>
+                                                            What
+                                                            To
+                                                            Bring
+                                                            <span className="required">
+                                                                *
+                                                            </span>
+                                                        </label>
+
+                                                        <input
+                                                            type="text"
+                                                            value={
+                                                                entry.item
+                                                            }
+                                                            onChange={(
+                                                                e
+                                                            ) =>
+                                                                handleItemChange(
+                                                                    index,
+                                                                    e
+                                                                        .target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            placeholder="e.g. Warm jacket"
+                                                            maxLength={
+                                                                255
+                                                            }
+                                                            disabled={
+                                                                saving
+                                                            }
+                                                        />
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        className="what-to-bring-remove-btn"
+                                                        onClick={() =>
+                                                            removeItemRow(
+                                                                index
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            items.length ===
+                                                                1 ||
+                                                            saving
+                                                        }
+                                                        title="Remove Item"
+                                                    >
+                                                        <FaTimes />
+                                                    </button>
+                                                </div>
+                                            )
+                                        )}
+                                    </div>
+
+                                    <div className="what-to-bring-create-actions">
+                                        <button
+                                            type="button"
+                                            className="what-to-bring-add-more-btn"
+                                            onClick={
+                                                addItemRow
+                                            }
+                                            disabled={
+                                                saving
+                                            }
+                                        >
+                                            <FaPlus />
+                                            Add Item
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            className="what-to-bring-save-btn"
+                                            disabled={
+                                                saving
+                                            }
+                                        >
+                                            <FaPlus />
+
+                                            {saving
+                                                ? "Saving..."
+                                                : "Save Items"}
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
                         </div>
 
+                        {/* ==================
+                            TABLE
+                        ================== */}
+
                         <div className="what-to-bring-table-card">
+
                             <div className="what-to-bring-card-header">
                                 <h2>
-                                    All What To Bring Items
+                                    All What To Bring
+                                    Items
                                 </h2>
                             </div>
 
                             {loading ? (
                                 <div className="what-to-bring-empty">
-                                    Loading what to bring items...
+                                    Loading what to
+                                    bring items...
                                 </div>
                             ) : whatToBringItems.length ===
                               0 ? (
                                 <div className="what-to-bring-empty">
-                                    No what to bring items
-                                    found.
+                                    No what to bring
+                                    items found.
                                 </div>
                             ) : (
                                 <>
@@ -423,7 +745,9 @@ const WhatToBring = () => {
                                                     </th>
 
                                                     <th>
-                                                        What To Bring
+                                                        What
+                                                        To
+                                                        Bring
                                                     </th>
 
                                                     <th>

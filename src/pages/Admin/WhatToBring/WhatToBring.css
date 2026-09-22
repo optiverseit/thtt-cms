@@ -300,3 +300,179 @@
         padding: 12px 14px;
     }
 }
+
+/* =========================================
+   MULTIPLE WHAT TO BRING CREATE FORM
+========================================= */
+
+.what-to-bring-package-section {
+    padding: 20px 20px 0;
+}
+
+.what-to-bring-package-section select {
+    min-width: 300px;
+}
+
+.what-to-bring-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+}
+
+.what-to-bring-item-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 16px;
+    background: #fcfbfd;
+    border: 1px solid #e6e1e9;
+    border-radius: 9px;
+}
+
+.what-to-bring-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 42px;
+    flex-shrink: 0;
+
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.what-to-bring-item-row
+.what-to-bring-item-field {
+    flex: 1;
+}
+
+.what-to-bring-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+
+    padding: 0;
+
+    background: #fdeaf3;
+    border: none;
+    border-radius: 7px;
+
+    color: #f52d91;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.what-to-bring-remove-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.what-to-bring-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.what-to-bring-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 0 20px 20px;
+}
+
+.what-to-bring-add-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    height: 42px;
+    padding: 0 18px;
+
+    background: #f1edf5;
+    border: none;
+    border-radius: 7px;
+
+    color: #351255;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.what-to-bring-add-more-btn:hover:not(:disabled) {
+    background: #e5ddeb;
+}
+
+.what-to-bring-add-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+    .what-to-bring-item-row {
+        flex-wrap: wrap;
+    }
+
+    .what-to-bring-number {
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+    }
+
+    .what-to-bring-item-row
+    .what-to-bring-item-field {
+        flex: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .what-to-bring-package-section {
+        padding: 16px 16px 0;
+    }
+
+    .what-to-bring-package-section select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .what-to-bring-items-list {
+        padding: 16px;
+    }
+
+    .what-to-bring-item-row {
+        align-items: stretch;
+    }
+
+    .what-to-bring-item-row
+    .what-to-bring-item-field {
+        width: 100%;
+        flex: none;
+    }
+
+    .what-to-bring-remove-btn {
+        width: 100%;
+    }
+
+    .what-to-bring-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+
+        padding: 0 16px 16px;
+    }
+
+    .what-to-bring-create-actions button {
+        width: 100%;
+    }
+}
