@@ -25,6 +25,7 @@ import Restriction from './pages/Admin/Restriction/Restriction';
 import WhatToBring from './pages/Admin/WhatToBring/WhatToBring'
 import Faq from './pages/Admin/Faq/Faq'
 import PricingTier from './pages/Admin/PricingTier/PricingTier';
+import Itinerary from './pages/Admin/Itinerary/Itinerary';
 
 function App() {
 
@@ -209,6 +210,16 @@ function App() {
           }
         />
 
+        {/* ITINERARY */}
+
+        <Route
+          path="/packages/itineraries"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Itinerary />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

@@ -247,3 +247,24 @@ export const updatePricingTier = (id, data) => {
 export const deletePricingTier = (id) => {
     return axiosInstance.delete(`/pricing-tiers/${id}`);
 };
+
+
+// ITINERAIES
+export const getAllItinerariesCms = (page = 1) => {
+    return axiosInstance.get(`/itineraries/cms?page=${page}`);
+};
+
+export const createItineraries = (packageId, data) => {
+    return axiosInstance.post(
+        `/itineraries/packages/${packageId}`,
+        data
+    );
+};
+
+export const updateItinerary = (id, data) => {
+    return axiosInstance.put(`/itineraries/${id}`, data);
+};
+
+export const deleteItinerary = (id) => {
+    return axiosInstance.delete(`/itineraries/${id}`);
+};
