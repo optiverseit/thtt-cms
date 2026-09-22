@@ -268,3 +268,33 @@ export const updateItinerary = (id, data) => {
 export const deleteItinerary = (id) => {
     return axiosInstance.delete(`/itineraries/${id}`);
 };
+
+// ==============================
+// PACKAGE HIGHLIGHTS
+// ==============================
+
+export const getAllHighlightsCms = (page = 1) => {
+    return axiosInstance.get(`/highlights/cms?page=${page}`);
+};
+
+export const createHighlight = (packageId, data) => {
+    return axiosInstance.post(`/highlights/packages/${packageId}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updateHighlight = (id, data) => {
+    data.append("_method", "PUT");
+
+    return axiosInstance.post(`/highlights/${id}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const deleteHighlight = (id) => {
+    return axiosInstance.delete(`/highlights/${id}`);
+};

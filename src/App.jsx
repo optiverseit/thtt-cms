@@ -26,6 +26,7 @@ import WhatToBring from './pages/Admin/WhatToBring/WhatToBring'
 import Faq from './pages/Admin/Faq/Faq'
 import PricingTier from './pages/Admin/PricingTier/PricingTier';
 import Itinerary from './pages/Admin/Itinerary/Itinerary';
+import Highlight from './pages/Admin/Highlight/Highlight';
 
 function App() {
 
@@ -220,6 +221,18 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* HIGHLIGHT */}
+
+        <Route
+          path="/packages/highlights"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Highlight />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   )
