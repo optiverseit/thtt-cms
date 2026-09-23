@@ -33,6 +33,10 @@ export const deleteCategory = (id) => {
     return axiosInstance.delete(`/categories/${id}`);
 };
 
+export const getCategoryById = (id) => {
+    return axiosInstance.get(`/categories/${id}`);
+};
+
 
 // PACKAGES
 export const getAllPackagesCms = (page = 1) => {
@@ -63,6 +67,11 @@ export const changePackageStatus = (id) => {
 
 export const deletePackage = (id) => {
     return axiosInstance.delete(`/packages/${id}`);
+};
+
+// PUBLIC PACKAGE SHOW
+export const getPackageById = (id) => {
+    return axiosInstance.get(`/packages/${id}`);
 };
 
 
@@ -97,6 +106,11 @@ export const deleteVehicle = (id) => {
     return axiosInstance.delete(`/vehicles/${id}`);
 };
 
+// PUBLIC VEHICLE SHOW
+export const getVehicleById = (id) => {
+    return axiosInstance.get(`/vehicles/${id}`);
+};
+
 
 // HELIS
 export const getAllHelisCms = (page = 1) => {
@@ -129,6 +143,11 @@ export const deleteHeli = (id) => {
     return axiosInstance.delete(`/helis/${id}`);
 };
 
+// PUBLIC HELI SHOW
+export const getHeliById = (id) => {
+    return axiosInstance.get(`/helis/${id}`);
+};
+
 
 // INCLUSIONS
 export const getAllInclusionsCms = (page = 1) => {
@@ -147,6 +166,12 @@ export const deleteInclusion = (id) => {
     return axiosInstance.delete(`/inclusions/${id}`);
 };
 
+// PUBLIC PACKAGE INCLUSIONS
+export const getPackageInclusions = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/inclusions`);
+};
+
+
 // EXCLUSION
 export const getAllExclusionsCms = (page = 1) => {
     return axiosInstance.get(`/exclusions/cms?page=${page}`);
@@ -163,6 +188,12 @@ export const updateExclusion = (id, data) => {
 export const deleteExclusion = (id) => {
     return axiosInstance.delete(`/exclusions/${id}`);
 };
+
+// PUBLIC PACKAGE EXCLUSIONS
+export const getPackageExclusions = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/exclusions`);
+};
+
 
 // RESTRICTIONS
 export const getAllRestrictionsCms = (page = 1) => {
@@ -181,6 +212,12 @@ export const deleteRestriction = (id) => {
     return axiosInstance.delete(`/restrictions/${id}`);
 };
 
+// PUBLIC PACKAGE RESTRICTIONS
+export const getPackageRestrictions = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/restrictions`);
+};
+
+
 // WHAT TO BRING
 export const getAllWhatToBringCms = (page = 1) => {
     return axiosInstance.get(`/what-to-bring/cms?page=${page}`);
@@ -198,9 +235,13 @@ export const deleteWhatToBring = (id) => {
     return axiosInstance.delete(`/what-to-bring/${id}`);
 };
 
+// PUBLIC PACKAGE WHAT TO BRING
+export const getPackageWhatToBring = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/what-to-bring`);
+};
+
 
 // FAQ
-
 export const getAllFaqsCms = (page = 1) => {
     return axiosInstance.get(`/faqs/cms?page=${page}`);
 };
@@ -223,9 +264,13 @@ export const deleteFaq = (id) => {
     return axiosInstance.delete(`/faqs/${id}`);
 };
 
+// PUBLIC PACKAGE FAQS
+export const getPackageFaqs = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/faqs`);
+};
+
 
 // PRICING TIERS
-
 export const getAllPricingTiersCms = (page = 1) => {
     return axiosInstance.get(`/pricing-tiers/cms?page=${page}`);
 };
@@ -248,6 +293,11 @@ export const deletePricingTier = (id) => {
     return axiosInstance.delete(`/pricing-tiers/${id}`);
 };
 
+// PUBLIC PACKAGE PRICING TIERS
+export const getPackagePricingTiers = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/pricing-tiers`);
+};
+
 
 // ITINERAIES
 export const getAllItinerariesCms = (page = 1) => {
@@ -268,6 +318,12 @@ export const updateItinerary = (id, data) => {
 export const deleteItinerary = (id) => {
     return axiosInstance.delete(`/itineraries/${id}`);
 };
+
+// PUBLIC PACKAGE ITINERARIES
+export const getPackageItineraries = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/itineraries`);
+};
+
 
 // ==============================
 // PACKAGE HIGHLIGHTS
@@ -297,4 +353,24 @@ export const updateHighlight = (id, data) => {
 
 export const deleteHighlight = (id) => {
     return axiosInstance.delete(`/highlights/${id}`);
+};
+
+// PUBLIC PACKAGE HIGHLIGHTS
+export const getPackageHighlights = (packageId) => {
+    return axiosInstance.get(`/packages/${packageId}/highlights`);
+};
+
+
+// ==============================
+// COUNTRIES
+// ==============================
+
+// PUBLIC COUNTRY SHOW
+export const getCountryById = (id) => {
+    return axiosInstance.get(`/countries/${id}`);
+};
+
+// PUBLIC COUNTRY PERMIT FEE TIERS
+export const getCountryPermitFeeTiers = (countryId) => {
+    return axiosInstance.get(`/countries/${countryId}/permit-fee-tiers`);
 };

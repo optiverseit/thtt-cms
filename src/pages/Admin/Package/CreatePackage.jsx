@@ -52,7 +52,10 @@ const CreatePackage = () => {
             const response = await getAllCategoriesCms();
 
             if (response.data?.status) {
-                const activeCategories = (response.data.data || []).filter(
+                const categoryList =
+                    response.data?.data?.data || [];
+
+                const activeCategories = categoryList.filter(
                     (category) => category.status === "ACTIVE"
                 );
 
@@ -68,7 +71,10 @@ const CreatePackage = () => {
             const response = await getAllVehiclesCms();
 
             if (response.data?.status) {
-                const activeVehicles = (response.data.data || []).filter(
+                const vehicleList =
+                    response.data?.data?.data || [];
+
+                const activeVehicles = vehicleList.filter(
                     (vehicle) => vehicle.status === "ACTIVE"
                 );
 
@@ -84,7 +90,10 @@ const CreatePackage = () => {
             const response = await getAllHelisCms();
 
             if (response.data?.status) {
-                const activeHelis = (response.data.data || []).filter(
+                const heliList =
+                    response.data?.data?.data || [];
+
+                const activeHelis = heliList.filter(
                     (heli) => heli.status === "ACTIVE"
                 );
 
@@ -200,12 +209,12 @@ const CreatePackage = () => {
             prev.map((item) =>
                 item.vehicle_id === vehicleId
                     ? {
-                          ...item,
-                          included,
-                          additional_price: included
-                              ? 0
-                              : item.additional_price,
-                      }
+                        ...item,
+                        included,
+                        additional_price: included
+                            ? 0
+                            : item.additional_price,
+                    }
                     : item
             )
         );
@@ -216,9 +225,9 @@ const CreatePackage = () => {
             prev.map((item) =>
                 item.vehicle_id === vehicleId
                     ? {
-                          ...item,
-                          additional_price: price,
-                      }
+                        ...item,
+                        additional_price: price,
+                    }
                     : item
             )
         );
@@ -252,12 +261,12 @@ const CreatePackage = () => {
             prev.map((item) =>
                 item.heli_id === heliId
                     ? {
-                          ...item,
-                          included,
-                          additional_price: included
-                              ? 0
-                              : item.additional_price,
-                      }
+                        ...item,
+                        included,
+                        additional_price: included
+                            ? 0
+                            : item.additional_price,
+                    }
                     : item
             )
         );
@@ -268,9 +277,9 @@ const CreatePackage = () => {
             prev.map((item) =>
                 item.heli_id === heliId
                     ? {
-                          ...item,
-                          additional_price: price,
-                      }
+                        ...item,
+                        additional_price: price,
+                    }
                     : item
             )
         );
@@ -301,7 +310,7 @@ const CreatePackage = () => {
         if (
             formData.max_people &&
             Number(formData.max_people) <
-                Number(formData.min_people)
+            Number(formData.min_people)
         ) {
             Swal.fire({
                 icon: "warning",
@@ -830,286 +839,240 @@ const CreatePackage = () => {
 
                             {/* VEHICLES */}
 
+                            {/* VEHICLES */}
                             <div className="package-form-card">
                                 <div className="package-form-card-header">
                                     <h2>Vehicles</h2>
-                                    <p>
-                                        Select vehicles available for this package.
-                                    </p>
+                                    <p>Select vehicles available for this package.</p>
                                 </div>
 
                                 <div className="package-form-body">
+                                    <div className="package-form-group">
+                                        <label>Select Vehicle</label>
 
-                                    {vehicles.length === 0 ? (
-                                        <p className="package-empty-option">
-                                            No active vehicles available.
-                                        </p>
-                                    ) : (
-                                        <div className="package-option-list">
+                                        <select
+                                            value=""
+                                            onChange={(e) => {
+                                                const vehicle = vehicles.find(
+                                                    (v) => String(v.id) === e.target.value
+                                                );
 
-                                            {vehicles.map((vehicle) => {
-                                                const selected =
-                                                    selectedVehicles.find(
-                                                        (item) =>
-                                                            item.vehicle_id ===
-                                                            vehicle.id
-                                                    );
+                                                if (vehicle) {
+                                                    handleVehicleSelect(vehicle);
+                                                }
+                                            }}
+                                            disabled={saving}
+                                        >
+                                            <option value="">Select vehicle</option>
 
-                                                return (
-                                                    <div
-                                                        key={
-                                                            vehicle.id
+                                            {vehicles
+                                                .filter(
+                                                    (vehicle) =>
+                                                        !selectedVehicles.some(
+                                                            (item) =>
+                                                                String(item.vehicle_id) === String(vehicle.id)
+                                                        )
+                                                )
+                                                .map((vehicle) => (
+                                                    <option key={vehicle.id} value={vehicle.id}>
+                                                        {vehicle.name} - Capacity: {vehicle.capacity}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </div>
+
+                                    {selectedVehicles.map((selected) => {
+                                        const vehicle = vehicles.find(
+                                            (v) =>
+                                                String(v.id) ===
+                                                String(selected.vehicle_id)
+                                        );
+
+                                        if (!vehicle) return null;
+
+                                        return (
+                                            <div
+                                                key={selected.vehicle_id}
+                                                className="package-option-item package-option-selected"
+                                            >
+                                                <div className="package-option-main">
+                                                    <div>
+                                                        <h4>{vehicle.name}</h4>
+                                                        <p>Capacity: {vehicle.capacity}</p>
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleVehicleSelect(vehicle)
                                                         }
-                                                        className={`package-option-item ${
-                                                            selected
-                                                                ? "package-option-selected"
-                                                                : ""
-                                                        }`}
+                                                        disabled={saving}
                                                     >
-                                                        <div className="package-option-main">
+                                                        Remove
+                                                    </button>
+                                                </div>
+
+                                                <div className="package-option-settings">
+                                                    <label className="package-included-checkbox">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selected.included}
+                                                            onChange={(e) =>
+                                                                handleVehicleIncludedChange(
+                                                                    vehicle.id,
+                                                                    e.target.checked
+                                                                )
+                                                            }
+                                                            disabled={saving}
+                                                        />
+
+                                                        Included in package
+                                                    </label>
+
+                                                    {!selected.included && (
+                                                        <div className="package-additional-price">
+                                                            <label>Additional Price</label>
 
                                                             <input
-                                                                type="checkbox"
-                                                                checked={
-                                                                    !!selected
-                                                                }
-                                                                onChange={() =>
-                                                                    handleVehicleSelect(
-                                                                        vehicle
+                                                                type="number"
+                                                                min="0"
+                                                                step="0.01"
+                                                                value={selected.additional_price}
+                                                                onChange={(e) =>
+                                                                    handleVehiclePriceChange(
+                                                                        vehicle.id,
+                                                                        e.target.value
                                                                     )
                                                                 }
-                                                                disabled={
-                                                                    saving
-                                                                }
+                                                                placeholder="0"
+                                                                disabled={saving}
                                                             />
-
-                                                            <div>
-                                                                <h4>
-                                                                    {
-                                                                        vehicle.type
-                                                                    }
-                                                                </h4>
-
-                                                                <p>
-                                                                    Capacity:{" "}
-                                                                    {
-                                                                        vehicle.capacity
-                                                                    }
-                                                                </p>
-                                                            </div>
-
                                                         </div>
-
-                                                        {selected && (
-                                                            <div className="package-option-settings">
-
-                                                                <label className="package-included-checkbox">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={
-                                                                            selected.included
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleVehicleIncludedChange(
-                                                                                vehicle.id,
-                                                                                e
-                                                                                    .target
-                                                                                    .checked
-                                                                            )
-                                                                        }
-                                                                        disabled={
-                                                                            saving
-                                                                        }
-                                                                    />
-
-                                                                    Included in package
-                                                                </label>
-
-                                                                {!selected.included && (
-                                                                    <div className="package-additional-price">
-                                                                        <label>
-                                                                            Additional Price
-                                                                        </label>
-
-                                                                        <input
-                                                                            type="number"
-                                                                            min="0"
-                                                                            step="0.01"
-                                                                            value={
-                                                                                selected.additional_price
-                                                                            }
-                                                                            onChange={(
-                                                                                e
-                                                                            ) =>
-                                                                                handleVehiclePriceChange(
-                                                                                    vehicle.id,
-                                                                                    e
-                                                                                        .target
-                                                                                        .value
-                                                                                )
-                                                                            }
-                                                                            placeholder="0"
-                                                                            disabled={
-                                                                                saving
-                                                                            }
-                                                                        />
-                                                                    </div>
-                                                                )}
-
-                                                            </div>
-                                                        )}
-
-                                                    </div>
-                                                );
-                                            })}
-
-                                        </div>
-                                    )}
-
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
 
                             {/* HELICOPTERS */}
 
+                            {/* HELICOPTERS */}
                             <div className="package-form-card">
                                 <div className="package-form-card-header">
                                     <h2>Helicopters</h2>
-                                    <p>
-                                        Select helicopters available for this package.
-                                    </p>
+                                    <p>Select helicopters available for this package.</p>
                                 </div>
 
                                 <div className="package-form-body">
+                                    <div className="package-form-group">
+                                        <label>Select Helicopter</label>
 
-                                    {helis.length === 0 ? (
-                                        <p className="package-empty-option">
-                                            No active helicopters available.
-                                        </p>
-                                    ) : (
-                                        <div className="package-option-list">
+                                        <select
+                                            value=""
+                                            onChange={(e) => {
+                                                const heli = helis.find(
+                                                    (h) => String(h.id) === e.target.value
+                                                );
 
-                                            {helis.map((heli) => {
-                                                const selected =
-                                                    selectedHelis.find(
-                                                        (item) =>
-                                                            item.heli_id ===
-                                                            heli.id
-                                                    );
+                                                if (heli) {
+                                                    handleHeliSelect(heli);
+                                                }
+                                            }}
+                                            disabled={saving}
+                                        >
+                                            <option value="">Select helicopter</option>
 
-                                                return (
-                                                    <div
-                                                        key={heli.id}
-                                                        className={`package-option-item ${
-                                                            selected
-                                                                ? "package-option-selected"
-                                                                : ""
-                                                        }`}
+                                            {helis
+                                                .filter(
+                                                    (heli) =>
+                                                        !selectedHelis.some(
+                                                            (item) =>
+                                                                String(item.heli_id) === String(heli.id)
+                                                        )
+                                                )
+                                                .map((heli) => (
+                                                    <option key={heli.id} value={heli.id}>
+                                                        {heli.name} - Capacity: {heli.capacity}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </div>
+
+                                    {selectedHelis.map((selected) => {
+                                        const heli = helis.find(
+                                            (h) =>
+                                                String(h.id) ===
+                                                String(selected.heli_id)
+                                        );
+
+                                        if (!heli) return null;
+
+                                        return (
+                                            <div
+                                                key={selected.heli_id}
+                                                className="package-option-item package-option-selected"
+                                            >
+                                                <div className="package-option-main">
+                                                    <div>
+                                                        <h4>{heli.name}</h4>
+                                                        <p>Capacity: {heli.capacity}</p>
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleHeliSelect(heli)
+                                                        }
+                                                        disabled={saving}
                                                     >
-                                                        <div className="package-option-main">
+                                                        Remove
+                                                    </button>
+                                                </div>
+
+                                                <div className="package-option-settings">
+                                                    <label className="package-included-checkbox">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selected.included}
+                                                            onChange={(e) =>
+                                                                handleHeliIncludedChange(
+                                                                    heli.id,
+                                                                    e.target.checked
+                                                                )
+                                                            }
+                                                            disabled={saving}
+                                                        />
+
+                                                        Included in package
+                                                    </label>
+
+                                                    {!selected.included && (
+                                                        <div className="package-additional-price">
+                                                            <label>Additional Price</label>
 
                                                             <input
-                                                                type="checkbox"
-                                                                checked={
-                                                                    !!selected
-                                                                }
-                                                                onChange={() =>
-                                                                    handleHeliSelect(
-                                                                        heli
+                                                                type="number"
+                                                                min="0"
+                                                                step="0.01"
+                                                                value={selected.additional_price}
+                                                                onChange={(e) =>
+                                                                    handleHeliPriceChange(
+                                                                        heli.id,
+                                                                        e.target.value
                                                                     )
                                                                 }
-                                                                disabled={
-                                                                    saving
-                                                                }
+                                                                placeholder="0"
+                                                                disabled={saving}
                                                             />
-
-                                                            <div>
-                                                                <h4>
-                                                                    {
-                                                                        heli.type
-                                                                    }
-                                                                </h4>
-
-                                                                <p>
-                                                                    Capacity:{" "}
-                                                                    {
-                                                                        heli.capacity
-                                                                    }
-                                                                </p>
-                                                            </div>
-
                                                         </div>
-
-                                                        {selected && (
-                                                            <div className="package-option-settings">
-
-                                                                <label className="package-included-checkbox">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={
-                                                                            selected.included
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) =>
-                                                                            handleHeliIncludedChange(
-                                                                                heli.id,
-                                                                                e
-                                                                                    .target
-                                                                                    .checked
-                                                                            )
-                                                                        }
-                                                                        disabled={
-                                                                            saving
-                                                                        }
-                                                                    />
-
-                                                                    Included in package
-                                                                </label>
-
-                                                                {!selected.included && (
-                                                                    <div className="package-additional-price">
-                                                                        <label>
-                                                                            Additional Price
-                                                                        </label>
-
-                                                                        <input
-                                                                            type="number"
-                                                                            min="0"
-                                                                            step="0.01"
-                                                                            value={
-                                                                                selected.additional_price
-                                                                            }
-                                                                            onChange={(
-                                                                                e
-                                                                            ) =>
-                                                                                handleHeliPriceChange(
-                                                                                    heli.id,
-                                                                                    e
-                                                                                        .target
-                                                                                        .value
-                                                                                )
-                                                                            }
-                                                                            placeholder="0"
-                                                                            disabled={
-                                                                                saving
-                                                                            }
-                                                                        />
-                                                                    </div>
-                                                                )}
-
-                                                            </div>
-                                                        )}
-
-                                                    </div>
-                                                );
-                                            })}
-
-                                        </div>
-                                    )}
-
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
