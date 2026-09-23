@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
-    getAllPackagesCms,
+    getPackageById,
     updatePackage,
     getAllCategoriesCms,
     getAllVehiclesCms,
@@ -49,154 +49,152 @@ const EditPackage = () => {
         loadPageData();
     }, [id]);
 
-    const loadPageData = async () => {
-        try {
-            setLoading(true);
+const loadPageData = async () => {
+    try {
+        setLoading(true);
 
-            const [
-                packageResponse,
-                categoryResponse,
-                vehicleResponse,
-                heliResponse,
-            ] = await Promise.all([
-                getAllPackagesCms(),
-                getAllCategoriesCms(),
-                getAllVehiclesCms(),
-                getAllHelisCms(),
-            ]);
+        const [
+            packageResponse,
+            categoryResponse,
+            vehicleResponse,
+            heliResponse,
+        ] = await Promise.all([
+            getPackageById(id),
+            getAllCategoriesCms(),
+            getAllVehiclesCms(),
+            getAllHelisCms(),
+        ]);
 
-            if (categoryResponse.data?.status) {
-                setCategories(
-                    (categoryResponse.data.data || []).filter(
-                        (category) =>
-                            category.status === "ACTIVE"
-                    )
-                );
-            }
+        // Categories
+        if (categoryResponse.data?.status) {
+            const categoryList =
+                categoryResponse.data?.data?.data || [];
 
-            if (vehicleResponse.data?.status) {
-                setVehicles(
-                    (vehicleResponse.data.data || []).filter(
-                        (vehicle) =>
-                            vehicle.status === "ACTIVE"
-                    )
-                );
-            }
-
-            if (heliResponse.data?.status) {
-                setHelis(
-                    (heliResponse.data.data || []).filter(
-                        (heli) =>
-                            heli.status === "ACTIVE"
-                    )
-                );
-            }
-
-            const packageList =
-                packageResponse.data?.data || [];
-
-            const packageItem = packageList.find(
-                (item) => String(item.id) === String(id)
+            setCategories(
+                categoryList.filter(
+                    (category) => category.status === "ACTIVE"
+                )
             );
+        }
 
-            if (!packageItem) {
-                await Swal.fire({
-                    icon: "error",
-                    title: "Package Not Found",
-                    text: "The requested package could not be found.",
-                    confirmButtonColor: "#351255",
-                });
+        // Vehicles
+        if (vehicleResponse.data?.status) {
+            const vehicleList =
+                vehicleResponse.data?.data?.data || [];
 
-                navigate("/packages");
-                return;
-            }
-
-            setFormData({
-                title: packageItem.title || "",
-                slug: packageItem.slug || "",
-                duration: packageItem.duration || "",
-                price: packageItem.price || "",
-                category_id:
-                    packageItem.category_id || "",
-                is_featured:
-                    packageItem.is_featured === true ||
-                    packageItem.is_featured === 1 ||
-                    packageItem.is_featured === "1",
-                difficulty:
-                    packageItem.difficulty || "",
-                adventure_category:
-                    packageItem.adventure_category || "",
-                intensity:
-                    packageItem.intensity || "",
-                min_people:
-                    packageItem.min_people || 1,
-                max_people:
-                    packageItem.max_people || "",
-                description:
-                    packageItem.description || "",
-                location:
-                    packageItem.location || "",
-            });
-
-            setImagePreview(packageItem.image || null);
-
-            const existingVehicles =
-                packageItem.package_vehicles ||
-                packageItem.packageVehicles ||
-                [];
-
-            setSelectedVehicles(
-                existingVehicles.map((item) => ({
-                    vehicle_id:
-                        item.vehicle_id ||
-                        item.vehicle?.id,
-                    included:
-                        item.included === true ||
-                        item.included === 1 ||
-                        item.included === "1",
-                    additional_price:
-                        item.additional_price || 0,
-                }))
+            setVehicles(
+                vehicleList.filter(
+                    (vehicle) => vehicle.status === "ACTIVE"
+                )
             );
+        }
 
-            const existingHelis =
-                packageItem.package_helis ||
-                packageItem.packageHelis ||
-                [];
+        // Helicopters
+        if (heliResponse.data?.status) {
+            const heliList =
+                heliResponse.data?.data?.data || [];
 
-            setSelectedHelis(
-                existingHelis.map((item) => ({
-                    heli_id:
-                        item.heli_id ||
-                        item.heli?.id,
-                    included:
-                        item.included === true ||
-                        item.included === 1 ||
-                        item.included === "1",
-                    additional_price:
-                        item.additional_price || 0,
-                }))
+            setHelis(
+                heliList.filter(
+                    (heli) => heli.status === "ACTIVE"
+                )
             );
-        } catch (error) {
-            console.error(
-                "Package load error:",
-                error
-            );
+        }
 
+        // Single package response
+        const packageItem = packageResponse.data?.data;
+
+        if (!packageItem) {
             await Swal.fire({
                 icon: "error",
-                title: "Failed",
-                text:
-                    error.response?.data?.message ||
-                    "Unable to load package.",
+                title: "Package Not Found",
+                text: "The requested package could not be found.",
                 confirmButtonColor: "#351255",
             });
 
             navigate("/packages");
-        } finally {
-            setLoading(false);
+            return;
         }
-    };
+
+        setFormData({
+            title: packageItem.title || "",
+            slug: packageItem.slug || "",
+            duration: packageItem.duration || "",
+            price: packageItem.price || "",
+            category_id: packageItem.category_id || "",
+            is_featured:
+                packageItem.is_featured === true ||
+                packageItem.is_featured === 1 ||
+                packageItem.is_featured === "1",
+            difficulty: packageItem.difficulty || "",
+            adventure_category:
+                packageItem.adventure_category || "",
+            intensity: packageItem.intensity || "",
+            min_people: packageItem.min_people || 1,
+            max_people: packageItem.max_people || "",
+            description: packageItem.description || "",
+            location: packageItem.location || "",
+        });
+
+        setImagePreview(packageItem.image || null);
+
+        // Existing vehicles linked with package
+        const existingVehicles =
+            packageItem.package_vehicles ||
+            packageItem.packageVehicles ||
+            [];
+
+        setSelectedVehicles(
+            existingVehicles.map((item) => ({
+                vehicle_id:
+                    item.vehicle_id ||
+                    item.vehicle?.id,
+                included:
+                    item.included === true ||
+                    item.included === 1 ||
+                    item.included === "1",
+                additional_price:
+                    item.additional_price || 0,
+            }))
+        );
+
+        // Existing helicopters linked with package
+        const existingHelis =
+            packageItem.package_helis ||
+            packageItem.packageHelis ||
+            [];
+
+        setSelectedHelis(
+            existingHelis.map((item) => ({
+                heli_id:
+                    item.heli_id ||
+                    item.heli?.id,
+                included:
+                    item.included === true ||
+                    item.included === 1 ||
+                    item.included === "1",
+                additional_price:
+                    item.additional_price || 0,
+            }))
+        );
+
+    } catch (error) {
+        console.error("Package load error:", error);
+
+        await Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text:
+                error.response?.data?.message ||
+                "Unable to load package.",
+            confirmButtonColor: "#351255",
+        });
+
+        navigate("/packages");
+    } finally {
+        setLoading(false);
+    }
+};
 
     const generateSlug = (value) => {
         return value
@@ -316,15 +314,15 @@ const EditPackage = () => {
         setSelectedVehicles((prev) =>
             prev.map((item) =>
                 Number(item.vehicle_id) ===
-                Number(vehicleId)
+                    Number(vehicleId)
                     ? {
-                          ...item,
-                          included,
-                          additional_price:
-                              included
-                                  ? 0
-                                  : item.additional_price,
-                      }
+                        ...item,
+                        included,
+                        additional_price:
+                            included
+                                ? 0
+                                : item.additional_price,
+                    }
                     : item
             )
         );
@@ -337,11 +335,11 @@ const EditPackage = () => {
         setSelectedVehicles((prev) =>
             prev.map((item) =>
                 Number(item.vehicle_id) ===
-                Number(vehicleId)
+                    Number(vehicleId)
                     ? {
-                          ...item,
-                          additional_price: price,
-                      }
+                        ...item,
+                        additional_price: price,
+                    }
                     : item
             )
         );
@@ -381,15 +379,15 @@ const EditPackage = () => {
         setSelectedHelis((prev) =>
             prev.map((item) =>
                 Number(item.heli_id) ===
-                Number(heliId)
+                    Number(heliId)
                     ? {
-                          ...item,
-                          included,
-                          additional_price:
-                              included
-                                  ? 0
-                                  : item.additional_price,
-                      }
+                        ...item,
+                        included,
+                        additional_price:
+                            included
+                                ? 0
+                                : item.additional_price,
+                    }
                     : item
             )
         );
@@ -402,11 +400,11 @@ const EditPackage = () => {
         setSelectedHelis((prev) =>
             prev.map((item) =>
                 Number(item.heli_id) ===
-                Number(heliId)
+                    Number(heliId)
                     ? {
-                          ...item,
-                          additional_price: price,
-                      }
+                        ...item,
+                        additional_price: price,
+                    }
                     : item
             )
         );
@@ -436,7 +434,7 @@ const EditPackage = () => {
         if (
             formData.max_people &&
             Number(formData.max_people) <
-                Number(formData.min_people)
+            Number(formData.min_people)
         ) {
             Swal.fire({
                 icon: "warning",
@@ -553,7 +551,7 @@ const EditPackage = () => {
                     vehicle.included
                         ? "0"
                         : vehicle.additional_price ||
-                              "0"
+                        "0"
                 );
             }
         );
@@ -577,7 +575,7 @@ const EditPackage = () => {
                     heli.included
                         ? "0"
                         : heli.additional_price ||
-                              "0"
+                        "0"
                 );
             }
         );
@@ -1139,7 +1137,7 @@ const EditPackage = () => {
                                 <div className="edit-package-card-body">
 
                                     {vehicles.length ===
-                                    0 ? (
+                                        0 ? (
                                         <p className="edit-package-empty">
                                             No active vehicles
                                             available.
@@ -1167,11 +1165,10 @@ const EditPackage = () => {
                                                             key={
                                                                 vehicle.id
                                                             }
-                                                            className={`edit-package-option ${
-                                                                selected
-                                                                    ? "edit-package-option-selected"
-                                                                    : ""
-                                                            }`}
+                                                            className={`edit-package-option ${selected
+                                                                ? "edit-package-option-selected"
+                                                                : ""
+                                                                }`}
                                                         >
                                                             <div className="edit-package-option-main">
 
@@ -1327,11 +1324,10 @@ const EditPackage = () => {
                                                             key={
                                                                 heli.id
                                                             }
-                                                            className={`edit-package-option ${
-                                                                selected
-                                                                    ? "edit-package-option-selected"
-                                                                    : ""
-                                                            }`}
+                                                            className={`edit-package-option ${selected
+                                                                ? "edit-package-option-selected"
+                                                                : ""
+                                                                }`}
                                                         >
                                                             <div className="edit-package-option-main">
 

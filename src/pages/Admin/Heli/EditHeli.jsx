@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
-    getAllHelisCms,
+    getHeliById,
     updateHeli,
 } from "../../../api/BackendApi";
 import Navbar from "../../../components/Navbar/Navbar";
@@ -37,14 +37,10 @@ const EditHeli = () => {
         try {
             setLoading(true);
 
-            const response = await getAllHelisCms();
+            const response = await getHeliById(id);
 
             if (response.data?.status) {
-                const helis = response.data.data || [];
-
-                const heli = helis.find(
-                    (item) => String(item.id) === String(id)
-                );
+                const heli = response.data.data 
 
                 if (!heli) {
                     await Swal.fire({

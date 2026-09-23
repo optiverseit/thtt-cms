@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
-    getAllVehiclesCms,
+    getVehicleById,
     updateVehicle,
 } from "../../../api/BackendApi";
 import Navbar from "../../../components/Navbar/Navbar";
@@ -37,14 +37,10 @@ const EditVehicle = () => {
         try {
             setLoading(true);
 
-            const response = await getAllVehiclesCms();
+            const response = await getVehicleById(id);
 
             if (response.data?.status) {
-                const vehicles = response.data.data || [];
-
-                const vehicle = vehicles.find(
-                    (item) => String(item.id) === String(id)
-                );
+                const vehicle = response.data.data;
 
                 if (!vehicle) {
                     await Swal.fire({

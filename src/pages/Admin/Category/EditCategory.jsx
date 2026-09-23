@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
-    getAllCategoriesCms,
+    getCategoryById,
     updateCategory
 } from "../../../api/BackendApi";
 import Navbar from "../../../components/Navbar/Navbar";
@@ -21,14 +21,10 @@ const EditCategory = () => {
         try {
             setLoading(true);
 
-            const response = await getAllCategoriesCms();
+            const response = await getCategoryById(id);
 
             if (response.data?.status) {
-                const categories = response.data.data || [];
-
-                const category = categories.find(
-                    (item) => String(item.id) === String(id)
-                );
+                const category = response.data.data;
 
                 if (!category) {
                     await Swal.fire({
