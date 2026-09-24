@@ -14,12 +14,9 @@ export const googleLogin = (idToken) => {
 
 // BOOKING
 export const getAllBookingsCms = (page = 1) => {
-    return axiosInstance.get("/bookings", {
-        params: {
-            page,
-        },
-    });
+    return axiosInstance.get(`/bookingspage=${page}`);
 };
+
 
 export const deleteBooking = (id) => {
   return axiosInstance.delete(`/bookings/${id}`);
