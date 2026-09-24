@@ -21,6 +21,10 @@ export const getAllBookingsCms = (page = 1) => {
     });
 };
 
+export const deleteBooking = (id) => {
+  return axiosInstance.delete(`/bookings/${id}`);
+};
+
 
 // CATEGORIES
 export const getAllCategoriesCms = (page = 1) => {
