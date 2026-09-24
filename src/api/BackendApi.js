@@ -12,6 +12,16 @@ export const googleLogin = (idToken) => {
 };
 
 
+// BOOKING
+export const getAllBookingsCms = (page = 1) => {
+    return axiosInstance.get("/bookings", {
+        params: {
+            page,
+        },
+    });
+};
+
+
 // CATEGORIES
 export const getAllCategoriesCms = (page = 1) => {
     return axiosInstance.get(`/categories/cms?page=${page}`);

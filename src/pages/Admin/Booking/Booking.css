@@ -1,0 +1,424 @@
+/* =========================================================
+   BOOKING PAGE
+   ========================================================= */
+
+.booking-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.booking-header {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.booking-header h1 {
+    margin: 0 0 6px;
+    color: #351255;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.booking-header p {
+    margin: 0;
+    color: #847b89;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   TABLE CARD
+   ========================================================= */
+
+.booking-table-card {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #eee9f0;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(53, 18, 85, 0.04);
+    overflow: hidden;
+}
+
+.booking-table-header {
+    min-height: 70px;
+    padding: 17px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee9f0;
+}
+
+.booking-table-header h2 {
+    margin: 0 0 4px;
+    color: #351255;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.booking-table-header p {
+    margin: 0;
+    color: #918995;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.booking-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.booking-table {
+    width: 100%;
+
+    /* Booking has many columns */
+    min-width: 1650px;
+
+    border-collapse: collapse;
+}
+
+.booking-table thead {
+    background: #faf8fb;
+}
+
+.booking-table th {
+    padding: 14px 16px;
+    color: #746b7a;
+    border-bottom: 1px solid #eee9f0;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.booking-table td {
+    padding: 16px;
+    color: #554b5a;
+    border-bottom: 1px solid #f1edf3;
+    font-size: 13px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.booking-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.booking-table tbody tr:hover {
+    background: #fcfafc;
+}
+
+
+/* =========================================================
+   BOOKING REFERENCE
+   ========================================================= */
+
+.booking-reference {
+    color: #351255;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   BOOKING TYPE
+   ========================================================= */
+
+.booking-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    color: #6b2e8f;
+    background: #f6edfb;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   AMOUNT
+   ========================================================= */
+
+.booking-amount {
+    color: #351255;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   DISPLAY ONLY - NO ACTION
+   ========================================================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    /* Status is NOT clickable */
+    cursor: default;
+}
+
+
+/* SUCCESS / ACTIVE / PAID / COMPLETED */
+
+.status-active {
+    color: #18794e;
+    background: #e9f8f0;
+}
+
+
+/* PENDING */
+
+.status-pending {
+    color: #9a6700;
+    background: #fff8db;
+}
+
+
+/* CANCELLED / FAILED / INACTIVE */
+
+.status-inactive {
+    color: #b42345;
+    background: #fff0f3;
+}
+
+
+/* =========================================================
+   NULL VALUES
+   ========================================================= */
+
+.booking-null {
+    color: #aaa2ad;
+    font-size: 12px;
+    font-style: italic;
+}
+
+
+/* =========================================================
+   ACTION COLUMN
+   ========================================================= */
+
+.action-column {
+    text-align: right !important;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+
+/* =========================================================
+   DELETE BUTTON
+   ========================================================= */
+
+.delete-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 10px;
+
+    color: #dc3545;
+    background: #fff0f2;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.delete-button:hover {
+    color: #ffffff;
+    background: #dc3545;
+    transform: translateY(-1px);
+}
+
+.delete-button svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   LOADING / EMPTY TABLE
+   ========================================================= */
+
+.table-message {
+    height: 180px;
+    color: #918995 !important;
+    text-align: center !important;
+}
+
+.booking-loader {
+    width: 23px;
+    height: 23px;
+    margin: 0 auto 10px;
+
+    border: 2px solid #eee5f1;
+    border-top-color: #f52d91;
+    border-radius: 50%;
+
+    animation: booking-spin 0.7s linear infinite;
+}
+
+@keyframes booking-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.booking-table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.booking-table-responsive::-webkit-scrollbar-track {
+    background: #f6f3f7;
+}
+
+.booking-table-responsive::-webkit-scrollbar-thumb {
+    background: #d8cfdd;
+    border-radius: 10px;
+}
+
+.booking-table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #bcaec5;
+}
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    border-top: 1px solid #f1edf3;
+}
+
+.pagination button {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+
+    border: 1px solid #ddd8e2;
+    background: #ffffff;
+    color: #351255;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled),
+.pagination button.active {
+    background: #351255;
+    color: #ffffff;
+    border-color: #351255;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .booking-table {
+        min-width: 1550px;
+    }
+
+    .booking-table th,
+    .booking-table td {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .booking-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .booking-header h1 {
+        font-size: 23px;
+    }
+
+    .booking-table-header {
+        padding: 15px 17px;
+    }
+
+    .booking-table {
+        min-width: 1500px;
+    }
+
+    .booking-table th {
+        padding: 12px;
+        font-size: 10px;
+    }
+
+    .booking-table td {
+        padding: 14px 12px;
+        font-size: 12px;
+    }
+
+    .delete-button {
+        padding: 6px 9px;
+        font-size: 10px;
+    }
+}
