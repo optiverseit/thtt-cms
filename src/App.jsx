@@ -27,6 +27,7 @@ import Faq from './pages/Admin/Faq/Faq'
 import PricingTier from './pages/Admin/PricingTier/PricingTier';
 import Itinerary from './pages/Admin/Itinerary/Itinerary';
 import Highlight from './pages/Admin/Highlight/Highlight';
+import Booking from './pages/Admin/Booking/Booking';
 
 function App() {
 
@@ -229,6 +230,16 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Highlight />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* BOOKINGS */}
+        <Route
+          path="/bookings"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Booking />
             </ProtectedRoute>
           }
         />
