@@ -380,6 +380,11 @@ export const getCountriesCms = (page = 1) => {
     return axiosInstance.get(`/countries/cms?page=${page}`);
 };
 
+// public
+export const getAllCountries = () => {
+    return axiosInstance.get("/countries/cms");
+};
+
 export const createCountry = (data) => {
     return axiosInstance.post("/countries/store", data);
 };

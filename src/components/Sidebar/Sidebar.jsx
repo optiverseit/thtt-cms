@@ -266,14 +266,14 @@ const Sidebar = () => {
               </button>
 
               <button
-                className={`submenu-item ${isActive("/work-permits/requirements") ? "active" : ""
+                className={`submenu-item ${isActive("/work-permits/feetiers") ? "active" : ""
                   }`}
                 onClick={() => navigate("/work-permits/feetiers")}
               >
                 Fee Tiers
               </button>
 
-              <button
+              {/* <button
                 className={`submenu-item ${isActive("/work-permits/documents") ? "active" : ""
                   }`}
                 onClick={() => navigate("/work-permits/documents")}
@@ -287,7 +287,7 @@ const Sidebar = () => {
                 onClick={() => navigate("/work-permits/payment")}
               >
                 Payments
-              </button>
+              </button> */}
 
               <button
                 className={`submenu-item ${isActive("/work-permits/pricing") ? "active" : ""

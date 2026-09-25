@@ -1,0 +1,542 @@
+.fee-tier-page {
+    width: 100%;
+}
+
+.fee-tier-header {
+    margin-bottom: 24px;
+}
+
+.fee-tier-header h1 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.fee-tier-header p {
+    margin: 6px 0 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   CARDS
+========================================= */
+
+.fee-tier-form-card,
+.fee-tier-table-card {
+    margin-bottom: 24px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.fee-tier-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #eeeaf1;
+}
+
+.fee-tier-card-header h2 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.fee-tier-card-header p {
+    margin: 5px 0 0;
+    color: #77717d;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.fee-tier-country-section {
+    padding: 20px 20px 0;
+}
+
+.fee-tier-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.fee-tier-form-group label {
+    color: #2f183e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+    color: #f52d91;
+}
+
+.fee-tier-form-group input,
+.fee-tier-form-group select {
+    width: 100%;
+    height: 42px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+    color: #2f183e;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.fee-tier-form-group input:focus,
+.fee-tier-form-group select:focus {
+    border-color: #351255;
+}
+
+.fee-tier-form-group input:disabled,
+.fee-tier-form-group select:disabled {
+    background: #f5f3f6;
+    color: #77717d;
+    cursor: not-allowed;
+}
+
+.fee-tier-country-section select,
+.fee-tier-country-field select {
+    min-width: 260px;
+}
+
+
+/* =========================================
+   CREATE MULTIPLE
+========================================= */
+
+.fee-tier-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+}
+
+.fee-tier-item-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 16px;
+    background: #fcfbfd;
+    border: 1px solid #e6e1e9;
+    border-radius: 9px;
+}
+
+.fee-tier-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 42px;
+    flex-shrink: 0;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.fee-tier-fields {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 1.4fr)
+        repeat(2, minmax(85px, 0.6fr))
+        repeat(5, minmax(120px, 1fr));
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.fee-tier-total-preview {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 12px;
+    background: #f1edf5;
+    border-radius: 7px;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.fee-tier-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    padding: 0;
+    background: #fdeaf3;
+    border: none;
+    border-radius: 7px;
+    color: #f52d91;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.fee-tier-remove-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.fee-tier-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   CREATE ACTIONS
+========================================= */
+
+.fee-tier-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+.fee-tier-add-more-btn,
+.fee-tier-save-btn,
+.fee-tier-cancel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.fee-tier-add-more-btn {
+    background: #f1edf5;
+    color: #351255;
+}
+
+.fee-tier-add-more-btn:hover:not(:disabled) {
+    background: #e5ddeb;
+}
+
+.fee-tier-save-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.fee-tier-save-btn:hover:not(:disabled) {
+    background: #481a6d;
+}
+
+.fee-tier-cancel-btn {
+    background: #f1eef3;
+    color: #2f183e;
+}
+
+.fee-tier-cancel-btn:hover:not(:disabled) {
+    background: #e5e0e8;
+}
+
+.fee-tier-add-more-btn:disabled,
+.fee-tier-save-btn:disabled,
+.fee-tier-cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   EDIT
+========================================= */
+
+.fee-tier-edit-form {
+    padding: 20px;
+}
+
+.fee-tier-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        4,
+        minmax(150px, 1fr)
+    );
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.fee-tier-form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.fee-tier-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.fee-tier-table {
+    width: 100%;
+    min-width: 1350px;
+    border-collapse: collapse;
+}
+
+.fee-tier-table th {
+    padding: 14px 16px;
+    background: #f8f6fa;
+    color: #746b91;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.fee-tier-table td {
+    padding: 15px 16px;
+    border-top: 1px solid #eeeaf1;
+    color: #2f183e;
+    font-size: 13px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.fee-tier-table tbody tr:hover {
+    background: #fcfbfd;
+}
+
+.fee-tier-country-name {
+    color: #351255;
+    font-weight: 600;
+}
+
+.fee-tier-age {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 9px;
+    background: #f1edf5;
+    border-radius: 6px;
+    color: #351255;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.fee-tier-total {
+    color: #351255;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.fee-tier-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.fee-tier-status:hover {
+    transform: translateY(-1px);
+}
+
+.fee-tier-status-active {
+    color: #18794e;
+    background: #e9f8f0;
+}
+
+.fee-tier-status-inactive {
+    color: #b42345;
+    background: #fff0f3;
+}
+
+.fee-tier-status-changing {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.fee-tier-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fee-tier-edit-btn,
+.fee-tier-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.fee-tier-edit-btn {
+    background: #f1edf5;
+    color: #351255;
+}
+
+.fee-tier-edit-btn:hover {
+    background: #351255;
+    color: #ffffff;
+}
+
+.fee-tier-delete-btn {
+    background: #fdeaf3;
+    color: #f52d91;
+}
+
+.fee-tier-delete-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.fee-tier-delete-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.fee-tier-empty {
+    padding: 45px 20px;
+    color: #77717d;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1250px) {
+    .fee-tier-fields {
+        grid-template-columns:
+            repeat(4, minmax(140px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .fee-tier-fields {
+        grid-template-columns:
+            repeat(2, minmax(140px, 1fr));
+    }
+
+    .fee-tier-edit-grid {
+        grid-template-columns:
+            repeat(2, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .fee-tier-header h1 {
+        font-size: 23px;
+    }
+
+    .fee-tier-country-section {
+        padding: 16px 16px 0;
+    }
+
+    .fee-tier-country-section select,
+    .fee-tier-country-field select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .fee-tier-items-list {
+        padding: 16px;
+    }
+
+    .fee-tier-item-row {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .fee-tier-number {
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+    }
+
+    .fee-tier-fields {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+    .fee-tier-remove-btn {
+        margin-left: auto;
+    }
+
+    .fee-tier-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 16px 16px;
+    }
+
+    .fee-tier-create-actions button {
+        width: 100%;
+    }
+
+    .fee-tier-edit-form {
+        padding: 16px;
+    }
+
+    .fee-tier-edit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fee-tier-form-buttons {
+        flex-direction: column;
+    }
+
+    .fee-tier-form-buttons button {
+        width: 100%;
+    }
+
+    .fee-tier-card-header {
+        padding: 16px;
+    }
+}
