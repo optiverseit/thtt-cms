@@ -404,10 +404,13 @@ export const getWorkPermitDocuments = (workPermitId) => {
 };
 
 // Verify document
-export const verifyWorkPermitDocument = (id, data) => {
+
+export const verifyWorkPermitDocument = (documentId, isVerified) => {
     return axiosInstance.put(
-        `/work-permits/documents/${id}/verify`,
-        data
+        `/work-permits/documents/${documentId}/verify`,
+        {
+            is_verified: isVerified,
+        }
     );
 };
 

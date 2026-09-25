@@ -17,6 +17,7 @@ import {
     getWorkPermitById,
     changeWorkPermitPaymentStatus,
     getWorkPermitDocuments,
+    verifyWorkPermitDocument,
 } from "../../../api/BackendApi";
 
 import "./WorkPermit.css";
@@ -106,6 +107,7 @@ const WorkPermit = () => {
     const [viewDocumentPermit, setViewDocumentPermit] = useState(null);
     const [viewDocuments, setViewDocuments] = useState([]);
     const [viewDocumentLoading, setViewDocumentLoading] = useState(false);
+    const [verifyingDocumentId, setVerifyingDocumentId] = useState(null);
 
     const openViewDocumentsModal = async (permit) => {
         setOpenMenuId(null);
@@ -150,6 +152,73 @@ const WorkPermit = () => {
         setViewDocumentModalOpen(false);
         setViewDocumentPermit(null);
         setViewDocuments([]);
+    };
+
+    const handleVerifyDocument = async (document) => {
+        const newVerifiedStatus = !document.is_verified;
+
+            closeViewDocumentsModal();
+
+        const result = await Swal.fire({
+            icon: "question",
+            title: newVerifiedStatus
+                ? "Verify Document?"
+                : "Unverify Document?",
+            text: newVerifiedStatus
+                ? "Are you sure you want to verify this document?"
+                : "Are you sure you want to remove verification from this document?",
+            showCancelButton: true,
+            confirmButtonText: newVerifiedStatus
+                ? "Yes, Verify"
+                : "Yes, Unverify",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#351255",
+        });
+
+        if (!result.isConfirmed) {
+            return;
+        }
+
+        try {
+            setVerifyingDocumentId(document.id);
+
+            const response = await verifyWorkPermitDocument(
+                document.id,
+                newVerifiedStatus
+            );
+
+            if (response.data?.status) {
+                setViewDocuments((previous) =>
+                    previous.map((item) =>
+                        item.id === document.id
+                            ? response.data.data
+                            : item
+                    )
+                );
+
+                Swal.fire({
+                    icon: "success",
+                    title: newVerifiedStatus
+                        ? "Document Verified"
+                        : "Verification Removed",
+                    text: response.data?.message,
+                    confirmButtonColor: "#351255",
+                });
+            }
+        } catch (error) {
+            console.error("Document verification error:", error);
+
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text:
+                    error.response?.data?.message ||
+                    "Unable to update document verification.",
+                confirmButtonColor: "#351255",
+            });
+        } finally {
+            setVerifyingDocumentId(null);
+        }
     };
 
     /* =========================================================
@@ -1807,9 +1876,9 @@ const WorkPermit = () => {
                                                                     <button
                                                                         type="button"
                                                                         className={`payment-status-action-btn verify ${payment.status ===
-                                                                                "VERIFIED"
-                                                                                ? "active"
-                                                                                : ""
+                                                                            "VERIFIED"
+                                                                            ? "active"
+                                                                            : ""
                                                                             }`}
                                                                         disabled={
                                                                             changingPaymentId ===
@@ -1833,9 +1902,9 @@ const WorkPermit = () => {
                                                                     <button
                                                                         type="button"
                                                                         className={`payment-status-action-btn pending ${payment.status ===
-                                                                                "PENDING"
-                                                                                ? "active"
-                                                                                : ""
+                                                                            "PENDING"
+                                                                            ? "active"
+                                                                            : ""
                                                                             }`}
                                                                         disabled={
                                                                             changingPaymentId ===
@@ -1856,9 +1925,9 @@ const WorkPermit = () => {
                                                                     <button
                                                                         type="button"
                                                                         className={`payment-status-action-btn reject ${payment.status ===
-                                                                                "REJECTED"
-                                                                                ? "active"
-                                                                                : ""
+                                                                            "REJECTED"
+                                                                            ? "active"
+                                                                            : ""
                                                                             }`}
                                                                         disabled={
                                                                             changingPaymentId ===
@@ -1977,8 +2046,8 @@ const WorkPermit = () => {
 
                                                             <span
                                                                 className={`payment-status ${document.is_verified
-                                                                        ? "payment-paid"
-                                                                        : "payment-pending"
+                                                                    ? "payment-paid"
+                                                                    : "payment-pending"
                                                                     }`}
                                                             >
                                                                 {document.is_verified
@@ -2054,17 +2123,34 @@ const WorkPermit = () => {
                                                                         </a>
                                                                     )}
 
-                                                                <a
-                                                                    href={document.file_url}
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
-                                                                    className="receipt-view-button"
-                                                                >
-                                                                    <FaExternalLinkAlt />
-                                                                    View Document
-                                                                </a>
+                                                                <div className="document-action-buttons">
+                                                                    <a
+                                                                        href={document.file_url}
+                                                                        target="_blank"
+                                                                        rel="noreferrer"
+                                                                        className="receipt-view-button"
+                                                                    >
+                                                                        <FaExternalLinkAlt />
+                                                                        View Document
+                                                                    </a>
+
+                                                                    <button
+                                                                        type="button"
+                                                                        className={`payment-status-action-btn ${document.is_verified ? "reject" : "verify"
+                                                                            }`}
+                                                                        disabled={verifyingDocumentId === document.id}
+                                                                        onClick={() => handleVerifyDocument(document)}
+                                                                    >
+                                                                        {verifyingDocumentId === document.id
+                                                                            ? "Updating..."
+                                                                            : document.is_verified
+                                                                                ? "Unverify"
+                                                                                : "Verify"}
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         )}
+
                                                     </div>
                                                 ))}
                                             </div>
