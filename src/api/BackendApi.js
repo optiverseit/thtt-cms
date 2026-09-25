@@ -19,7 +19,7 @@ export const getAllBookingsCms = (page = 1) => {
 
 
 export const deleteBooking = (id) => {
-  return axiosInstance.delete(`/bookings/${id}`);
+    return axiosInstance.delete(`/bookings/${id}`);
 };
 
 
@@ -375,6 +375,160 @@ export const getPackageHighlights = (packageId) => {
 // ==============================
 // COUNTRIES
 // ==============================
+
+export const getCountriesCms = (page = 1) => {
+    return axiosInstance.get(`/countries/cms?page=${page}`);
+};
+
+// public
+export const getAllCountries = () => {
+    return axiosInstance.get("/countries/cms");
+};
+
+export const createCountry = (data) => {
+    return axiosInstance.post("/countries/store", data);
+};
+
+export const updateCountry = (id, data) => {
+    return axiosInstance.put(`/countries/${id}`, data);
+};
+
+export const deleteCountry = (id) => {
+    return axiosInstance.delete(`/countries/${id}`);
+};
+
+export const changeCountryStatus = (id) => {
+    return axiosInstance.put(`/countries/${id}/status`);
+};
+
+
+// PERMIT TIER
+export const getAllPermitFeeTiersCms = (page = 1) => {
+    return axiosInstance.get(
+        `/permit-fee-tiers/cms?page=${page}`
+    );
+};
+
+export const createPermitFeeTiers = (data) => {
+    return axiosInstance.post(
+        "/permit-fee-tiers/store",
+        data
+    );
+};
+
+export const updatePermitFeeTier = (id, data) => {
+    return axiosInstance.put(
+        `/permit-fee-tiers/${id}`,
+        data
+    );
+};
+
+export const changePermitFeeTierStatus = (id) => {
+    return axiosInstance.put(
+        `/permit-fee-tiers/${id}/status`
+    );
+};
+
+export const deletePermitFeeTier = (id) => {
+    return axiosInstance.delete(
+        `/permit-fee-tiers/${id}`
+    );
+};
+
+
+// ================= WORK PERMITS =================
+
+// Get all work permit applications for CMS
+export const getAllWorkPermitsCms = (page = 1) => {
+    return axiosInstance.get(`/work-permits/cms?page=${page}`);
+};
+
+// Get single work permit
+export const getWorkPermitById = (id) => {
+    return axiosInstance.get(`/work-permits/${id}`);
+};
+
+// Change work permit status
+export const changeWorkPermitStatus = (id, data) => {
+    return axiosInstance.put(`/work-permits/${id}/status`, data);
+};
+
+
+// ================= DOCUMENTS =================
+
+// Get documents of a work permit
+export const getWorkPermitDocuments = (workPermitId) => {
+    return axiosInstance.get(
+        `/work-permits/${workPermitId}/documents`
+    );
+};
+
+// Verify document
+
+export const verifyWorkPermitDocument = (documentId, isVerified) => {
+    return axiosInstance.put(
+        `/work-permits/documents/${documentId}/verify`,
+        {
+            is_verified: isVerified,
+        }
+    );
+};
+
+
+// ================= PAYMENTS =================
+
+export const createWorkPermitPayment = (
+    workPermitId,
+    formData
+) => {
+    return axiosInstance.post(
+        `/work-permits/${workPermitId}/payments/store`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+};
+
+export const changeWorkPermitPaymentStatus = (
+    workPermitId,
+    paymentId,
+    status
+) => {
+    return axiosInstance.put(
+        `/work-permits/${workPermitId}/payments/${paymentId}/status`,
+        {
+            status: status,
+        }
+    );
+};
+
+// Get payments of a work permit
+export const getWorkPermitPayments = (workPermitId) => {
+    return axiosInstance.get(
+        `/work-permits/${workPermitId}/payments`
+    );
+};
+
+// Verify payment
+export const verifyWorkPermitPayment = (id, data) => {
+    return axiosInstance.put(
+        `/work-permits/payments/${id}/verify`,
+        data
+    );
+};
+
+
+// ================= STATUS HISTORY =================
+
+// Get status history
+export const getWorkPermitStatusHistory = (workPermitId) => {
+    return axiosInstance.get(
+        `/work-permits/${workPermitId}/status-history`
+    );
+};
 
 // PUBLIC COUNTRY SHOW
 export const getCountryById = (id) => {
