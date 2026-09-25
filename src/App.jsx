@@ -28,6 +28,7 @@ import PricingTier from './pages/Admin/PricingTier/PricingTier';
 import Itinerary from './pages/Admin/Itinerary/Itinerary';
 import Highlight from './pages/Admin/Highlight/Highlight';
 import Booking from './pages/Admin/Booking/Booking';
+import WorkPermit from './pages/Admin/WorkPermit/WorkPermit';
 
 function App() {
 
@@ -240,6 +241,16 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Booking />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* WORK PERMITS */}
+        <Route
+          path="/work-permits"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <WorkPermit />
             </ProtectedRoute>
           }
         />

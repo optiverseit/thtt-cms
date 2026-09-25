@@ -5,6 +5,14 @@ import "./Sidebar.css";
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [workPermitOpen, setWorkPermitOpen] = useState(
+    location.pathname.startsWith("/work-permits") ||
+    location.pathname.startsWith("/work-permits/country") ||
+    location.pathname.startsWith("/work-permits/feetiers") ||
+    location.pathname.startsWith("/work-permits/documents") ||
+    location.pathname.startsWith("/work-permits/payment") ||
+    location.pathname.startsWith("/work-permits/status-history")
+  );
 
   const [packageOpen, setPackageOpen] = useState(
     location.pathname.startsWith("/packages") ||
@@ -40,6 +48,17 @@ const Sidebar = () => {
     );
   };
 
+  const isWorkPermitActive = () => {
+    return (
+    location.pathname.startsWith("/work-permits") ||
+    location.pathname.startsWith("/work-permits/country") ||
+    location.pathname.startsWith("/work-permits/feetiers") ||
+    location.pathname.startsWith("/work-permits/documents") ||
+    location.pathname.startsWith("/work-permits/payment") ||
+    location.pathname.startsWith("/work-permits/status-history")
+    );
+  };
+
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
@@ -53,9 +72,8 @@ const Sidebar = () => {
 
       <nav className="sidebar-menu">
         <button
-          className={`menu-item ${
-            location.pathname === "/dashboard" ? "active" : ""
-          }`}
+          className={`menu-item ${location.pathname === "/dashboard" ? "active" : ""
+            }`}
           onClick={() => navigate("/dashboard")}
         >
           <span className="menu-icon">▦</span>
@@ -63,9 +81,8 @@ const Sidebar = () => {
         </button>
 
         <button
-          className={`menu-item ${
-            isActive("/categories") ? "active" : ""
-          }`}
+          className={`menu-item ${isActive("/categories") ? "active" : ""
+            }`}
           onClick={() => navigate("/categories")}
         >
           <span className="menu-icon">◫</span>
@@ -76,18 +93,16 @@ const Sidebar = () => {
 
         <div className="sidebar-dropdown">
           <button
-            className={`menu-item ${
-              isPackageActive() ? "active" : ""
-            }`}
+            className={`menu-item ${isPackageActive() ? "active" : ""
+              }`}
             onClick={() => setPackageOpen(!packageOpen)}
           >
             <span className="menu-icon">◆</span>
             <span className="menu-label">Packages</span>
 
             <span
-              className={`dropdown-arrow ${
-                packageOpen ? "open" : ""
-              }`}
+              className={`dropdown-arrow ${packageOpen ? "open" : ""
+                }`}
             >
               ▼
             </span>
@@ -96,99 +111,88 @@ const Sidebar = () => {
           {packageOpen && (
             <div className="submenu">
               <button
-                className={`submenu-item ${
-                  location.pathname === "/packages" ? "active" : ""
-                }`}
+                className={`submenu-item ${location.pathname === "/packages" ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages")}
               >
                 All Packages
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/inclusions") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/inclusions") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/inclusions")}
               >
                 Inclusions
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/exclusions") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/exclusions") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/exclusions")}
               >
                 Exclusions
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/restrictions") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/restrictions") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/restrictions")}
               >
                 Restrictions
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/what-to-bring") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/what-to-bring") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/what-to-bring")}
               >
                 What to Bring
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/faqs") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/faqs") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/faqs")}
               >
                 FAQs
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/pricing-tiers") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/pricing-tiers") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/pricing-tiers")}
               >
                 Pricing Tiers
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/itineraries") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/itineraries") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/itineraries")}
               >
                 Itineraries
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/testimonials") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/testimonials") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/testimonials")}
               >
                 Testimonials
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/gallery") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/gallery") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/gallery")}
               >
                 Gallery
               </button>
 
               <button
-                className={`submenu-item ${
-                  isActive("/packages/highlights") ? "active" : ""
-                }`}
+                className={`submenu-item ${isActive("/packages/highlights") ? "active" : ""
+                  }`}
                 onClick={() => navigate("/packages/highlights")}
               >
                 Highlights
@@ -198,9 +202,8 @@ const Sidebar = () => {
         </div>
 
         <button
-          className={`menu-item ${
-            isActive("/vehicles") ? "active" : ""
-          }`}
+          className={`menu-item ${isActive("/vehicles") ? "active" : ""
+            }`}
           onClick={() => navigate("/vehicles")}
         >
           <span className="menu-icon">▤</span>
@@ -208,9 +211,8 @@ const Sidebar = () => {
         </button>
 
         <button
-          className={`menu-item ${
-            isActive("/helis") ? "active" : ""
-          }`}
+          className={`menu-item ${isActive("/helis") ? "active" : ""
+            }`}
           onClick={() => navigate("/helis")}
         >
           <span className="menu-icon">✈</span>
@@ -218,19 +220,89 @@ const Sidebar = () => {
         </button>
 
         <button
-          className={`menu-item ${
-            isActive("/bookings") ? "active" : ""
-          }`}
+          className={`menu-item ${isActive("/bookings") ? "active" : ""
+            }`}
           onClick={() => navigate("/bookings")}
         >
           <span className="menu-icon">▣</span>
           <span>Bookings</span>
         </button>
 
+        {/* WORK PERMIT DROPDOWN */}
+
+        <div className="sidebar-dropdown">
+          <button
+            className={`menu-item ${isWorkPermitActive() ? "active" : ""
+              }`}
+            onClick={() => setWorkPermitOpen(!workPermitOpen)}
+          >
+            <span className="menu-icon">◆</span>
+            <span className="menu-label">Work Permit</span>
+
+            <span
+              className={`dropdown-arrow ${workPermitOpen ? "open" : ""
+                }`}
+            >
+              ▼
+            </span>
+          </button>
+
+          {workPermitOpen && (
+            <div className="submenu">
+              <button
+                className={`submenu-item ${location.pathname === "/work-permits" ? "active" : ""
+                  }`}
+                onClick={() => navigate("/work-permits")}
+              >
+                All Work Permits
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/work-permits/country") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/work-permits/categories")}
+              >
+                Country
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/work-permits/requirements") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/work-permits/feetiers")}
+              >
+                Fee Tiers
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/work-permits/documents") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/work-permits/documents")}
+              >
+                Documents
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/work-permits/faqs") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/work-permits/payment")}
+              >
+                Payments
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/work-permits/pricing") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/work-permits/status-history")}
+              >
+                Status History
+              </button>
+            </div>
+          )}
+        </div>
+
         <button
-          className={`menu-item ${
-            isActive("/users") ? "active" : ""
-          }`}
+          className={`menu-item ${isActive("/users") ? "active" : ""
+            }`}
           onClick={() => navigate("/users")}
         >
           <span className="menu-icon">♙</span>
@@ -240,9 +312,8 @@ const Sidebar = () => {
 
       <div className="sidebar-bottom">
         <button
-          className={`menu-item ${
-            isActive("/settings") ? "active" : ""
-          }`}
+          className={`menu-item ${isActive("/settings") ? "active" : ""
+            }`}
           onClick={() => navigate("/settings")}
         >
           <span className="menu-icon">⚙</span>
