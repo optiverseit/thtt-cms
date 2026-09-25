@@ -29,6 +29,7 @@ import Itinerary from './pages/Admin/Itinerary/Itinerary';
 import Highlight from './pages/Admin/Highlight/Highlight';
 import Booking from './pages/Admin/Booking/Booking';
 import WorkPermit from './pages/Admin/WorkPermit/WorkPermit';
+import Country from './pages/Admin/Country/Country';
 
 function App() {
 
@@ -251,6 +252,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <WorkPermit />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/work-permits/country"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Country />
             </ProtectedRoute>
           }
         />

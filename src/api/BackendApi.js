@@ -376,6 +376,61 @@ export const getPackageHighlights = (packageId) => {
 // COUNTRIES
 // ==============================
 
+export const getCountriesCms = (page = 1) => {
+    return axiosInstance.get(`/countries/cms?page=${page}`);
+};
+
+export const createCountry = (data) => {
+    return axiosInstance.post("/countries/store", data);
+};
+
+export const updateCountry = (id, data) => {
+    return axiosInstance.put(`/countries/${id}`, data);
+};
+
+export const deleteCountry = (id) => {
+    return axiosInstance.delete(`/countries/${id}`);
+};
+
+export const changeCountryStatus = (id) => {
+    return axiosInstance.put(`/countries/${id}/status`);
+};
+
+
+// PERMIT TIER
+export const getAllPermitFeeTiersCms = (page = 1) => {
+    return axiosInstance.get(
+        `/permit-fee-tiers/cms?page=${page}`
+    );
+};
+
+export const createPermitFeeTiers = (data) => {
+    return axiosInstance.post(
+        "/permit-fee-tiers/store",
+        data
+    );
+};
+
+export const updatePermitFeeTier = (id, data) => {
+    return axiosInstance.put(
+        `/permit-fee-tiers/${id}`,
+        data
+    );
+};
+
+export const changePermitFeeTierStatus = (id) => {
+    return axiosInstance.put(
+        `/permit-fee-tiers/${id}/status`
+    );
+};
+
+export const deletePermitFeeTier = (id) => {
+    return axiosInstance.delete(
+        `/permit-fee-tiers/${id}`
+    );
+};
+
+
 // ================= WORK PERMITS =================
 
 // Get all work permit applications for CMS
