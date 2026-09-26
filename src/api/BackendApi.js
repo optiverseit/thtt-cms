@@ -17,6 +17,12 @@ export const getAllBookingsCms = (page = 1) => {
     return axiosInstance.get(`/getAllbookings?page=${page}`);
 };
 
+export const getHeliBookingDocuments = (bookingId, packageId) => {
+    return axiosInstance.get(
+        `/${bookingId}/heli-documents/${packageId}`
+    );
+};
+
 
 export const deleteBooking = (id) => {
     return axiosInstance.delete(`/bookings/${id}`);
