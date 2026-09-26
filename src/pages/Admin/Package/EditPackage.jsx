@@ -34,6 +34,7 @@ const EditPackage = () => {
         slug: "",
         duration: "",
         price: "",
+        package_type: "",
         category_id: "",
         is_featured: false,
         difficulty: "",
@@ -49,152 +50,153 @@ const EditPackage = () => {
         loadPageData();
     }, [id]);
 
-const loadPageData = async () => {
-    try {
-        setLoading(true);
+    const loadPageData = async () => {
+        try {
+            setLoading(true);
 
-        const [
-            packageResponse,
-            categoryResponse,
-            vehicleResponse,
-            heliResponse,
-        ] = await Promise.all([
-            getPackageById(id),
-            getAllCategoriesCms(),
-            getAllVehiclesCms(),
-            getAllHelisCms(),
-        ]);
+            const [
+                packageResponse,
+                categoryResponse,
+                vehicleResponse,
+                heliResponse,
+            ] = await Promise.all([
+                getPackageById(id),
+                getAllCategoriesCms(),
+                getAllVehiclesCms(),
+                getAllHelisCms(),
+            ]);
 
-        // Categories
-        if (categoryResponse.data?.status) {
-            const categoryList =
-                categoryResponse.data?.data?.data || [];
+            // Categories
+            if (categoryResponse.data?.status) {
+                const categoryList =
+                    categoryResponse.data?.data?.data || [];
 
-            setCategories(
-                categoryList.filter(
-                    (category) => category.status === "ACTIVE"
-                )
+                setCategories(
+                    categoryList.filter(
+                        (category) => category.status === "ACTIVE"
+                    )
+                );
+            }
+
+            // Vehicles
+            if (vehicleResponse.data?.status) {
+                const vehicleList =
+                    vehicleResponse.data?.data?.data || [];
+
+                setVehicles(
+                    vehicleList.filter(
+                        (vehicle) => vehicle.status === "ACTIVE"
+                    )
+                );
+            }
+
+            // Helicopters
+            if (heliResponse.data?.status) {
+                const heliList =
+                    heliResponse.data?.data?.data || [];
+
+                setHelis(
+                    heliList.filter(
+                        (heli) => heli.status === "ACTIVE"
+                    )
+                );
+            }
+
+            // Single package response
+            const packageItem = packageResponse.data?.data;
+
+            if (!packageItem) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Package Not Found",
+                    text: "The requested package could not be found.",
+                    confirmButtonColor: "#351255",
+                });
+
+                navigate("/packages");
+                return;
+            }
+
+            setFormData({
+                title: packageItem.title || "",
+                slug: packageItem.slug || "",
+                duration: packageItem.duration || "",
+                price: packageItem.price || "",
+                package_type: packageItem.package_type || "",
+                category_id: packageItem.category_id || "",
+                is_featured:
+                    packageItem.is_featured === true ||
+                    packageItem.is_featured === 1 ||
+                    packageItem.is_featured === "1",
+                difficulty: packageItem.difficulty || "",
+                adventure_category:
+                    packageItem.adventure_category || "",
+                intensity: packageItem.intensity || "",
+                min_people: packageItem.min_people || 1,
+                max_people: packageItem.max_people || "",
+                description: packageItem.description || "",
+                location: packageItem.location || "",
+            });
+
+            setImagePreview(packageItem.image || null);
+
+            // Existing vehicles linked with package
+            const existingVehicles =
+                packageItem.package_vehicles ||
+                packageItem.packageVehicles ||
+                [];
+
+            setSelectedVehicles(
+                existingVehicles.map((item) => ({
+                    vehicle_id:
+                        item.vehicle_id ||
+                        item.vehicle?.id,
+                    included:
+                        item.included === true ||
+                        item.included === 1 ||
+                        item.included === "1",
+                    additional_price:
+                        item.additional_price || 0,
+                }))
             );
-        }
 
-        // Vehicles
-        if (vehicleResponse.data?.status) {
-            const vehicleList =
-                vehicleResponse.data?.data?.data || [];
+            // Existing helicopters linked with package
+            const existingHelis =
+                packageItem.package_helis ||
+                packageItem.packageHelis ||
+                [];
 
-            setVehicles(
-                vehicleList.filter(
-                    (vehicle) => vehicle.status === "ACTIVE"
-                )
+            setSelectedHelis(
+                existingHelis.map((item) => ({
+                    heli_id:
+                        item.heli_id ||
+                        item.heli?.id,
+                    included:
+                        item.included === true ||
+                        item.included === 1 ||
+                        item.included === "1",
+                    additional_price:
+                        item.additional_price || 0,
+                }))
             );
-        }
 
-        // Helicopters
-        if (heliResponse.data?.status) {
-            const heliList =
-                heliResponse.data?.data?.data || [];
+        } catch (error) {
+            console.error("Package load error:", error);
 
-            setHelis(
-                heliList.filter(
-                    (heli) => heli.status === "ACTIVE"
-                )
-            );
-        }
-
-        // Single package response
-        const packageItem = packageResponse.data?.data;
-
-        if (!packageItem) {
             await Swal.fire({
                 icon: "error",
-                title: "Package Not Found",
-                text: "The requested package could not be found.",
+                title: "Failed",
+                text:
+                    error.response?.data?.message ||
+                    "Unable to load package.",
                 confirmButtonColor: "#351255",
             });
 
             navigate("/packages");
-            return;
+        } finally {
+            setLoading(false);
         }
-
-        setFormData({
-            title: packageItem.title || "",
-            slug: packageItem.slug || "",
-            duration: packageItem.duration || "",
-            price: packageItem.price || "",
-            category_id: packageItem.category_id || "",
-            is_featured:
-                packageItem.is_featured === true ||
-                packageItem.is_featured === 1 ||
-                packageItem.is_featured === "1",
-            difficulty: packageItem.difficulty || "",
-            adventure_category:
-                packageItem.adventure_category || "",
-            intensity: packageItem.intensity || "",
-            min_people: packageItem.min_people || 1,
-            max_people: packageItem.max_people || "",
-            description: packageItem.description || "",
-            location: packageItem.location || "",
-        });
-
-        setImagePreview(packageItem.image || null);
-
-        // Existing vehicles linked with package
-        const existingVehicles =
-            packageItem.package_vehicles ||
-            packageItem.packageVehicles ||
-            [];
-
-        setSelectedVehicles(
-            existingVehicles.map((item) => ({
-                vehicle_id:
-                    item.vehicle_id ||
-                    item.vehicle?.id,
-                included:
-                    item.included === true ||
-                    item.included === 1 ||
-                    item.included === "1",
-                additional_price:
-                    item.additional_price || 0,
-            }))
-        );
-
-        // Existing helicopters linked with package
-        const existingHelis =
-            packageItem.package_helis ||
-            packageItem.packageHelis ||
-            [];
-
-        setSelectedHelis(
-            existingHelis.map((item) => ({
-                heli_id:
-                    item.heli_id ||
-                    item.heli?.id,
-                included:
-                    item.included === true ||
-                    item.included === 1 ||
-                    item.included === "1",
-                additional_price:
-                    item.additional_price || 0,
-            }))
-        );
-
-    } catch (error) {
-        console.error("Package load error:", error);
-
-        await Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text:
-                error.response?.data?.message ||
-                "Unable to load package.",
-            confirmButtonColor: "#351255",
-        });
-
-        navigate("/packages");
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
     const generateSlug = (value) => {
         return value
@@ -418,6 +420,7 @@ const loadPageData = async () => {
             !formData.slug.trim() ||
             !formData.duration.trim() ||
             !formData.price ||
+            !formData.package_type ||
             !formData.category_id ||
             !formData.min_people
         ) {
@@ -467,6 +470,8 @@ const loadPageData = async () => {
             "price",
             formData.price
         );
+
+        data.append("package_type", formData.package_type)
 
         data.append(
             "category_id",
@@ -862,6 +867,69 @@ const loadPageData = async () => {
                                             />
                                         </div>
 
+                                        <div className="edit-package-group">
+                                            <label>
+                                                Package Type
+                                                <span className="required">*</span>
+                                            </label>
+
+                                            <select
+                                                name="package_type"
+                                                value={formData.package_type}
+                                                onChange={handleChange}
+                                                disabled={saving}
+                                            >
+                                                <option value="">Select package type</option>
+                                                <option value="DOMESTIC">Domestic</option>
+                                                <option value="INTERNATIONAL">International</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="edit-package-group">
+                                            <label>
+                                                Minimum People
+                                                <span className="required">
+                                                    *
+                                                </span>
+                                            </label>
+
+                                            <input
+                                                type="number"
+                                                name="min_people"
+                                                min="1"
+                                                value={
+                                                    formData.min_people
+                                                }
+                                                onChange={
+                                                    handleChange
+                                                }
+                                                disabled={
+                                                    saving
+                                                }
+                                            />
+                                        </div>
+
+                                        <div className="edit-package-group">
+                                            <label>
+                                                Maximum People
+                                            </label>
+
+                                            <input
+                                                type="number"
+                                                name="max_people"
+                                                min="1"
+                                                value={
+                                                    formData.max_people
+                                                }
+                                                onChange={
+                                                    handleChange
+                                                }
+                                                disabled={
+                                                    saving
+                                                }
+                                            />
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -979,50 +1047,7 @@ const loadPageData = async () => {
                                             />
                                         </div>
 
-                                        <div className="edit-package-group">
-                                            <label>
-                                                Minimum People
-                                                <span className="required">
-                                                    *
-                                                </span>
-                                            </label>
 
-                                            <input
-                                                type="number"
-                                                name="min_people"
-                                                min="1"
-                                                value={
-                                                    formData.min_people
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
-                                        </div>
-
-                                        <div className="edit-package-group">
-                                            <label>
-                                                Maximum People
-                                            </label>
-
-                                            <input
-                                                type="number"
-                                                name="max_people"
-                                                min="1"
-                                                value={
-                                                    formData.max_people
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
-                                        </div>
 
                                         <div className="edit-package-featured">
                                             <div>

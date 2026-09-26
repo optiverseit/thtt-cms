@@ -29,6 +29,7 @@ const CreatePackage = () => {
         slug: "",
         duration: "",
         price: "",
+        package_type: "",
         image: null,
         category_id: "",
         is_featured: false,
@@ -295,7 +296,8 @@ const CreatePackage = () => {
             !formData.price ||
             !formData.image ||
             !formData.category_id ||
-            !formData.min_people
+            !formData.min_people ||
+            !formData.package_type
         ) {
             Swal.fire({
                 icon: "warning",
@@ -328,6 +330,7 @@ const CreatePackage = () => {
         data.append("slug", formData.slug.trim());
         data.append("duration", formData.duration.trim());
         data.append("price", formData.price);
+        data.append("package_type", formData.package_type)
         data.append("image", formData.image);
         data.append("category_id", formData.category_id);
         data.append(
@@ -632,6 +635,62 @@ const CreatePackage = () => {
                                             />
                                         </div>
 
+                                        <div className="package-form-group">
+                                            <label>
+                                                Package Type
+                                                <span className="required">*</span>
+                                            </label>
+
+                                            <select
+                                                name="package_type"
+                                                value={formData.package_type}
+                                                onChange={handleChange}
+                                                disabled={saving}
+                                            >
+                                                <option value="">Select package type</option>
+                                                <option value="DOMESTIC">Domestic</option>
+                                                <option value="INTERNATIONAL">International</option>
+                                            </select>
+                                        </div>
+
+                                        <div className="package-form-group">
+                                            <label>
+                                                Minimum People
+                                                <span className="required">
+                                                    *
+                                                </span>
+                                            </label>
+
+                                            <input
+                                                type="number"
+                                                name="min_people"
+                                                min="1"
+                                                value={
+                                                    formData.min_people
+                                                }
+                                                onChange={handleChange}
+                                                disabled={saving}
+                                            />
+                                        </div>
+
+                                        <div className="package-form-group">
+                                            <label>
+                                                Maximum People
+                                            </label>
+
+                                            <input
+                                                type="number"
+                                                name="max_people"
+                                                min="1"
+                                                value={
+                                                    formData.max_people
+                                                }
+                                                onChange={handleChange}
+                                                placeholder="Optional"
+                                                disabled={saving}
+                                            />
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -718,44 +777,6 @@ const CreatePackage = () => {
                                                 }
                                                 onChange={handleChange}
                                                 placeholder="e.g. High"
-                                                disabled={saving}
-                                            />
-                                        </div>
-
-                                        <div className="package-form-group">
-                                            <label>
-                                                Minimum People
-                                                <span className="required">
-                                                    *
-                                                </span>
-                                            </label>
-
-                                            <input
-                                                type="number"
-                                                name="min_people"
-                                                min="1"
-                                                value={
-                                                    formData.min_people
-                                                }
-                                                onChange={handleChange}
-                                                disabled={saving}
-                                            />
-                                        </div>
-
-                                        <div className="package-form-group">
-                                            <label>
-                                                Maximum People
-                                            </label>
-
-                                            <input
-                                                type="number"
-                                                name="max_people"
-                                                min="1"
-                                                value={
-                                                    formData.max_people
-                                                }
-                                                onChange={handleChange}
-                                                placeholder="Optional"
                                                 disabled={saving}
                                             />
                                         </div>
