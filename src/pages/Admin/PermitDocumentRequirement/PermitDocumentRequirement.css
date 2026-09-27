@@ -1,0 +1,731 @@
+.permit-document-page {
+    width: 100%;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.permit-document-header {
+    margin-bottom: 24px;
+}
+
+.permit-document-header h1 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.permit-document-header p {
+    margin: 6px 0 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   CARDS
+========================================= */
+
+.permit-document-form-card,
+.permit-document-table-card {
+    margin-bottom: 24px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.permit-document-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #eeeaf1;
+}
+
+.permit-document-card-header h2 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.permit-document-card-header p {
+    margin: 5px 0 0;
+    color: #77717d;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.permit-document-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.permit-document-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.permit-document-form-group label {
+    color: #2f183e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+    color: #f52d91;
+}
+
+.permit-document-form-group input,
+.permit-document-form-group select {
+    height: 42px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+    color: #2f183e;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.permit-document-form-group input:focus,
+.permit-document-form-group select:focus {
+    border-color: #351255;
+}
+
+.permit-document-form-group input:disabled,
+.permit-document-form-group select:disabled {
+    background: #f5f3f6;
+    color: #77717d;
+    cursor: not-allowed;
+}
+
+.permit-document-form-group select {
+    min-width: 210px;
+}
+
+
+/* =========================================
+   COUNTRY + PERMIT TYPE SECTION
+========================================= */
+
+.permit-document-country-section {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px 20px 0;
+}
+
+.permit-document-country-section select {
+    min-width: 260px;
+}
+
+
+/* =========================================
+   MULTIPLE DOCUMENT CREATE
+========================================= */
+
+.permit-document-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+}
+
+.permit-document-item-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 16px;
+    background: #fcfbfd;
+    border: 1px solid #e6e1e9;
+    border-radius: 9px;
+}
+
+.permit-document-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 42px;
+    flex-shrink: 0;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.permit-document-type-field {
+    width: 150px;
+    flex-shrink: 0;
+}
+
+.permit-document-title-field {
+    flex: 1;
+    min-width: 180px;
+}
+
+.permit-document-description-field {
+    flex: 1.2;
+    min-width: 180px;
+}
+
+.permit-document-order-field {
+    width: 90px;
+    flex-shrink: 0;
+}
+
+.permit-document-order-field input {
+    width: 100%;
+}
+
+
+/* =========================================
+   REQUIRED CHECKBOX
+========================================= */
+
+.permit-document-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 42px;
+    flex-shrink: 0;
+    color: #2f183e;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.permit-document-checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: #351255;
+    cursor: pointer;
+}
+
+
+/* =========================================
+   REMOVE BUTTON
+========================================= */
+
+.permit-document-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    padding: 0;
+    background: #fdeaf3;
+    border: none;
+    border-radius: 7px;
+    color: #f52d91;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.permit-document-remove-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.permit-document-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   CREATE ACTIONS
+========================================= */
+
+.permit-document-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+.permit-document-add-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    background: #f1edf5;
+    border: none;
+    border-radius: 7px;
+    color: #351255;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.permit-document-add-more-btn:hover {
+    background: #e5ddeb;
+}
+
+
+/* =========================================
+   FORM BUTTONS
+========================================= */
+
+.permit-document-form-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.permit-document-save-btn,
+.permit-document-cancel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.permit-document-save-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.permit-document-save-btn:hover:not(:disabled) {
+    background: #481a6d;
+}
+
+.permit-document-save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.permit-document-cancel-btn {
+    background: #f1eef3;
+    color: #2f183e;
+}
+
+.permit-document-cancel-btn:hover {
+    background: #e5e0e8;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.permit-document-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.permit-document-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.permit-document-table th {
+    padding: 14px 16px;
+    background: #f8f6fa;
+    color: #746b91;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.permit-document-table td {
+    padding: 15px 16px;
+    border-top: 1px solid #eeeaf1;
+    color: #2f183e;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.permit-document-table tbody tr:hover {
+    background: #fcfbfd;
+}
+
+.permit-document-table th:first-child,
+.permit-document-table td:first-child {
+    width: 65px;
+}
+
+.permit-document-table th:last-child,
+.permit-document-table td:last-child {
+    width: 140px;
+}
+
+
+/* =========================================
+   COUNTRY
+========================================= */
+
+.permit-document-country-name {
+    color: #351255;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   DOCUMENT INFO
+========================================= */
+
+.permit-document-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 190px;
+}
+
+.permit-document-info strong {
+    color: #2f183e;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.permit-document-info span {
+    color: #746b91;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.permit-document-info small {
+    max-width: 280px;
+    color: #77717d;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+
+/* =========================================
+   REQUIRED / OPTIONAL
+========================================= */
+
+.permit-document-required,
+.permit-document-optional {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.permit-document-required {
+    background: #fdeaf3;
+    color: #f52d91;
+}
+
+.permit-document-optional {
+    background: #f1eef3;
+    color: #77717d;
+}
+
+
+/* =========================================
+   DISPLAY ORDER
+========================================= */
+
+.permit-document-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 28px;
+    padding: 0 8px;
+    background: #f1edf5;
+    border-radius: 6px;
+    color: #351255;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+.permit-document-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.permit-document-status.active {
+    background: #e9f8ef;
+    color: #168642;
+}
+
+.permit-document-status.inactive {
+    background: #fdecef;
+    color: #d8324d;
+}
+
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.permit-document-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.permit-document-edit-btn,
+.permit-document-status-btn,
+.permit-document-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.permit-document-edit-btn {
+    background: #f1edf5;
+    color: #351255;
+}
+
+.permit-document-edit-btn:hover {
+    background: #351255;
+    color: #ffffff;
+}
+
+.permit-document-status-btn {
+    background: #eaf7ef;
+    color: #168642;
+    font-size: 18px;
+}
+
+.permit-document-status-btn:hover {
+    background: #168642;
+    color: #ffffff;
+}
+
+.permit-document-delete-btn {
+    background: #fdeaf3;
+    color: #f52d91;
+}
+
+.permit-document-delete-btn:hover {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.permit-document-empty {
+    padding: 45px 20px;
+    color: #77717d;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1200px) {
+
+    .permit-document-item-row {
+        flex-wrap: wrap;
+    }
+
+    .permit-document-type-field,
+    .permit-document-title-field,
+    .permit-document-description-field {
+        flex: 1;
+        min-width: 200px;
+        width: auto;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .permit-document-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .permit-document-country-section {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .permit-document-country-section select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .permit-document-form-group select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .permit-document-item-row {
+        align-items: stretch;
+    }
+
+    .permit-document-number {
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+    }
+
+    .permit-document-type-field,
+    .permit-document-title-field,
+    .permit-document-description-field {
+        width: 100%;
+        flex: none;
+    }
+
+    .permit-document-order-field {
+        flex: 1;
+        width: auto;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .permit-document-header h1 {
+        font-size: 23px;
+    }
+
+    .permit-document-card-header {
+        padding: 16px;
+    }
+
+    .permit-document-country-section {
+        padding: 16px 16px 0;
+    }
+
+    .permit-document-items-list {
+        padding: 16px;
+    }
+
+    .permit-document-item-row {
+        flex-direction: column;
+    }
+
+    .permit-document-order-field {
+        width: 100%;
+    }
+
+    .permit-document-checkbox {
+        width: 100%;
+    }
+
+    .permit-document-remove-btn {
+        width: 100%;
+    }
+
+    .permit-document-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 16px 16px;
+    }
+
+    .permit-document-create-actions button {
+        width: 100%;
+    }
+
+    .permit-document-form-buttons {
+        width: 100%;
+    }
+
+    .permit-document-form-buttons button {
+        flex: 1;
+    }
+
+    .permit-document-table th,
+    .permit-document-table td {
+        padding: 12px 14px;
+    }
+}
+
+/* =========================================
+   CLICKABLE STATUS BADGE
+========================================= */
+
+.permit-document-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 78px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.permit-document-status.active {
+    background: #e8f7ee;
+    color: #18864b;
+}
+
+.permit-document-status.inactive {
+    background: #f1eef3;
+    color: #77717d;
+}
+
+.permit-document-status:not(.updating):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(53, 18, 85, 0.12);
+}
+
+.permit-document-status.updating {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+}

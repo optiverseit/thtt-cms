@@ -31,6 +31,11 @@ import Booking from './pages/Admin/Booking/Booking';
 import WorkPermit from './pages/Admin/WorkPermit/WorkPermit';
 import Country from './pages/Admin/Country/Country';
 import FeeTier from './pages/Admin/FeeTier/FeeTier';
+import PermitDocumentRequirement from './pages/Admin/PermitDocumentRequirement/PermitDocumentRequirement';
+import WorkPermitInformation from './pages/Admin/WorkPermitInformation/WorkPermitInformation';
+import User from './pages/Admin/User/User';
+import CreateUser from './pages/Admin/User/CreateUser';
+import EditUser from './pages/Admin/User/EditUser';
 
 function App() {
 
@@ -271,6 +276,52 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <FeeTier />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/work-permits/documents"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PermitDocumentRequirement />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/work-permits/informations"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <WorkPermitInformation />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* USERS */}
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <User />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users/create"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <CreateUser />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <EditUser />
             </ProtectedRoute>
           }
         />

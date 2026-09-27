@@ -273,29 +273,29 @@ const Sidebar = () => {
                 Fee Tiers
               </button>
 
-              {/* <button
+              <button
                 className={`submenu-item ${isActive("/work-permits/documents") ? "active" : ""
                   }`}
                 onClick={() => navigate("/work-permits/documents")}
               >
-                Documents
+                Documents Requirement
               </button>
 
               <button
-                className={`submenu-item ${isActive("/work-permits/faqs") ? "active" : ""
+                className={`submenu-item ${isActive("/work-permits/informations") ? "active" : ""
                   }`}
-                onClick={() => navigate("/work-permits/payment")}
+                onClick={() => navigate("/work-permits/informations")}
               >
-                Payments
-              </button> */}
+                WorkPermit Information
+              </button>
 
-              <button
+              {/* <button
                 className={`submenu-item ${isActive("/work-permits/pricing") ? "active" : ""
                   }`}
                 onClick={() => navigate("/work-permits/status-history")}
               >
                 Status History
-              </button>
+              </button> */}
             </div>
           )}
         </div>
