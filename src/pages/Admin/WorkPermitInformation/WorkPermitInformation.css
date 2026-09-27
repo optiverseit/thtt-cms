@@ -1,0 +1,602 @@
+.work-permit-info-page {
+    width: 100%;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.work-permit-info-header {
+    margin-bottom: 24px;
+}
+
+.work-permit-info-header h1 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.work-permit-info-header p {
+    margin: 6px 0 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   CARDS
+========================================= */
+
+.work-permit-info-form-card,
+.work-permit-info-table-card {
+    margin-bottom: 24px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.work-permit-info-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #eeeaf1;
+}
+
+.work-permit-info-card-header h2 {
+    margin: 0;
+    color: #2f183e;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.work-permit-info-card-header p {
+    margin: 5px 0 0;
+    color: #77717d;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   COUNTRY + TYPE SECTION
+========================================= */
+
+.work-permit-info-country-section {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px 20px 0;
+}
+
+.work-permit-info-country-section select {
+    min-width: 260px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.work-permit-info-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 20px;
+}
+
+.work-permit-info-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.work-permit-info-form-group label {
+    color: #2f183e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.required {
+    margin-left: 3px;
+    color: #f52d91;
+}
+
+.work-permit-info-form-group input,
+.work-permit-info-form-group select,
+.work-permit-info-form-group textarea {
+    padding: 0 12px;
+    background: #ffffff;
+    border: 1px solid #ddd8e2;
+    border-radius: 7px;
+    color: #2f183e;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.work-permit-info-form-group input,
+.work-permit-info-form-group select {
+    height: 42px;
+}
+
+.work-permit-info-form-group textarea {
+    min-height: 80px;
+    padding: 10px 12px;
+    resize: vertical;
+}
+
+.work-permit-info-form-group input:focus,
+.work-permit-info-form-group select:focus,
+.work-permit-info-form-group textarea:focus {
+    border-color: #351255;
+}
+
+.work-permit-info-form-group select {
+    min-width: 230px;
+}
+
+.work-permit-info-content-field {
+    flex: 1;
+}
+
+.work-permit-info-order-field {
+    width: 120px;
+    flex: none;
+}
+
+.work-permit-info-order-field input {
+    width: 100%;
+}
+
+
+/* =========================================
+   MULTIPLE ITEMS
+========================================= */
+
+.work-permit-info-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+}
+
+.work-permit-info-item-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 16px;
+    background: #fcfbfd;
+    border: 1px solid #e6e1e9;
+    border-radius: 9px;
+}
+
+.work-permit-info-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 42px;
+    flex-shrink: 0;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.work-permit-info-form-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.work-permit-info-save-btn,
+.work-permit-info-cancel-btn,
+.work-permit-info-add-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 42px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.work-permit-info-save-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.work-permit-info-save-btn:hover:not(:disabled) {
+    background: #481a6d;
+}
+
+.work-permit-info-save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.work-permit-info-cancel-btn {
+    background: #f1eef3;
+    color: #2f183e;
+}
+
+.work-permit-info-cancel-btn:hover {
+    background: #e5e0e8;
+}
+
+.work-permit-info-add-more-btn {
+    background: #f1edf5;
+    color: #351255;
+}
+
+.work-permit-info-add-more-btn:hover {
+    background: #e5ddeb;
+}
+
+
+/* =========================================
+   CREATE ACTIONS
+========================================= */
+
+.work-permit-info-create-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+
+/* =========================================
+   REMOVE
+========================================= */
+
+.work-permit-info-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    padding: 0;
+    background: #fdeaf3;
+    border: none;
+    border-radius: 7px;
+    color: #f52d91;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.work-permit-info-remove-btn:hover:not(:disabled) {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+.work-permit-info-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.work-permit-info-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.work-permit-info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.work-permit-info-table th {
+    padding: 14px 18px;
+    background: #f8f6fa;
+    color: #746b91;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.work-permit-info-table td {
+    padding: 15px 18px;
+    border-top: 1px solid #eeeaf1;
+    color: #2f183e;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.work-permit-info-table tbody tr:hover {
+    background: #fcfbfd;
+}
+
+.work-permit-info-table th:first-child,
+.work-permit-info-table td:first-child {
+    width: 75px;
+}
+
+.work-permit-info-table th:nth-child(2),
+.work-permit-info-table td:nth-child(2) {
+    width: 200px;
+}
+
+.work-permit-info-table th:nth-child(3),
+.work-permit-info-table td:nth-child(3) {
+    width: 170px;
+}
+
+.work-permit-info-table th:nth-child(5),
+.work-permit-info-table td:nth-child(5) {
+    width: 90px;
+}
+
+.work-permit-info-table th:nth-child(6),
+.work-permit-info-table td:nth-child(6) {
+    width: 120px;
+}
+
+.work-permit-info-table th:last-child,
+.work-permit-info-table td:last-child {
+    width: 120px;
+}
+
+
+/* =========================================
+   COUNTRY
+========================================= */
+
+.work-permit-info-country-name {
+    color: #351255;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   TYPE
+========================================= */
+
+.work-permit-info-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    background: #f1edf5;
+    border-radius: 6px;
+    color: #351255;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.work-permit-info-content {
+    max-width: 520px;
+    color: #4d4652;
+    line-height: 1.5;
+    white-space: normal;
+    word-break: break-word;
+}
+
+
+/* =========================================
+   DISPLAY ORDER
+========================================= */
+
+.work-permit-info-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 28px;
+    padding: 0 8px;
+    background: #f1edf5;
+    border-radius: 6px;
+    color: #351255;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   CLICKABLE STATUS BADGE
+========================================= */
+
+.work-permit-info-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 78px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.work-permit-info-status.active {
+    background: #e8f7ee;
+    color: #18864b;
+}
+
+.work-permit-info-status.inactive {
+    background: #f1eef3;
+    color: #77717d;
+}
+
+.work-permit-info-status:not(.updating):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(53, 18, 85, 0.12);
+}
+
+.work-permit-info-status.updating {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.work-permit-info-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.work-permit-info-edit-btn,
+.work-permit-info-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.work-permit-info-edit-btn {
+    background: #f1edf5;
+    color: #351255;
+}
+
+.work-permit-info-edit-btn:hover {
+    background: #351255;
+    color: #ffffff;
+}
+
+.work-permit-info-delete-btn {
+    background: #fdeaf3;
+    color: #f52d91;
+}
+
+.work-permit-info-delete-btn:hover {
+    background: #f52d91;
+    color: #ffffff;
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.work-permit-info-empty {
+    padding: 45px 20px;
+    color: #77717d;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .work-permit-info-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .work-permit-info-item-row {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .work-permit-info-number {
+        width: 100%;
+        height: auto;
+        justify-content: flex-start;
+    }
+
+    .work-permit-info-content-field {
+        width: 100%;
+        flex: none;
+    }
+
+    .work-permit-info-order-field {
+        flex: 1;
+        width: auto;
+    }
+
+    .work-permit-info-form-buttons {
+        justify-content: flex-end;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .work-permit-info-header h1 {
+        font-size: 23px;
+    }
+
+    .work-permit-info-country-section {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 16px 0;
+    }
+
+    .work-permit-info-country-section select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .work-permit-info-items-list {
+        padding: 16px;
+    }
+
+    .work-permit-info-create-actions {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 16px 16px;
+    }
+
+    .work-permit-info-create-actions button {
+        width: 100%;
+    }
+
+    .work-permit-info-form {
+        padding: 16px;
+    }
+
+    .work-permit-info-card-header {
+        padding: 16px;
+    }
+
+    .work-permit-info-table th,
+    .work-permit-info-table td {
+        padding: 12px 14px;
+    }
+}

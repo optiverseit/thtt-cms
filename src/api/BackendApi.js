@@ -28,6 +28,72 @@ export const deleteBooking = (id) => {
     return axiosInstance.delete(`/bookings/${id}`);
 };
 
+// ROLES
+
+export const getAllRoles = (page = 1) => {
+    return axiosInstance.get(`/roles/active-role?page=${page}`);
+};
+
+export const getAllRolesCms = (page = 1) => {
+    return axiosInstance.get(`/roles/cms?page=${page}`);
+};
+
+// Get single role
+export const getRoleById = (id) => {
+    return axiosInstance.get(`/roles/${id}`);
+};
+
+// Create role
+export const createRole = (data) => {
+    return axiosInstance.post(`/roles/store`, data);
+};
+
+// Update role
+export const updateRole = (id, data) => {
+    return axiosInstance.put(`/roles/${id}`, data);
+};
+
+// Change role status
+export const changeRoleStatus = (id) => {
+    return axiosInstance.put(`/roles/${id}/status`);
+};
+
+// Delete role
+export const deleteRole = (id) => {
+    return axiosInstance.delete(`/roles/${id}`);
+};
+
+
+// USERS
+
+export const getAllUsersCms = (page = 1) => {
+    return axiosInstance.get(`/users/cms?page=${page}`);
+};
+
+// Get single user
+export const getUserById = (id) => {
+    return axiosInstance.get(`/users/${id}`);
+};
+
+// Create user
+export const createUser = (data) => {
+    return axiosInstance.post(`/users/store`, data);
+};
+
+// Update user
+export const updateUser = (id, data) => {
+    return axiosInstance.put(`/users/${id}`, data);
+};
+
+// Change status
+export const changeUserStatus = (id) => {
+    return axiosInstance.put(`/users/${id}/status`);
+};
+
+// Delete user
+export const deleteUser = (id) => {
+    return axiosInstance.delete(`/users/${id}`);
+};
 
 // CATEGORIES
 export const getAllCategoriesCms = (page = 1) => {
@@ -544,4 +610,75 @@ export const getCountryById = (id) => {
 // PUBLIC COUNTRY PERMIT FEE TIERS
 export const getCountryPermitFeeTiers = (countryId) => {
     return axiosInstance.get(`/countries/${countryId}/permit-fee-tiers`);
+};
+
+// WORKPERMIT DOCUMENT
+export const getAllPermitDocumentRequirementsCms = (page = 1) => {
+    return axiosInstance.get(
+        `/permit-document-requirements/cms?page=${page}`
+    );
+};
+
+
+// Create multiple requirements
+export const createPermitDocumentRequirements = (data) => {
+    return axiosInstance.post(
+        `/permit-document-requirements/store`,
+        data
+    );
+};
+
+
+export const updatePermitDocumentRequirement = (id, data) => {
+    return axiosInstance.put(
+        `/permit-document-requirements/${id}`,
+        data
+    );
+};
+
+
+export const changePermitDocumentRequirementStatus = (id) => {
+    return axiosInstance.patch(
+        `/permit-document-requirements/${id}/status`
+    );
+};
+
+
+export const deletePermitDocumentRequirement = (id) => {
+    return axiosInstance.delete(
+        `/permit-document-requirements/${id}`
+    );
+};
+
+// WORKPERMIT INFORMATION
+export const getAllWorkPermitInformationCms = (page = 1) => {
+    return axiosInstance.get(
+        `/work-permit-information/cms?page=${page}`
+    );
+};
+
+export const createWorkPermitInformation = (data) => {
+    return axiosInstance.post(
+        `/work-permit-information/store`,
+        data
+    );
+};
+
+export const updateWorkPermitInformation = (id, data) => {
+    return axiosInstance.put(
+        `/work-permit-information/${id}`,
+        data
+    );
+};
+
+export const changeWorkPermitInformationStatus = (id) => {
+    return axiosInstance.patch(
+        `/work-permit-information/${id}/status`
+    );
+};
+
+export const deleteWorkPermitInformation = (id) => {
+    return axiosInstance.delete(
+        `/work-permit-information/${id}`
+    );
 };
