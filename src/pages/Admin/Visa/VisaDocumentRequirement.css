@@ -1,0 +1,899 @@
+/* =========================================================
+   HEADER
+========================================================= */
+
+.visa-document-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.visa-document-header > div {
+    min-width: 0;
+}
+
+.visa-document-header h1 {
+    margin: 0;
+    color: #2d1048;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.visa-document-header p {
+    margin: 7px 0 0;
+    color: #82758a;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.visa-document-add-btn {
+    flex-shrink: 0;
+    border: none;
+    border-radius: 9px;
+    padding: 12px 18px;
+    background: #32134e;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.visa-document-add-btn:hover {
+    background: #431965;
+}
+
+.visa-document-add-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.visa-document-table-card {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e7e2e9;
+    border-radius: 14px;
+}
+
+.visa-document-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.visa-document-table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.visa-document-table thead {
+    background: #fbfafc;
+}
+
+.visa-document-table th {
+    padding: 16px 18px;
+    border-bottom: 1px solid #e8e3ea;
+    background: #fbfafc;
+    color: #4c4053;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
+.visa-document-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #efebf1;
+    background: #ffffff;
+    color: #413647;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.visa-document-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.visa-document-table tbody tr:hover td {
+    background: #fcfbfd;
+}
+
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+.visa-document-empty {
+    height: 130px;
+    padding: 38px 20px !important;
+    background: #ffffff !important;
+    color: #aaa0ae !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+
+/* =========================================================
+   DOCUMENT TYPE
+========================================================= */
+
+.document-type-code {
+    display: inline-flex;
+    align-items: center;
+    max-width: 220px;
+    padding: 6px 9px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #f3f1f5;
+    color: #443949;
+    font-size: 11px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   REQUIRED / OPTIONAL
+========================================================= */
+
+.required-badge,
+.optional-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.required-badge {
+    background: #fff0f0;
+    color: #bd2929;
+}
+
+.optional-badge {
+    background: #f2f2f4;
+    color: #6f6875;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.visa-status-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 72px;
+    padding: 6px 11px;
+    border: none;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.visa-status-btn:hover {
+    opacity: 0.8;
+}
+
+.visa-status-btn.active {
+    background: #eafaf1;
+    color: #087a45;
+}
+
+.visa-status-btn.inactive {
+    background: #fff0f0;
+    color: #bf2929;
+}
+
+.visa-status-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.visa-document-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.visa-edit-btn,
+.visa-delete-btn {
+    padding: 7px 11px;
+    border-radius: 7px;
+    background: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.visa-edit-btn {
+    border: 1px solid #32134e;
+    color: #32134e;
+}
+
+.visa-edit-btn:hover {
+    background: #f8f3fb;
+}
+
+.visa-delete-btn {
+    border: 1px solid #f3c4c4;
+    color: #d32f2f;
+}
+
+.visa-delete-btn:hover {
+    background: #fff4f4;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.visa-document-pagination {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 18px;
+    border-top: 1px solid #e8e3ea;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.visa-document-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    padding: 20px;
+
+    background: rgba(20, 12, 27, 0.58);
+    backdrop-filter: blur(2px);
+}
+
+
+/* =========================================================
+   MODAL
+
+   IMPORTANT:
+   modal itself is flex.
+   Body is the scrolling section.
+   Header/footer stay visible.
+========================================================= */
+
+.visa-document-modal {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+
+    overflow: hidden;
+
+    background: #ffffff;
+    border-radius: 14px;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.visa-document-modal-large {
+    max-width: 850px;
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.visa-document-modal-header {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 22px;
+
+    border-bottom: 1px solid #e8e3ea;
+    background: #ffffff;
+}
+
+.visa-document-modal-header > div {
+    min-width: 0;
+}
+
+.visa-document-modal-header h2 {
+    margin: 0;
+    color: #29113f;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.visa-document-modal-header p {
+    margin: 5px 0 0;
+    color: #7c7382;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.visa-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+    color: #766d7c;
+
+    font-family: inherit;
+    font-size: 27px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.visa-modal-close:hover {
+    background: #f5f2f7;
+}
+
+.visa-modal-close:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MODAL BODY
+
+   THIS is the scrollable area.
+========================================================= */
+
+.visa-document-modal-body {
+    flex: 1;
+    min-height: 0;
+
+    box-sizing: border-box;
+
+    padding: 22px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: #ffffff;
+
+    overscroll-behavior: contain;
+}
+
+
+/* =========================================================
+   MODAL BODY SCROLLBAR
+========================================================= */
+
+.visa-document-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.visa-document-modal-body::-webkit-scrollbar-track {
+    background: #f5f2f7;
+}
+
+.visa-document-modal-body::-webkit-scrollbar-thumb {
+    background: #c9c1ce;
+    border-radius: 10px;
+}
+
+.visa-document-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #aea4b5;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.visa-document-modal-footer {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 16px 22px;
+
+    border-top: 1px solid #e8e3ea;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.visa-form-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.visa-form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    min-width: 0;
+    margin-bottom: 16px;
+}
+
+.visa-form-group label {
+    color: #463d4b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.visa-form-group input,
+.visa-form-group select,
+.visa-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 10px 11px;
+
+    border: 1px solid #d8d2dc;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+    color: #2f2934;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.visa-form-group input:focus,
+.visa-form-group select:focus,
+.visa-form-group textarea:focus {
+    border-color: #52206f;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(82, 32, 111, 0.08);
+}
+
+.visa-form-group textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+
+/* =========================================================
+   DOCUMENT SECTION
+========================================================= */
+
+.document-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin: 8px 0 14px;
+}
+
+.document-section-header > div {
+    min-width: 0;
+}
+
+.document-section-header h3 {
+    margin: 0;
+
+    color: #302637;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.document-section-header p {
+    margin: 4px 0 0;
+
+    color: #84798b;
+
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.add-document-row-btn {
+    flex-shrink: 0;
+
+    padding: 8px 12px;
+
+    border: 1px solid #32134e;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #32134e;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.add-document-row-btn:hover {
+    background: #f8f3fb;
+}
+
+
+/* =========================================================
+   DOCUMENT FORM CARD
+========================================================= */
+
+.document-form-card {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-bottom: 16px;
+
+    padding: 16px;
+
+    border: 1px solid #e6e1e9;
+    border-radius: 10px;
+
+    background: #fbfafc;
+}
+
+.document-form-card:last-child {
+    margin-bottom: 0;
+}
+
+.document-form-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 15px;
+
+    color: #413748;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.remove-document-btn {
+    padding: 0;
+
+    border: none;
+
+    background: transparent;
+    color: #d52c2c;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.remove-document-btn:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   CHECKBOX
+========================================================= */
+
+.visa-checkbox-row {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 9px;
+
+    width: fit-content;
+
+    color: #453c4b;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.visa-checkbox-row input {
+    width: 16px;
+    height: 16px;
+
+    margin: 0;
+
+    accent-color: #32134e;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   MODAL BUTTONS
+========================================================= */
+
+.visa-cancel-btn,
+.visa-save-btn {
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.visa-cancel-btn {
+    border: 1px solid #d5cfd9;
+
+    background: #ffffff;
+    color: #554c5b;
+}
+
+.visa-cancel-btn:hover {
+    background: #f8f7f9;
+}
+
+.visa-save-btn {
+    border: 1px solid #32134e;
+
+    background: #32134e;
+    color: #ffffff;
+}
+
+.visa-save-btn:hover {
+    background: #421963;
+}
+
+.visa-cancel-btn:disabled,
+.visa-save-btn:disabled,
+.add-document-row-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   EDIT MODAL LOADING
+========================================================= */
+
+.visa-document-edit-loading {
+    flex: 1;
+
+    min-height: 300px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    padding: 30px;
+
+    background: #ffffff;
+
+    color: #82758a;
+    font-size: 14px;
+}
+
+.visa-document-edit-loading p {
+    margin: 0;
+}
+
+.visa-document-loader {
+    width: 34px;
+    height: 34px;
+
+    box-sizing: border-box;
+
+    border: 3px solid #e7e1eb;
+    border-top-color: #32134e;
+
+    border-radius: 50%;
+
+    animation:
+        visa-document-spin
+        0.75s
+        linear
+        infinite;
+}
+
+@keyframes visa-document-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   TABLE SCROLLBAR
+========================================================= */
+
+.visa-document-table-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.visa-document-table-wrapper::-webkit-scrollbar-track {
+    background: #f2eff4;
+}
+
+.visa-document-table-wrapper::-webkit-scrollbar-thumb {
+    background: #c9c1ce;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+
+    .visa-document-header h1 {
+        font-size: 25px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .visa-document-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .visa-document-header h1 {
+        font-size: 23px;
+    }
+
+    .visa-document-add-btn {
+        width: 100%;
+    }
+
+    .visa-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .document-section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .add-document-row-btn {
+        width: 100%;
+    }
+
+    .visa-document-modal-overlay {
+        padding: 10px;
+    }
+
+    .visa-document-modal {
+        max-height: 95vh;
+        border-radius: 11px;
+    }
+
+    .visa-document-modal-header {
+        padding: 17px;
+    }
+
+    .visa-document-modal-body {
+        padding: 17px;
+    }
+
+    .visa-document-modal-footer {
+        padding: 14px 17px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .visa-document-header h1 {
+        font-size: 21px;
+    }
+
+    .visa-document-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .visa-cancel-btn,
+    .visa-save-btn {
+        width: 100%;
+    }
+
+    .document-form-card {
+        padding: 13px;
+    }
+}
