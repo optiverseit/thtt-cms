@@ -14,6 +14,14 @@ const Sidebar = () => {
     location.pathname.startsWith("/work-permits/status-history")
   );
 
+  const [visaOpen, setVisaOpen] = useState(
+    location.pathname.startsWith("/visa-application") ||
+    location.pathname.startsWith("/visa/information") ||
+    location.pathname.startsWith("/visa/documents") ||
+    location.pathname.startsWith("/visa/pricing-tier")
+    // location.pathname.startsWith("/work-permits/payment") ||
+  );
+
   const [packageOpen, setPackageOpen] = useState(
     location.pathname.startsWith("/packages") ||
     location.pathname.startsWith("/packages/inclusions") ||
@@ -50,12 +58,21 @@ const Sidebar = () => {
 
   const isWorkPermitActive = () => {
     return (
-    location.pathname.startsWith("/work-permits") ||
-    location.pathname.startsWith("/work-permits/country") ||
-    location.pathname.startsWith("/work-permits/feetiers") ||
-    location.pathname.startsWith("/work-permits/documents") ||
-    location.pathname.startsWith("/work-permits/payment") ||
-    location.pathname.startsWith("/work-permits/status-history")
+      location.pathname.startsWith("/work-permits") ||
+      location.pathname.startsWith("/work-permits/country") ||
+      location.pathname.startsWith("/work-permits/feetiers") ||
+      location.pathname.startsWith("/work-permits/documents") ||
+      location.pathname.startsWith("/work-permits/payment") ||
+      location.pathname.startsWith("/work-permits/status-history")
+    );
+  };
+
+  const isVisaActive = () => {
+    return (
+      location.pathname.startsWith("/visa-application") ||
+      location.pathname.startsWith("/visa/information") ||
+      location.pathname.startsWith("/visa/documents") ||
+      location.pathname.startsWith("/visa/pricing-tier")
     );
   };
 
@@ -228,6 +245,15 @@ const Sidebar = () => {
           <span>Bookings</span>
         </button>
 
+        <button
+          className={`menu-item ${isActive("/country") ? "active" : ""
+            }`}
+          onClick={() => navigate("/country")}
+        >
+          <span className="menu-icon">♙</span>
+          <span>Country</span>
+        </button>
+
         {/* WORK PERMIT DROPDOWN */}
 
         <div className="sidebar-dropdown">
@@ -257,13 +283,13 @@ const Sidebar = () => {
                 All Work Permits
               </button>
 
-              <button
+              {/* <button
                 className={`submenu-item ${isActive("/work-permits/country") ? "active" : ""
                   }`}
                 onClick={() => navigate("/work-permits/country")}
               >
                 Country
-              </button>
+              </button> */}
 
               <button
                 className={`submenu-item ${isActive("/work-permits/feetiers") ? "active" : ""
@@ -287,6 +313,77 @@ const Sidebar = () => {
                 onClick={() => navigate("/work-permits/informations")}
               >
                 WorkPermit Information
+              </button>
+
+              {/* <button
+                className={`submenu-item ${isActive("/work-permits/pricing") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/work-permits/status-history")}
+              >
+                Status History
+              </button> */}
+            </div>
+          )}
+        </div>
+
+        {/* VISA SERVICE */}
+        <div className="sidebar-dropdown">
+          <button
+            className={`menu-item ${isVisaActive() ? "active" : ""
+              }`}
+            onClick={() => setVisaOpen(!visaOpen)}
+          >
+            <span className="menu-icon">◆</span>
+            <span className="menu-label">Visa Service</span>
+
+            <span
+              className={`dropdown-arrow ${visaOpen ? "open" : ""
+                }`}
+            >
+              ▼
+            </span>
+          </button>
+
+          {visaOpen && (
+            <div className="submenu">
+              <button
+                className={`submenu-item ${location.pathname === "/vias-applications" ? "active" : ""
+                  }`}
+                onClick={() => navigate("/visa-applications")}
+              >
+                All Visa Appliaction
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/visa/category") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/visa/category")}
+              >
+                Visa Category
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/visa/pricing-tiers") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/visa/pricing-tiers")}
+              >
+                Fee Tiers
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/visa/documents") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/visa/documents")}
+              >
+                Documents Requirement
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/visa/informations") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/visa/informations")}
+              >
+                Visa Information
               </button>
 
               {/* <button
