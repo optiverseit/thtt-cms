@@ -1,0 +1,1372 @@
+/* =========================================================
+   VISA APPLICATION PAGE
+========================================================= */
+
+.work-permit-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.work-permit-header {
+    margin-bottom: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.work-permit-header h1 {
+    margin: 0 0 6px;
+
+    color: #351255;
+
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.work-permit-header p {
+    margin: 0;
+
+    color: #847b89;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.work-permit-table-card {
+    width: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #eee9f0;
+    border-radius: 12px;
+
+    box-shadow: 0 3px 12px rgba(53, 18, 85, 0.04);
+
+    overflow: visible;
+}
+
+.work-permit-table-header {
+    min-height: 70px;
+
+    padding: 17px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid #eee9f0;
+}
+
+.work-permit-table-header h2 {
+    margin: 0 0 4px;
+
+    color: #351255;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.work-permit-table-header p {
+    margin: 0;
+
+    color: #918995;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.work-permit-table {
+    width: 100%;
+
+    min-width: 1300px;
+
+    border-collapse: collapse;
+}
+
+.work-permit-table thead {
+    background: #faf8fb;
+}
+
+.work-permit-table th {
+    padding: 14px 18px;
+
+    color: #746b7a;
+
+    border-bottom: 1px solid #eee9f0;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    letter-spacing: 0.4px;
+
+    white-space: nowrap;
+}
+
+.work-permit-table td {
+    padding: 16px 18px;
+
+    color: #554b5a;
+
+    border-bottom: 1px solid #f1edf3;
+
+    font-size: 13px;
+
+    vertical-align: middle;
+}
+
+.work-permit-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.work-permit-table tbody tr:hover {
+    background: #fcfafc;
+}
+
+
+/* =========================================================
+   APPLICATION NUMBER
+========================================================= */
+
+.application-number {
+    color: #351255;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   APPLICANT
+========================================================= */
+
+.applicant-info {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.applicant-name {
+    color: #351255;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.applicant-email {
+    color: #918995;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   APPLICATION STATUS
+========================================================= */
+
+.work-permit-status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    text-transform: uppercase;
+}
+
+.status-draft {
+    color: #6c5a00;
+    background: #fff8d8;
+}
+
+.status-submitted {
+    color: #175cd3;
+    background: #eff8ff;
+}
+
+.status-approved {
+    color: #18794e;
+    background: #e9f8f0;
+}
+
+.status-rejected {
+    color: #b42345;
+    background: #fff0f3;
+}
+
+.status-processing {
+    color: #6941c6;
+    background: #f4f0ff;
+}
+
+.status-default {
+    color: #667085;
+    background: #f2f4f7;
+}
+
+
+/* =========================================================
+   PAYMENT STATUS
+========================================================= */
+
+.payment-status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+
+    min-width: 78px;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    text-transform: uppercase;
+}
+
+.payment-paid {
+    color: #18794e;
+    background: #e9f8f0;
+}
+
+.payment-pending {
+    color: #b54708;
+    background: #fff4e5;
+}
+
+.payment-rejected {
+    color: #b42345;
+    background: #fff0f3;
+}
+
+.payment-unpaid {
+    color: #667085;
+    background: #f2f4f7;
+}
+
+.payment-default {
+    color: #667085;
+    background: #f2f4f7;
+}
+
+
+/* =========================================================
+   TABLE LOADING / EMPTY
+========================================================= */
+
+.table-message {
+    height: 180px;
+
+    color: #918995 !important;
+
+    text-align: center !important;
+}
+
+.work-permit-loader {
+    width: 23px;
+    height: 23px;
+
+    margin: 0 auto 10px;
+
+    border: 2px solid #eee5f1;
+    border-top-color: #f52d91;
+
+    border-radius: 50%;
+
+    animation: work-permit-spin 0.7s linear infinite;
+}
+
+@keyframes work-permit-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   ACTION COLUMN
+========================================================= */
+
+.action-column {
+    width: 70px;
+    min-width: 70px;
+
+    text-align: center !important;
+}
+
+.kebab-wrapper {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================================
+   THREE DOT BUTTON
+========================================================= */
+
+.kebab-button {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e8e1eb;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #655b6a;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.kebab-button:hover {
+    background: #f8f3fa;
+
+    color: #351255;
+
+    border-color: #d9cde0;
+
+    box-shadow: 0 3px 10px rgba(53, 18, 85, 0.08);
+}
+
+
+/* =========================================================
+   KEBAB DROPDOWN
+========================================================= */
+
+.kebab-menu {
+    position: absolute;
+
+    top: calc(100% + 7px);
+    right: 0;
+
+    width: 230px;
+
+    padding: 6px;
+
+    background: #ffffff;
+
+    border: 1px solid #eee9f0;
+    border-radius: 9px;
+
+    box-shadow:
+        0 10px 30px rgba(53, 18, 85, 0.12),
+        0 3px 8px rgba(53, 18, 85, 0.06);
+
+    z-index: 10000;
+}
+
+.kebab-menu-item {
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 11px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: #554b5a;
+
+    font-family: inherit;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition: 0.15s ease;
+}
+
+.kebab-menu-item:hover {
+    background: #faf5fc;
+
+    color: #351255;
+}
+
+.kebab-menu-item svg {
+    width: 14px;
+    height: 14px;
+
+    color: #847b89;
+
+    flex-shrink: 0;
+}
+
+.kebab-menu-item:hover svg {
+    color: #f52d91;
+}
+
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.payment-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(24, 10, 38, 0.55);
+
+    backdrop-filter: blur(3px);
+}
+
+
+/* =========================================================
+   BASE MODAL
+========================================================= */
+
+.payment-modal {
+    width: min(600px, 95vw);
+
+    max-height: 90vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background: #ffffff;
+
+    border: 1px solid #ebe5ee;
+    border-radius: 14px;
+
+    box-shadow:
+        0 20px 50px rgba(31, 10, 48, 0.18),
+        0 4px 12px rgba(31, 10, 48, 0.08);
+
+    overflow: hidden;
+
+    animation: visaModalOpen 0.18s ease-out;
+}
+
+@keyframes visaModalOpen {
+    from {
+        opacity: 0;
+
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================================
+   LARGE APPLICATION / DOCUMENT MODAL
+========================================================= */
+
+.work-permit-detail-modal {
+    width: min(850px, 95vw);
+
+    max-height: 90vh;
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.payment-modal-header {
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 24px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #eee8f1;
+}
+
+.payment-modal-header h2 {
+    margin: 0 0 5px;
+
+    color: #351255;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+.payment-modal-header p {
+    margin: 0;
+
+    color: #8a8190;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MODAL CLOSE
+========================================================= */
+
+.payment-modal-close {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e5dfe8;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #6f6575;
+
+    font-size: 22px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.payment-modal-close:hover:not(:disabled) {
+    background: #f7f3f8;
+
+    color: #351255;
+
+    border-color: #d9cedf;
+}
+
+.payment-modal-close:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.payment-modal-body {
+    flex: 1;
+
+    min-height: 0;
+
+    padding: 22px 24px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: #ffffff;
+}
+
+.payment-modal-body::-webkit-scrollbar {
+    width: 7px;
+}
+
+.payment-modal-body::-webkit-scrollbar-track {
+    background: #f5f1f6;
+}
+
+.payment-modal-body::-webkit-scrollbar-thumb {
+    background: #c9bdcf;
+
+    border-radius: 10px;
+}
+
+.payment-modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a998b2;
+}
+
+
+/* =========================================================
+   MODAL LOADING
+========================================================= */
+
+.modal-loading-state {
+    min-height: 180px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #918995;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   APPLICATION DETAIL SECTIONS
+========================================================= */
+
+.detail-section {
+    margin-bottom: 26px;
+}
+
+.detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.detail-section h3 {
+    margin: 0 0 14px;
+
+    padding-bottom: 9px;
+
+    color: #351255;
+
+    border-bottom: 1px solid #eee8f1;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   DETAIL GRID
+========================================================= */
+
+.detail-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.detail-item {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding: 13px 15px;
+
+    background: #faf8fb;
+
+    border: 1px solid #eee8f1;
+    border-radius: 8px;
+}
+
+.detail-item > span:first-child {
+    color: #918995;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.4px;
+}
+
+.detail-item strong {
+    min-width: 0;
+
+    color: #351255;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   VOUCHER UPLOAD APPLICANT
+========================================================= */
+
+.payment-applicant {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    margin-bottom: 20px;
+
+    padding: 12px 14px;
+
+    background: #faf8fb;
+
+    border: 1px solid #eee9f0;
+    border-radius: 8px;
+}
+
+.payment-applicant span {
+    color: #918995;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.4px;
+}
+
+.payment-applicant strong {
+    color: #351255;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   VOUCHER FORM
+========================================================= */
+
+.payment-form-group {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin-bottom: 18px;
+}
+
+.payment-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.payment-form-group label {
+    color: #554b5a;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.payment-form-group input[type="file"] {
+    box-sizing: border-box;
+
+    width: 100%;
+
+    padding: 9px;
+
+    border: 1px dashed #d8cddd;
+    border-radius: 7px;
+
+    background: #faf8fb;
+
+    color: #554b5a;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.payment-form-group input[type="file"]::file-selector-button {
+    margin-right: 10px;
+
+    padding: 7px 11px;
+
+    border: none;
+    border-radius: 5px;
+
+    background: #351255;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.payment-form-group input[type="file"]::file-selector-button:hover {
+    background: #4b1b72;
+}
+
+.payment-file-help {
+    display: block;
+
+    color: #918995;
+
+    font-size: 10px;
+
+    line-height: 1.4;
+}
+
+.payment-selected-file {
+    display: block;
+
+    padding: 7px 9px;
+
+    background: #f7f3f9;
+
+    border-radius: 5px;
+
+    color: #351255;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.payment-modal-footer {
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 16px 24px;
+
+    background: #faf8fb;
+
+    border-top: 1px solid #eee8f1;
+}
+
+
+/* =========================================================
+   MODAL BUTTONS
+========================================================= */
+
+.payment-cancel-button,
+.payment-submit-button {
+    height: 39px;
+
+    padding: 0 17px;
+
+    border-radius: 7px;
+
+    font-family: inherit;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.payment-cancel-button {
+    border: 1px solid #ddd8e2;
+
+    background: #ffffff;
+
+    color: #554b5a;
+}
+
+.payment-cancel-button:hover:not(:disabled) {
+    background: #f8f5f9;
+
+    border-color: #cec5d3;
+}
+
+.payment-submit-button {
+    border: none;
+
+    background: #351255;
+
+    color: #ffffff;
+}
+
+.payment-submit-button:hover:not(:disabled) {
+    background: #4b1b72;
+
+    box-shadow: 0 5px 14px rgba(53, 18, 85, 0.18);
+}
+
+.payment-submit-button:disabled,
+.payment-cancel-button:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   DOCUMENT LIST
+========================================================= */
+
+.document-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   DOCUMENT CARD
+========================================================= */
+
+.document-card {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    padding: 15px 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #eee8f1;
+    border-radius: 10px;
+
+    transition: 0.2s ease;
+}
+
+.document-card:hover {
+    border-color: #ddd1e3;
+
+    box-shadow: 0 4px 12px rgba(53, 18, 85, 0.05);
+}
+
+
+/* =========================================================
+   DOCUMENT LEFT SIDE
+========================================================= */
+
+.document-card-main {
+    min-width: 0;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    flex: 1;
+}
+
+.document-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #f7f2f9;
+
+    border-radius: 8px;
+
+    color: #351255;
+
+    font-size: 15px;
+}
+
+.document-info {
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.document-info strong {
+    color: #351255;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    line-height: 1.4;
+}
+
+.document-info span {
+    width: fit-content;
+
+    color: #746b7a;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.document-info small {
+    color: #918995;
+
+    font-size: 10px;
+
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   DOCUMENT ACTIONS
+========================================================= */
+
+.document-actions {
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+   VIEW DOCUMENT / VOUCHER LINK
+========================================================= */
+
+.document-view-link {
+    min-height: 34px;
+
+    box-sizing: border-box;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    border: 1px solid #ddd5e2;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #351255;
+
+    font-family: inherit;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.document-view-link:hover {
+    background: #f8f3fa;
+
+    border-color: #cfc1d7;
+
+    color: #4b1b72;
+}
+
+.document-view-link svg {
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   VERIFY DOCUMENT BUTTON
+========================================================= */
+
+.document-verify-button {
+    min-height: 34px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: #351255;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.document-verify-button:hover:not(:disabled) {
+    background: #4b1b72;
+
+    box-shadow: 0 4px 10px rgba(53, 18, 85, 0.16);
+}
+
+.document-verify-button.verified {
+    background: #e9f8f0;
+
+    color: #18794e;
+
+    border: 1px solid #b9e7cf;
+}
+
+.document-verify-button.verified:hover:not(:disabled) {
+    background: #dff4e9;
+
+    color: #12663f;
+}
+
+.document-verify-button:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 20px;
+}
+
+.pagination button {
+    min-width: 38px;
+    height: 38px;
+
+    padding: 0 12px;
+
+    border: 1px solid #ddd8e2;
+    border-radius: 6px;
+
+    background: #ffffff;
+
+    color: #351255;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.pagination button:hover:not(:disabled),
+.pagination button.active {
+    background: #351255;
+
+    color: #ffffff;
+
+    border-color: #351255;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .payment-modal-overlay {
+        padding: 14px;
+    }
+
+    .payment-modal,
+    .work-permit-detail-modal {
+        width: 100%;
+
+        max-width: 100%;
+    }
+
+    .payment-modal-header {
+        padding: 17px;
+    }
+
+    .payment-modal-body {
+        padding: 17px;
+    }
+
+    .payment-modal-footer {
+        padding: 14px 17px;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .document-card {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    .document-actions {
+        width: 100%;
+    }
+
+    .document-view-link,
+    .document-verify-button {
+        flex: 1;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .work-permit-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .work-permit-header h1 {
+        font-size: 23px;
+    }
+
+    .work-permit-table-header {
+        padding: 15px 17px;
+    }
+
+    .payment-cancel-button,
+    .payment-submit-button {
+        flex: 1;
+    }
+
+    .document-actions {
+        flex-direction: column;
+    }
+
+    .document-view-link,
+    .document-verify-button {
+        width: 100%;
+    }
+}

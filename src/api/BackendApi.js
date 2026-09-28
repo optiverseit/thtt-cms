@@ -452,7 +452,7 @@ export const getCountriesCms = (page = 1) => {
     return axiosInstance.get(`/countries/cms?page=${page}`);
 };
 
-// public
+
 export const getAllCountries = () => {
     return axiosInstance.get("/countries/cms");
 };
@@ -681,4 +681,192 @@ export const deleteWorkPermitInformation = (id) => {
     return axiosInstance.delete(
         `/work-permit-information/${id}`
     );
+};
+
+// VISA SERVICES
+// ================= VISA APPLICATIONS =================
+
+
+// Get all visa applications for CMS
+export const getAllVisaApplicationsCms = (page = 1) => {
+    return axiosInstance.get(
+        `/visa-applications/cms?page=${page}`
+    );
+};
+
+
+// Get single visa application
+export const getVisaApplicationById = (id) => {
+    return axiosInstance.get(
+        `/visa-applications/show/${id}`
+    );
+};
+
+
+// Change visa application status
+export const changeVisaApplicationStatus = (id, data) => {
+    return axiosInstance.patch(
+        `/visa-applications/${id}/status`,
+        data
+    );
+};
+
+
+// ================= VISA VOUCHER =================
+
+
+// Upload voucher / receipt
+// FormData is created in VisaApplicationIndex.jsx
+export const uploadVisaApplicationVoucher = (
+    applicationId,
+    formData
+) => {
+    return axiosInstance.post(
+        `/visa-applications/${applicationId}/voucher`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+};
+
+
+// ================= VISA DOCUMENTS =================
+
+
+// Verify / unverify visa document
+export const verifyVisaDocument = (
+    documentId,
+    data
+) => {
+    return axiosInstance.patch(
+        `/visa-documents/${documentId}/verify`,
+        data
+    );
+};
+
+// VISA CATEGORY
+// ============================================
+// VISA CATEGORIES
+// ============================================
+
+export const getAllVisaCategoriesCms = (page = 1) => {
+    return axiosInstance.get(
+        `/visa-categories/cms?page=${page}`
+    );
+};
+
+export const getVisaCategoriesByCountry = (countryId) => {
+    return axiosInstance.get(
+        `/visa-categories/country/${countryId}`
+    );
+};
+
+export const getVisaCategoryById = (id) => {
+    return axiosInstance.get(
+        `/visa-categories/show/${id}`
+    );
+};
+
+export const createVisaCategories = (formData) => {
+    return axiosInstance.post(
+        "/visa-categories/store",
+        formData
+    );
+};
+
+export const updateVisaCategory = (id, formData) => {
+    return axiosInstance.post(
+        `/visa-categories/update/${id}`,
+        formData,
+        {
+            params: {
+                _method: "PUT",
+            },
+        }
+    );
+};
+
+export const changeVisaCategoryStatus = (id, status) => {
+    return axiosInstance.patch(
+        `/visa-categories/${id}/status`,
+        {
+            status,
+        }
+    );
+};
+
+export const deleteVisaCategory = (id) => {
+    return axiosInstance.delete(
+        `/visa-categories/delete/${id}`
+    );
+};
+
+// ============================================
+// VISA PRICING TIERS
+// ============================================
+
+export const getAllVisaPricingTiersCms = (page = 1) => {
+    return axiosInstance.get(
+        `/visa-pricing-tiers/cms?page=${page}`
+    );
+};
+
+export const getVisaPricingTierById = (id) => {
+    return axiosInstance.get(
+        `/visa-pricing-tiers/show/${id}`
+    );
+};
+
+export const createVisaPricingTiers = (data) => {
+    return axiosInstance.post(
+        "/visa-pricing-tiers/store",
+        data
+    );
+};
+
+export const updateVisaPricingTier = (id, data) => {
+    return axiosInstance.put(
+        `/visa-pricing-tiers/update/${id}`,
+        data
+    );
+};
+
+export const changeVisaPricingTierStatus = (
+    id,
+    status
+) => {
+    return axiosInstance.patch(
+        `/visa-pricing-tiers/${id}/status`,
+        {
+            status,
+        }
+    );
+};
+
+export const deleteVisaPricingTier = (id) => {
+    return axiosInstance.delete(
+        `/visa-pricing-tiers/delete/${id}`
+    );
+};
+
+
+// ============================================
+// PUBLIC ACTIVE VISA CATEGORIES
+// ============================================
+
+export const getVisaCategories = () => {
+    return axiosInstance.get(
+        "/visa-categories"
+    );
+};
+
+// ============================================
+// COUNTRIES PUBLIC
+// ============================================
+
+export const getCountries = () => {
+    return axiosInstance.get("/countries");
 };

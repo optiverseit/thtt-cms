@@ -1,0 +1,589 @@
+/* =========================================================
+   PAGE
+========================================================= */
+
+.visa-category-page {
+    width: 100%;
+    padding: 28px;
+    box-sizing: border-box;
+}
+
+.visa-category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.visa-category-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #24152f;
+}
+
+.visa-category-header p {
+    margin: 7px 0 0;
+    font-size: 14px;
+    color: #77717d;
+}
+
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.visa-category-form-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eee9f1;
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 3px 14px rgba(38, 20, 48, 0.05);
+}
+
+.visa-category-card-header {
+    margin-bottom: 22px;
+}
+
+.visa-category-card-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #351255;
+}
+
+.visa-category-card-header p {
+    margin: 6px 0 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.visa-category-form {
+    width: 100%;
+}
+
+.visa-category-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.visa-category-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.visa-category-form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3e3343;
+}
+
+.visa-category-form-group input,
+.visa-category-form-group select,
+.visa-category-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ded7e2;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 11px 12px;
+    font-size: 14px;
+    color: #332b36;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.visa-category-form-group input:focus,
+.visa-category-form-group select:focus,
+.visa-category-form-group textarea:focus {
+    border-color: #351255;
+    box-shadow: 0 0 0 3px rgba(53, 18, 85, 0.08);
+}
+
+.visa-category-form-group textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-family: inherit;
+}
+
+.visa-category-form-group input:disabled,
+.visa-category-form-group select:disabled,
+.visa-category-form-group textarea:disabled {
+    background: #f5f3f6;
+    cursor: not-allowed;
+}
+
+.visa-category-full-width {
+    grid-column: 1 / -1;
+}
+
+.required {
+    color: #e42b67;
+    margin-left: 3px;
+}
+
+
+/* =========================================================
+   COUNTRY
+========================================================= */
+
+.visa-category-country-select {
+    max-width: 500px;
+    margin-bottom: 22px;
+}
+
+
+/* =========================================================
+   CREATE MULTIPLE
+========================================================= */
+
+.visa-category-create-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.visa-category-create-item {
+    border: 1px solid #e6dfe9;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fcfbfd;
+}
+
+.visa-category-create-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.visa-category-create-item-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #351255;
+}
+
+.visa-category-remove-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 7px;
+    background: #fff0f4;
+    color: #e42b67;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.visa-category-remove-btn:hover:not(:disabled) {
+    background: #e42b67;
+    color: white;
+}
+
+.visa-category-remove-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FILE
+========================================================= */
+
+.visa-category-file-help {
+    font-size: 12px;
+    color: #8a828e;
+}
+
+.visa-category-form-group input[type="file"] {
+    padding: 8px;
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+.visa-category-image-preview {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.visa-category-image-preview span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #514757;
+}
+
+.visa-category-image-preview img {
+    width: 180px;
+    height: 115px;
+    object-fit: cover;
+    border-radius: 9px;
+    border: 1px solid #e4dfe7;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.visa-category-create-actions,
+.visa-category-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.visa-category-add-more-btn,
+.visa-category-submit-btn,
+.visa-category-cancel-btn {
+    min-height: 40px;
+    border-radius: 8px;
+    border: none;
+    padding: 10px 17px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.visa-category-add-more-btn {
+    background: #f1eaf5;
+    color: #351255;
+}
+
+.visa-category-add-more-btn:hover {
+    background: #e7daee;
+}
+
+.visa-category-submit-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.visa-category-submit-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.visa-category-cancel-btn {
+    background: #eeeaf0;
+    color: #5f5663;
+}
+
+.visa-category-cancel-btn:hover {
+    background: #e3dfe5;
+}
+
+.visa-category-submit-btn:disabled,
+.visa-category-add-more-btn:disabled,
+.visa-category-cancel-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.visa-category-table-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eee9f1;
+    overflow: hidden;
+    box-shadow: 0 3px 14px rgba(38, 20, 48, 0.05);
+}
+
+.visa-category-table-header {
+    padding: 20px 22px;
+    border-bottom: 1px solid #eee9f1;
+}
+
+.visa-category-table-header h2 {
+    margin: 0;
+    font-size: 19px;
+    color: #351255;
+}
+
+.visa-category-table-header p {
+    margin: 5px 0 0;
+    color: #89808d;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.visa-category-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.visa-category-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1000px;
+}
+
+.visa-category-table thead {
+    background: #faf8fb;
+}
+
+.visa-category-table th {
+    padding: 13px 15px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #625867;
+    border-bottom: 1px solid #ece6ef;
+    white-space: nowrap;
+}
+
+.visa-category-table td {
+    padding: 14px 15px;
+    font-size: 13px;
+    color: #4d4550;
+    border-bottom: 1px solid #f0ecf2;
+    vertical-align: middle;
+}
+
+.visa-category-table tbody tr:hover {
+    background: #fdfcfd;
+}
+
+.visa-category-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   CATEGORY IMAGE
+========================================================= */
+
+.visa-category-table-image {
+    width: 64px;
+    height: 48px;
+    border-radius: 7px;
+    object-fit: cover;
+    border: 1px solid #e5dfe8;
+}
+
+.visa-category-no-image {
+    width: 64px;
+    height: 48px;
+    border-radius: 7px;
+    background: #f2eef4;
+    color: #918996;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================================
+   CATEGORY NAME
+========================================================= */
+
+.visa-category-name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 180px;
+}
+
+.visa-category-name-cell strong {
+    color: #332a37;
+    font-size: 14px;
+}
+
+.visa-category-name-cell span {
+    color: #8b838e;
+    font-size: 12px;
+    line-height: 1.4;
+    max-width: 300px;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.visa-category-status {
+    border: none;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.visa-category-status.active {
+    background: #e5f7ed;
+    color: #1d8a4c;
+}
+
+.visa-category-status.inactive {
+    background: #f1edf2;
+    color: #766e79;
+}
+
+.visa-category-status:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.visa-category-status:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TABLE ACTIONS
+========================================================= */
+
+.visa-category-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.visa-category-edit-btn,
+.visa-category-delete-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.visa-category-edit-btn {
+    background: #eee8f3;
+    color: #351255;
+}
+
+.visa-category-edit-btn:hover {
+    background: #351255;
+    color: #ffffff;
+}
+
+.visa-category-delete-btn {
+    background: #fff0f4;
+    color: #e42b67;
+}
+
+.visa-category-delete-btn:hover {
+    background: #e42b67;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+.visa-category-table-message {
+    text-align: center !important;
+    padding: 35px !important;
+    color: #817885 !important;
+}
+
+.visa-category-loader {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #e7dfeb;
+    border-top-color: #351255;
+    border-radius: 50%;
+    animation: visaCategorySpin 0.7s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes visaCategorySpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .visa-category-page {
+        padding: 20px;
+    }
+
+    .visa-category-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .visa-category-full-width {
+        grid-column: auto;
+    }
+
+    .visa-category-create-actions,
+    .visa-category-form-actions {
+        flex-wrap: wrap;
+    }
+
+    .visa-category-add-more-btn,
+    .visa-category-submit-btn,
+    .visa-category-cancel-btn {
+        flex: 1;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .visa-category-page {
+        padding: 14px;
+    }
+
+    .visa-category-form-card {
+        padding: 17px;
+    }
+
+    .visa-category-create-item {
+        padding: 15px;
+    }
+
+    .visa-category-create-actions,
+    .visa-category-form-actions {
+        flex-direction: column;
+    }
+
+    .visa-category-add-more-btn,
+    .visa-category-submit-btn,
+    .visa-category-cancel-btn {
+        width: 100%;
+    }
+}

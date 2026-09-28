@@ -36,6 +36,9 @@ import WorkPermitInformation from './pages/Admin/WorkPermitInformation/WorkPermi
 import User from './pages/Admin/User/User';
 import CreateUser from './pages/Admin/User/CreateUser';
 import EditUser from './pages/Admin/User/EditUser';
+import VisaApplicationIndex from './pages/Admin/Visa/VisaApplicationIndex';
+import VisaCategory from './pages/Admin/Visa/VisaCategory';
+import VisaPricingTier from './pages/Admin/Visa/VisaPricingTier';
 
 function App() {
 
@@ -263,7 +266,7 @@ function App() {
         />
 
         <Route
-          path="/work-permits/country"
+          path="/country"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Country />
@@ -297,6 +300,37 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* VISA */}
+
+        <Route
+          path="/visa-applications"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <VisaApplicationIndex />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/visa/category"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <VisaCategory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/visa/pricing-tiers"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <VisaPricingTier />
+            </ProtectedRoute>
+          }
+        />
+
+
+
 
         {/* USERS */}
         <Route
