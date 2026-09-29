@@ -1646,11 +1646,11 @@ const WorkPermit = () => {
                                                 <FaCreditCard />
 
                                                 <h3>
-                                                    No Payment Found
+                                                    No Reciept Found
                                                 </h3>
 
                                                 <p>
-                                                    No payment has been added
+                                                    No Reciept has been added
                                                     for this work permit.
                                                 </p>
 
