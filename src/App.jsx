@@ -39,6 +39,8 @@ import EditUser from './pages/Admin/User/EditUser';
 import VisaApplicationIndex from './pages/Admin/Visa/VisaApplicationIndex';
 import VisaCategory from './pages/Admin/Visa/VisaCategory';
 import VisaPricingTier from './pages/Admin/Visa/VisaPricingTier';
+import VisaDocumentRequirement from './pages/Admin/Visa/VisaDocumentRequirement';
+import VisaInformation from './pages/Admin/Visa/VisaInformation';
 
 function App() {
 
@@ -325,6 +327,24 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <VisaPricingTier />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/visa/documents"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <VisaDocumentRequirement />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/visa/informations"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <VisaInformation />
             </ProtectedRoute>
           }
         />

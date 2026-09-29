@@ -773,7 +773,12 @@ export const getVisaCategoryById = (id) => {
 export const createVisaCategories = (formData) => {
     return axiosInstance.post(
         "/visa-categories/store",
-        formData
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
     );
 };
 
@@ -853,6 +858,112 @@ export const deleteVisaPricingTier = (id) => {
 };
 
 
+// ================================
+// VISA DOCUMENT REQUIREMENTS
+// ================================
+
+// CMS - paginated document requirements
+export const getVisaDocumentRequirementsCms = (page = 1) => {
+    return axiosInstance.get(
+        `/visa-document-requirements/cms?page=${page}`
+    );
+};
+
+// Get single document requirement
+export const getVisaDocumentRequirementById = (id) => {
+    return axiosInstance.get(
+        `/visa-document-requirements/show/${id}`
+    );
+};
+
+// Create multiple document requirements
+export const createVisaDocumentRequirements = (data) => {
+    return axiosInstance.post(
+        `/visa-document-requirements/store`,
+        data
+    );
+};
+
+// Update document requirement
+export const updateVisaDocumentRequirement = (id, data) => {
+    return axiosInstance.put(
+        `/visa-document-requirements/update/${id}`,
+        data
+    );
+};
+
+// Change ACTIVE / INACTIVE
+export const changeVisaDocumentRequirementStatus = (
+    id,
+    status
+) => {
+    return axiosInstance.patch(
+        `/visa-document-requirements/${id}/status`,
+        { status }
+    );
+};
+
+// Delete
+export const deleteVisaDocumentRequirement = (id) => {
+    return axiosInstance.delete(
+        `/visa-document-requirements/delete/${id}`
+    );
+};
+
+
+// ==========================================
+// VISA INFORMATION
+// ==========================================
+
+// CMS - paginated visa information
+export const getVisaInformationCms = (page = 1) => {
+    return axiosInstance.get(
+        `/visa-information/cms?page=${page}`
+    );
+};
+
+// Get single visa information
+export const getVisaInformationById = (id) => {
+    return axiosInstance.get(
+        `/visa-information/show/${id}`
+    );
+};
+
+// Create multiple visa information items
+export const createVisaInformation = (data) => {
+    return axiosInstance.post(
+        `/visa-information/store`,
+        data
+    );
+};
+
+// Update visa information
+export const updateVisaInformation = (id, data) => {
+    return axiosInstance.put(
+        `/visa-information/update/${id}`,
+        data
+    );
+};
+
+// Change status
+export const changeVisaInformationStatus = (
+    id,
+    status
+) => {
+    return axiosInstance.patch(
+        `/visa-information/${id}/status`,
+        { status }
+    );
+};
+
+// Delete
+export const deleteVisaInformation = (id) => {
+    return axiosInstance.delete(
+        `/visa-information/delete/${id}`
+    );
+};
+
+
 // ============================================
 // PUBLIC ACTIVE VISA CATEGORIES
 // ============================================
@@ -862,6 +973,7 @@ export const getVisaCategories = () => {
         "/visa-categories"
     );
 };
+
 
 // ============================================
 // COUNTRIES PUBLIC
