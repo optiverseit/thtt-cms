@@ -53,7 +53,7 @@ const WorkPermit = () => {
        PAYMENT STATUS
     ========================================================= */
 
-    const [paymentStatuses, setPaymentStatuses] = useState({});
+    // const [paymentStatuses, setPaymentStatuses] = useState({});
 
     /* =========================================================
        ADD PAYMENT MODAL
@@ -157,7 +157,7 @@ const WorkPermit = () => {
     const handleVerifyDocument = async (document) => {
         const newVerifiedStatus = !document.is_verified;
 
-            closeViewDocumentsModal();
+        closeViewDocumentsModal();
 
         const result = await Swal.fire({
             icon: "question",
@@ -225,52 +225,52 @@ const WorkPermit = () => {
        FETCH PAYMENT STATUS
     ========================================================= */
 
-    const fetchPaymentStatus = async (workPermitId) => {
-        try {
-            const response =
-                await getWorkPermitPayments(workPermitId);
+    // const fetchPaymentStatus = async (workPermitId) => {
+    //     try {
+    //         const response =
+    //             await getWorkPermitPayments(workPermitId);
 
-            if (response.data?.status) {
-                const payments = Array.isArray(
-                    response.data.data
-                )
-                    ? response.data.data
-                    : [];
+    //         if (response.data?.status) {
+    //             const payments = Array.isArray(
+    //                 response.data.data
+    //             )
+    //                 ? response.data.data
+    //                 : [];
 
-                const latestPayment =
-                    payments.length > 0
-                        ? payments[0]
-                        : null;
+    //             const latestPayment =
+    //                 payments.length > 0
+    //                     ? payments[0]
+    //                     : null;
 
-                const status =
-                    latestPayment?.status || "NOT_PAID";
+    //             const status =
+    //                 latestPayment?.status || "NOT_PAID";
 
-                setPaymentStatuses((previous) => ({
-                    ...previous,
-                    [workPermitId]: status,
-                }));
+    //             setPaymentStatuses((previous) => ({
+    //                 ...previous,
+    //                 [workPermitId]: status,
+    //             }));
 
-                return latestPayment;
-            }
+    //             return latestPayment;
+    //         }
 
-            setPaymentStatuses((previous) => ({
-                ...previous,
-                [workPermitId]: "NOT_PAID",
-            }));
-        } catch (error) {
-            console.error(
-                "Payment fetch error:",
-                error
-            );
+    //         setPaymentStatuses((previous) => ({
+    //             ...previous,
+    //             [workPermitId]: "NOT_PAID",
+    //         }));
+    //     } catch (error) {
+    //         console.error(
+    //             "Payment fetch error:",
+    //             error
+    //         );
 
-            setPaymentStatuses((previous) => ({
-                ...previous,
-                [workPermitId]: "NOT_PAID",
-            }));
-        }
+    //         setPaymentStatuses((previous) => ({
+    //             ...previous,
+    //             [workPermitId]: "NOT_PAID",
+    //         }));
+    //     }
 
-        return null;
-    };
+    //     return null;
+    // };
 
     /* =========================================================
        FETCH WORK PERMITS
@@ -297,11 +297,11 @@ const WorkPermit = () => {
                     response.data.data?.total || 0
                 );
 
-                await Promise.all(
-                    permits.map((permit) =>
-                        fetchPaymentStatus(permit.id)
-                    )
-                );
+                // await Promise.all(
+                //     permits.map((permit) =>
+                //         fetchPaymentStatus(permit.id)
+                //     )
+                // );
             }
         } catch (error) {
             console.error(
@@ -411,10 +411,7 @@ const WorkPermit = () => {
     };
 
     const getPaymentStatus = (permit) => {
-        return (
-            paymentStatuses[permit.id] ||
-            "NOT_PAID"
-        );
+        return permit.payment_status || "NOT_PAID";
     };
 
     /* =========================================================
@@ -1117,7 +1114,7 @@ const WorkPermit = () => {
                                                                                     <FaCreditCard />
 
                                                                                     <span>
-                                                                                        View Payment
+                                                                                        View Receipt
                                                                                     </span>
                                                                                 </button>
 
@@ -1135,7 +1132,7 @@ const WorkPermit = () => {
                                                                                     <FaPlus />
 
                                                                                     <span>
-                                                                                        Add Payment
+                                                                                        Add Receipt
                                                                                     </span>
                                                                                 </button>
 
