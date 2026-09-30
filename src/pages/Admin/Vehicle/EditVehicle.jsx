@@ -354,6 +354,20 @@ const EditVehicle = () => {
             return "Capacity must be at least 1.";
         }
 
+        if (
+            formData.remaining_seats === "" ||
+            Number(formData.remaining_seats) < 0
+        ) {
+            return "Remaining seats cannot be negative.";
+        }
+
+        if (
+            Number(formData.remaining_seats) >
+            Number(formData.capacity)
+        ) {
+            return "Remaining seats cannot be greater than total seats.";
+        }
+
         if (!formData.from_location.trim()) {
             return "From location is required.";
         }
@@ -387,7 +401,7 @@ const EditVehicle = () => {
             formData.available_from &&
             formData.available_to &&
             formData.available_to <
-                formData.available_from
+            formData.available_from
         ) {
             return "Available To date cannot be before Available From date.";
         }
@@ -449,6 +463,11 @@ const EditVehicle = () => {
         data.append(
             "capacity",
             formData.capacity
+        );
+
+        data.append(
+            "remaining_seats",
+            formData.remaining_seats
         );
 
         data.append(
@@ -874,24 +893,17 @@ const EditVehicle = () => {
                                         {/* REMAINING SEATS */}
 
                                         <div className="edit-vehicle-group">
-
-                                            <label>
-                                                Remaining Seats
-                                            </label>
-
+                                            <label>Remaining Seats</label>
                                             <input
                                                 type="number"
-                                                value={
-                                                    formData.remaining_seats
-                                                }
-                                                readOnly
-                                                disabled
+                                                name="remaining_seats"
+                                                min="0"
+                                                max={formData.capacity || undefined}
+                                                value={formData.remaining_seats}
+                                                onChange={handleChange}
+                                                placeholder="e.g. 8"
+                                                disabled={saving}
                                             />
-
-                                            <span className="edit-vehicle-field-note">
-                                                Updated automatically from bookings.
-                                            </span>
-
                                         </div>
 
                                         {/* FROM LOCATION */}
@@ -1234,10 +1246,9 @@ const EditVehicle = () => {
                                                                         src={
                                                                             imageUrl
                                                                         }
-                                                                        alt={`Vehicle ${
-                                                                            index +
+                                                                        alt={`Vehicle ${index +
                                                                             1
-                                                                        }`}
+                                                                            }`}
                                                                     />
 
                                                                     <p>
@@ -1310,10 +1321,9 @@ const EditVehicle = () => {
                                                                     src={
                                                                         preview
                                                                     }
-                                                                    alt={`New vehicle ${
-                                                                        index +
+                                                                    alt={`New vehicle ${index +
                                                                         1
-                                                                    }`}
+                                                                        }`}
                                                                 />
 
                                                                 <p>
