@@ -1,0 +1,579 @@
+/* =========================================================
+   HEADER
+========================================================= */
+
+.insurance-dynamic-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.insurance-dynamic-header > div {
+    min-width: 0;
+}
+
+.insurance-dynamic-header h1 {
+    margin: 0;
+    color: #2d1048;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.insurance-dynamic-header p {
+    margin: 7px 0 0;
+    color: #82758a;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.insurance-dynamic-add-btn {
+    flex-shrink: 0;
+    border: none;
+    border-radius: 9px;
+    padding: 12px 18px;
+    background: #32134e;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.insurance-dynamic-add-btn:hover {
+    background: #431965;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.insurance-dynamic-table-card {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e7e2e9;
+    border-radius: 14px;
+}
+
+.insurance-dynamic-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.insurance-dynamic-table {
+    width: 100%;
+    min-width: 1150px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background: #ffffff;
+}
+
+.insurance-dynamic-table thead {
+    background: #fbfafc;
+}
+
+.insurance-dynamic-table th {
+    padding: 16px 18px;
+    border-bottom: 1px solid #e8e3ea;
+    background: #fbfafc;
+    color: #4c4053;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.insurance-dynamic-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #efebf1;
+    background: #ffffff;
+    color: #413647;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.insurance-dynamic-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.insurance-dynamic-table tbody tr:hover td {
+    background: #fcfbfd;
+}
+
+.insurance-dynamic-empty {
+    height: 130px;
+    padding: 38px 20px !important;
+    background: #ffffff !important;
+    color: #aaa0ae !important;
+    font-size: 14px !important;
+    text-align: center !important;
+}
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.insurance-field-name {
+    display: inline-flex;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: #f3f1f5;
+    color: #443949;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.insurance-field-type {
+    display: inline-flex;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #eef3ff;
+    color: #3155a5;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.dynamic-required-badge,
+.dynamic-optional-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.dynamic-required-badge {
+    background: #fff0f0;
+    color: #bd2929;
+}
+
+.dynamic-optional-badge {
+    background: #f2f2f4;
+    color: #6f6875;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.insurance-dynamic-status-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 78px;
+    padding: 6px 11px;
+    border: none;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.insurance-dynamic-status-btn.active {
+    background: #eafaf1;
+    color: #087a45;
+}
+
+.insurance-dynamic-status-btn.inactive {
+    background: #fff0f0;
+    color: #bf2929;
+}
+
+.insurance-dynamic-status-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.insurance-dynamic-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.insurance-dynamic-edit-btn,
+.insurance-dynamic-delete-btn {
+    padding: 7px 11px;
+    border-radius: 7px;
+    background: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.insurance-dynamic-edit-btn {
+    border: 1px solid #32134e;
+    color: #32134e;
+}
+
+.insurance-dynamic-edit-btn:hover {
+    background: #f8f3fb;
+}
+
+.insurance-dynamic-delete-btn {
+    border: 1px solid #f3c4c4;
+    color: #d32f2f;
+}
+
+.insurance-dynamic-delete-btn:hover {
+    background: #fff4f4;
+}
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.insurance-dynamic-pagination {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 18px;
+    border-top: 1px solid #e8e3ea;
+    background: #ffffff;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.insurance-dynamic-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: rgba(20, 12, 27, 0.58);
+    backdrop-filter: blur(2px);
+}
+
+.insurance-dynamic-modal {
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.2);
+}
+
+.insurance-dynamic-modal-large {
+    max-width: 850px;
+}
+
+.insurance-dynamic-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 22px;
+    border-bottom: 1px solid #e8e3ea;
+}
+
+.insurance-dynamic-modal-header h2 {
+    margin: 0;
+    color: #29113f;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.insurance-dynamic-modal-header p {
+    margin: 5px 0 0;
+    color: #7c7382;
+    font-size: 13px;
+}
+
+.insurance-dynamic-modal-close {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #766d7c;
+    font-size: 27px;
+    cursor: pointer;
+}
+
+.insurance-dynamic-modal-close:hover:not(:disabled) {
+    background: #f5f2f7;
+}
+
+.insurance-dynamic-modal-body {
+    box-sizing: border-box;
+    padding: 22px;
+}
+
+.insurance-dynamic-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 22px;
+    border-top: 1px solid #e8e3ea;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.insurance-dynamic-form-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.insurance-dynamic-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    margin-bottom: 16px;
+}
+
+.insurance-dynamic-form-group label {
+    color: #463d4b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.insurance-dynamic-form-group input,
+.insurance-dynamic-form-group select,
+.insurance-dynamic-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 11px;
+    border: 1px solid #d8d2dc;
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: #2f2934;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.insurance-dynamic-form-group input:focus,
+.insurance-dynamic-form-group select:focus,
+.insurance-dynamic-form-group textarea:focus {
+    border-color: #52206f;
+    box-shadow:
+        0 0 0 3px
+        rgba(82, 32, 111, 0.08);
+}
+
+.insurance-dynamic-form-group textarea {
+    resize: vertical;
+}
+
+.insurance-dynamic-help {
+    color: #8a808f;
+    font-size: 11px;
+}
+
+/* =========================================================
+   FIELD CARD
+========================================================= */
+
+.dynamic-field-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 8px 0 14px;
+}
+
+.dynamic-field-section-header h3 {
+    margin: 0;
+    color: #302637;
+    font-size: 16px;
+}
+
+.dynamic-field-section-header p {
+    margin: 4px 0 0;
+    color: #84798b;
+    font-size: 12px;
+}
+
+.add-dynamic-field-btn {
+    padding: 8px 12px;
+    border: 1px solid #32134e;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #32134e;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dynamic-field-form-card {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid #e6e1e9;
+    border-radius: 10px;
+    background: #fbfafc;
+}
+
+.dynamic-field-form-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.remove-dynamic-field-btn {
+    border: none;
+    background: transparent;
+    color: #d52c2c;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.insurance-dynamic-checkbox-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #453c4b;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.insurance-dynamic-checkbox-row input {
+    width: 16px;
+    height: 16px;
+    accent-color: #32134e;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.insurance-dynamic-cancel-btn,
+.insurance-dynamic-save-btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.insurance-dynamic-cancel-btn {
+    border: 1px solid #d5cfd9;
+    background: #ffffff;
+    color: #554c5b;
+}
+
+.insurance-dynamic-save-btn {
+    border: 1px solid #32134e;
+    background: #32134e;
+    color: #ffffff;
+}
+
+.insurance-dynamic-save-btn:hover:not(:disabled) {
+    background: #421963;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.insurance-dynamic-edit-loading {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+.insurance-dynamic-loader {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e7e1eb;
+    border-top-color: #32134e;
+    border-radius: 50%;
+    animation:
+        insurance-dynamic-spin
+        0.75s linear infinite;
+}
+
+@keyframes insurance-dynamic-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .insurance-dynamic-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .insurance-dynamic-add-btn {
+        width: 100%;
+    }
+
+    .insurance-dynamic-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dynamic-field-section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .add-dynamic-field-btn {
+        width: 100%;
+    }
+
+    .insurance-dynamic-modal-overlay {
+        padding: 10px;
+    }
+
+    .insurance-dynamic-modal {
+        max-height: 95vh;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .insurance-dynamic-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .insurance-dynamic-cancel-btn,
+    .insurance-dynamic-save-btn {
+        width: 100%;
+    }
+}

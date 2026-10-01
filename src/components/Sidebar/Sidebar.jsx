@@ -16,9 +16,19 @@ const Sidebar = () => {
 
   const [visaOpen, setVisaOpen] = useState(
     location.pathname.startsWith("/visa-application") ||
+    location.pathname.startsWith("/visa/category") ||
     location.pathname.startsWith("/visa/information") ||
     location.pathname.startsWith("/visa/documents") ||
     location.pathname.startsWith("/visa/pricing-tier")
+    // location.pathname.startsWith("/work-permits/payment") ||
+  );
+
+  const [insuranceOpen, setInsuranceOpen] = useState(
+    location.pathname.startsWith("/insurance-application") ||
+    location.pathname.startsWith("/insurance/information") ||
+    location.pathname.startsWith("/insurance/documents") ||
+    location.pathname.startsWith("/insurance/pricing-tier") ||
+    location.pathname.startsWith("/insurance/dynamic-fields")
     // location.pathname.startsWith("/work-permits/payment") ||
   );
 
@@ -70,9 +80,21 @@ const Sidebar = () => {
   const isVisaActive = () => {
     return (
       location.pathname.startsWith("/visa-application") ||
+      location.pathname.startsWith("/visa/category") ||
       location.pathname.startsWith("/visa/information") ||
       location.pathname.startsWith("/visa/documents") ||
       location.pathname.startsWith("/visa/pricing-tier")
+    );
+  };
+
+  const isInsuranceActive = () => {
+    return (
+      location.pathname.startsWith("/insurance-application") ||
+      location.pathname.startsWith("/insurance/plan") ||
+      location.pathname.startsWith("/insurance/information") ||
+      location.pathname.startsWith("/insurance/documents") ||
+      location.pathname.startsWith("/insurance/pricing-tier") ||
+      location.pathname.startsWith("/insurance/dynamic-fields")
     );
   };
 
@@ -347,7 +369,7 @@ const Sidebar = () => {
           {visaOpen && (
             <div className="submenu">
               <button
-                className={`submenu-item ${location.pathname === "/vias-applications" ? "active" : ""
+                className={`submenu-item ${location.pathname === "/visa-applications" ? "active" : ""
                   }`}
                 onClick={() => navigate("/visa-applications")}
               >
@@ -393,6 +415,77 @@ const Sidebar = () => {
               >
                 Status History
               </button> */}
+            </div>
+          )}
+        </div>
+
+        {/* INSURANCE */}
+        <div className="sidebar-dropdown">
+          <button
+            className={`menu-item ${isInsuranceActive() ? "active" : ""
+              }`}
+            onClick={() => setInsuranceOpen(!visaOpen)}
+          >
+            <span className="menu-icon">◆</span>
+            <span className="menu-label">Insurance Service</span>
+
+            <span
+              className={`dropdown-arrow ${insuranceOpen ? "open" : ""
+                }`}
+            >
+              ▼
+            </span>
+          </button>
+
+          {insuranceOpen && (
+            <div className="submenu">
+              <button
+                className={`submenu-item ${location.pathname === "/insurance-applications" ? "active" : ""
+                  }`}
+                onClick={() => navigate("/insurance-applications")}
+              >
+                All Insurance Appliaction
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/insurance/plan") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/insurance/plan")}
+              >
+                Insurance Plan
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/insurance/pricing-tiers") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/insurance/pricing-tiers")}
+              >
+                Fee Tiers
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/insurance/documents") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/insurance/documents")}
+              >
+                Documents Requirement
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/insurance/informations") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/insurance/informations")}
+              >
+                Insurance Information
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/insurance/dynamic-fields") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/insurance/dynamic-fields")}
+              >
+                Dynamic Field
+              </button>
             </div>
           )}
         </div>
