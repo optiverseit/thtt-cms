@@ -1,0 +1,564 @@
+/* =========================================================
+   PAGE
+========================================================= */
+
+.insurance-plan-page {
+    width: 100%;
+    padding: 28px;
+    box-sizing: border-box;
+}
+
+.insurance-plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.insurance-plan-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #24152f;
+}
+
+.insurance-plan-header p {
+    margin: 7px 0 0;
+    font-size: 14px;
+    color: #77717d;
+}
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.insurance-plan-form-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eee9f1;
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 3px 14px rgba(38, 20, 48, 0.05);
+}
+
+.insurance-plan-card-header {
+    margin-bottom: 22px;
+}
+
+.insurance-plan-card-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #351255;
+}
+
+.insurance-plan-card-header p {
+    margin: 6px 0 0;
+    color: #77717d;
+    font-size: 14px;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.insurance-plan-form {
+    width: 100%;
+}
+
+.insurance-plan-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.insurance-plan-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.insurance-plan-form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3e3343;
+}
+
+.insurance-plan-form-group input,
+.insurance-plan-form-group select,
+.insurance-plan-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    border: 1px solid #ded7e2;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    padding: 11px 12px;
+
+    font-size: 14px;
+    color: #332b36;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.insurance-plan-form-group input:focus,
+.insurance-plan-form-group select:focus,
+.insurance-plan-form-group textarea:focus {
+    border-color: #351255;
+    box-shadow: 0 0 0 3px rgba(53, 18, 85, 0.08);
+}
+
+.insurance-plan-form-group textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-family: inherit;
+}
+
+.insurance-plan-form-group input:disabled,
+.insurance-plan-form-group select:disabled,
+.insurance-plan-form-group textarea:disabled {
+    background: #f5f3f6;
+    cursor: not-allowed;
+}
+
+.insurance-plan-full-width {
+    grid-column: 1 / -1;
+}
+
+.required {
+    color: #e42b67;
+    margin-left: 3px;
+}
+
+/* =========================================================
+   FILE
+========================================================= */
+
+.insurance-plan-file-help {
+    font-size: 12px;
+    color: #8a828e;
+}
+
+.insurance-plan-form-group input[type="file"] {
+    padding: 8px;
+}
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+.insurance-plan-image-preview {
+    margin-top: 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.insurance-plan-image-preview span {
+    font-size: 13px;
+    font-weight: 600;
+    color: #514757;
+}
+
+.insurance-plan-image-preview img {
+    width: 180px;
+    height: 115px;
+
+    object-fit: cover;
+
+    border-radius: 9px;
+    border: 1px solid #e4dfe7;
+}
+
+/* =========================================================
+   FORM ACTIONS
+========================================================= */
+
+.insurance-plan-form-actions {
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 22px;
+}
+
+.insurance-plan-submit-btn,
+.insurance-plan-cancel-btn {
+    min-height: 40px;
+
+    border-radius: 8px;
+    border: none;
+
+    padding: 10px 17px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+}
+
+.insurance-plan-submit-btn {
+    background: #351255;
+    color: #ffffff;
+}
+
+.insurance-plan-submit-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.insurance-plan-cancel-btn {
+    background: #eeeaf0;
+    color: #5f5663;
+}
+
+.insurance-plan-cancel-btn:hover:not(:disabled) {
+    background: #e3dfe5;
+}
+
+.insurance-plan-submit-btn:disabled,
+.insurance-plan-cancel-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.insurance-plan-table-card {
+    background: #ffffff;
+
+    border-radius: 14px;
+    border: 1px solid #eee9f1;
+
+    overflow: hidden;
+
+    box-shadow: 0 3px 14px rgba(38, 20, 48, 0.05);
+}
+
+.insurance-plan-table-header {
+    padding: 20px 22px;
+
+    border-bottom: 1px solid #eee9f1;
+}
+
+.insurance-plan-table-header h2 {
+    margin: 0;
+
+    font-size: 19px;
+
+    color: #351255;
+}
+
+.insurance-plan-table-header p {
+    margin: 5px 0 0;
+
+    color: #89808d;
+
+    font-size: 13px;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.insurance-plan-table-responsive {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.insurance-plan-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 950px;
+}
+
+.insurance-plan-table thead {
+    background: #faf8fb;
+}
+
+.insurance-plan-table th {
+    padding: 13px 15px;
+
+    text-align: left;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    color: #625867;
+
+    border-bottom: 1px solid #ece6ef;
+
+    white-space: nowrap;
+}
+
+.insurance-plan-table td {
+    padding: 14px 15px;
+
+    font-size: 13px;
+
+    color: #4d4550;
+
+    border-bottom: 1px solid #f0ecf2;
+
+    vertical-align: middle;
+}
+
+.insurance-plan-table tbody tr:hover {
+    background: #fdfcfd;
+}
+
+.insurance-plan-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.insurance-plan-table-image {
+    width: 64px;
+    height: 48px;
+
+    border-radius: 7px;
+
+    object-fit: cover;
+
+    border: 1px solid #e5dfe8;
+}
+
+.insurance-plan-no-image {
+    width: 64px;
+    height: 48px;
+
+    border-radius: 7px;
+
+    background: #f2eef4;
+
+    color: #918996;
+
+    font-size: 10px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================================
+   PLAN NAME
+========================================================= */
+
+.insurance-plan-name-cell {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 180px;
+}
+
+.insurance-plan-name-cell strong {
+    color: #332a37;
+
+    font-size: 14px;
+}
+
+.insurance-plan-name-cell span {
+    color: #8b838e;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    max-width: 300px;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.insurance-plan-status {
+    border: none;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.insurance-plan-status.active {
+    background: #e5f7ed;
+    color: #1d8a4c;
+}
+
+.insurance-plan-status.inactive {
+    background: #f1edf2;
+    color: #766e79;
+}
+
+.insurance-plan-status:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.insurance-plan-status:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.insurance-plan-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.insurance-plan-edit-btn,
+.insurance-plan-delete-btn {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 7px;
+    border: none;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.2s ease;
+}
+
+.insurance-plan-edit-btn {
+    background: #eee8f3;
+    color: #351255;
+}
+
+.insurance-plan-edit-btn:hover {
+    background: #351255;
+    color: #ffffff;
+}
+
+.insurance-plan-delete-btn {
+    background: #fff0f4;
+    color: #e42b67;
+}
+
+.insurance-plan-delete-btn:hover {
+    background: #e42b67;
+    color: #ffffff;
+}
+
+/* =========================================================
+   EMPTY / LOADING
+========================================================= */
+
+.insurance-plan-table-message {
+    text-align: center !important;
+
+    padding: 35px !important;
+
+    color: #817885 !important;
+}
+
+.insurance-plan-loader {
+    width: 24px;
+    height: 24px;
+
+    border: 3px solid #e7dfeb;
+    border-top-color: #351255;
+
+    border-radius: 50%;
+
+    animation:
+        insurancePlanSpin 0.7s linear infinite;
+
+    margin: 0 auto 10px;
+}
+
+@keyframes insurancePlanSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .insurance-plan-page {
+        padding: 20px;
+    }
+
+    .insurance-plan-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insurance-plan-full-width {
+        grid-column: auto;
+    }
+
+    .insurance-plan-form-actions {
+        flex-wrap: wrap;
+    }
+
+    .insurance-plan-submit-btn,
+    .insurance-plan-cancel-btn {
+        flex: 1;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .insurance-plan-page {
+        padding: 14px;
+    }
+
+    .insurance-plan-form-card {
+        padding: 17px;
+    }
+
+    .insurance-plan-form-actions {
+        flex-direction: column;
+    }
+
+    .insurance-plan-submit-btn,
+    .insurance-plan-cancel-btn {
+        width: 100%;
+    }
+}

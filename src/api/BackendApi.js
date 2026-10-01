@@ -752,6 +752,10 @@ export const verifyVisaDocument = (
 // VISA CATEGORIES
 // ============================================
 
+export const getVisaApplicantsByApplicationId = (applicationId) => {
+    return axiosInstance.get(`/visa-applications/${applicationId}/applicants`);
+};
+
 export const getAllVisaCategoriesCms = (page = 1) => {
     return axiosInstance.get(
         `/visa-categories/cms?page=${page}`
@@ -981,4 +985,375 @@ export const getVisaCategories = () => {
 
 export const getCountries = () => {
     return axiosInstance.get("/countries");
+};
+
+
+
+/* =========================================================
+   INSURANCE APPLICATION CMS
+========================================================= */
+
+export const getAllInsuranceApplicationsCms = (page = 1) => {
+    return axiosInstance.get(
+        `/insurance-applications/cms?page=${page}`
+    );
+};
+
+export const getInsuranceApplicationById = (id) => {
+    return axiosInstance.get(
+        `/insurance-applications/show/${id}`
+    );
+};
+
+export const getInsuranceApplicantsByApplicationId = (id) => {
+    return axiosInstance.get(
+        `/insurance-applications/${id}/applicants`
+    );
+};
+
+export const uploadInsuranceApplicationVoucher = (
+    id,
+    formData
+) => {
+    return axiosInstance.post(
+        `/insurance-applications/${id}/voucher`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+};
+
+export const changeInsuranceApplicationStatus = (
+    id,
+    data
+) => {
+    return axiosInstance.patch(
+        `/insurance-applications/${id}/status`,
+        data
+    );
+};
+
+
+/* =========================================================
+   INSURANCE DOCUMENT
+========================================================= */
+
+export const verifyInsuranceDocument = (
+    id,
+    data
+) => {
+    return axiosInstance.patch(
+        `/insurance-documents/${id}/verify`,
+        data
+    );
+};
+
+// =========================================================
+// INSURANCE PLAN CMS
+// =========================================================
+
+// GET ALL INSURANCE PLANS - CMS
+export const getAllInsurancePlansCms = (page = 1) => {
+    return axiosInstance.get(
+        `/insurance-plans/cms?page=${page}`
+    );
+};
+
+
+// CREATE INSURANCE PLAN
+export const createInsurancePlan = (formData) => {
+    return axiosInstance.post(
+        "/insurance-plans/store",
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+};
+
+
+// UPDATE INSURANCE PLAN
+export const updateInsurancePlan = (id, formData) => {
+    formData.append("_method", "PUT");
+
+    return axiosInstance.post(
+        `/insurance-plans/update/${id}`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+};
+
+
+// CHANGE INSURANCE PLAN STATUS
+export const changeInsurancePlanStatus = (id) => {
+    return axiosInstance.patch(
+        `/insurance-plans/${id}/status`
+    );
+};
+
+// DELETE INSURANCE PLAN
+export const deleteInsurancePlan = (id) => {
+    return axiosInstance.delete(
+        `/insurance-plans/delete/${id}`
+    );
+};
+
+// =========================================================
+// INSURANCE DOCUMENT REQUIREMENTS CMS
+// =========================================================
+
+export const getInsuranceDocumentRequirementsCms = (
+    page = 1
+) => {
+    return axiosInstance.get(
+        `/insurance-document-requirements/cms?page=${page}`
+    );
+};
+
+export const getInsuranceDocumentRequirementById = (
+    id
+) => {
+    return axiosInstance.get(
+        `/insurance-document-requirements/show/${id}`
+    );
+};
+
+export const createInsuranceDocumentRequirements = (
+    data
+) => {
+    return axiosInstance.post(
+        "/insurance-document-requirements/store",
+        data
+    );
+};
+
+export const updateInsuranceDocumentRequirement = (
+    id,
+    data
+) => {
+    return axiosInstance.put(
+        `/insurance-document-requirements/update/${id}`,
+        data
+    );
+};
+
+export const changeInsuranceDocumentRequirementStatus = (
+    id
+) => {
+    return axiosInstance.patch(
+        `/insurance-document-requirements/${id}/status`
+    );
+};
+
+export const deleteInsuranceDocumentRequirement = (
+    id
+) => {
+    return axiosInstance.delete(
+        `/insurance-document-requirements/delete/${id}`
+    );
+};
+
+
+// =========================================================
+// INSURANCE PLAN DROPDOWN
+// =========================================================
+
+export const getInsurancePlans = () => {
+    return axiosInstance.get(
+        "/insurance-plans"
+    );
+};
+
+// =========================================================
+// INSURANCE INFORMATION CMS
+// =========================================================
+
+export const getInsuranceInformationCms = (
+    page = 1
+) => {
+    return axiosInstance.get(
+        `/insurance-information/cms?page=${page}`
+    );
+};
+
+
+export const getInsuranceInformationById = (
+    id
+) => {
+    return axiosInstance.get(
+        `/insurance-information/show/${id}`
+    );
+};
+
+
+export const createInsuranceInformation = (
+    data
+) => {
+    return axiosInstance.post(
+        "/insurance-information/store",
+        data
+    );
+};
+
+
+export const updateInsuranceInformation = (
+    id,
+    data
+) => {
+    return axiosInstance.put(
+        `/insurance-information/update/${id}`,
+        data
+    );
+};
+
+
+/*
+ * STATUS:
+ * backend only receives ID
+ */
+export const changeInsuranceInformationStatus = (
+    id
+) => {
+    return axiosInstance.patch(
+        `/insurance-information/${id}/status`
+    );
+};
+
+
+export const deleteInsuranceInformation = (
+    id
+) => {
+    return axiosInstance.delete(
+        `/insurance-information/delete/${id}`
+    );
+};
+
+// =========================================================
+// INSURANCE DYNAMIC FIELDS CMS
+// =========================================================
+
+export const getInsuranceDynamicFieldsCms = (
+    page = 1
+) => {
+    return axiosInstance.get(
+        `/insurance-dynamic-fields/cms?page=${page}`
+    );
+};
+
+
+export const getInsuranceDynamicFieldById = (
+    id
+) => {
+    return axiosInstance.get(
+        `/insurance-dynamic-fields/show/${id}`
+    );
+};
+
+
+export const createInsuranceDynamicFields = (
+    data
+) => {
+    return axiosInstance.post(
+        "/insurance-dynamic-fields/store",
+        data
+    );
+};
+
+
+export const updateInsuranceDynamicField = (
+    id,
+    data
+) => {
+    return axiosInstance.put(
+        `/insurance-dynamic-fields/update/${id}`,
+        data
+    );
+};
+
+
+/*
+ * STATUS — ID ONLY
+ */
+export const changeInsuranceDynamicFieldStatus = (
+    id
+) => {
+    return axiosInstance.patch(
+        `/insurance-dynamic-fields/${id}/status`
+    );
+};
+
+
+export const deleteInsuranceDynamicField = (
+    id
+) => {
+    return axiosInstance.delete(
+        `/insurance-dynamic-fields/delete/${id}`
+    );
+};
+
+// =========================================================
+// INSURANCE PRICING TIERS CMS
+// =========================================================
+
+
+// GET ALL CMS PRICING TIERS
+export const getAllInsurancePricingTiersCms = (
+    page = 1
+) => {
+    return axiosInstance.get(
+        `/insurance-pricing-tiers/cms?page=${page}`
+    );
+};
+
+
+// CREATE PRICING TIERS
+export const createInsurancePricingTiers = (
+    data
+) => {
+    return axiosInstance.post(
+        "/insurance-pricing-tiers/store",
+        data
+    );
+};
+
+
+// UPDATE PRICING TIER
+export const updateInsurancePricingTier = (
+    id,
+    data
+) => {
+    return axiosInstance.put(
+        `/insurance-pricing-tiers/update/${id}`,
+        data
+    );
+};
+
+
+// CHANGE STATUS
+// ID ONLY — NO DATA
+export const changeInsurancePricingTierStatus = (
+    id
+) => {
+    return axiosInstance.patch(
+        `/insurance-pricing-tiers/${id}/status`
+    );
+};
+
+
+// DELETE PRICING TIER
+export const deleteInsurancePricingTier = (
+    id
+) => {
+    return axiosInstance.delete(
+        `/insurance-pricing-tiers/delete/${id}`
+    );
 };

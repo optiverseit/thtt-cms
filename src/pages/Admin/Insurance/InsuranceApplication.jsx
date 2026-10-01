@@ -11,24 +11,24 @@ import {
 } from "react-icons/fa";
 
 import {
-    getAllVisaApplicationsCms,
-    getVisaApplicationById,
-    changeVisaApplicationStatus,
-    uploadVisaApplicationVoucher,
-    verifyVisaDocument,
-    getVisaApplicantsByApplicationId,
+    getAllInsuranceApplicationsCms,
+    getInsuranceApplicationById,
+    getInsuranceApplicantsByApplicationId,
+    uploadInsuranceApplicationVoucher,
+    verifyInsuranceDocument,
+    changeInsuranceApplicationStatus,
 } from "../../../api/BackendApi";
 
-import "./VisaApplicationIndex.css";
+import "./InsuranceApplication.css";
 
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Pagination from "../../../components/Pagination/Pagination";
 
-const VisaApplicationIndex = () => {
+const InsuranceApplication = () => {
 
     /* =========================================================
-       VISA APPLICATIONS
+       INSURANCE APPLICATIONS
     ========================================================= */
 
     const [applications, setApplications] = useState([]);
@@ -63,7 +63,7 @@ const VisaApplicationIndex = () => {
         useState(false);
 
     /* =========================================================
-       APPLICANTS MODAL
+       APPLICANTS
     ========================================================= */
 
     const [viewApplicantsModalOpen, setViewApplicantsModalOpen] =
@@ -72,13 +72,14 @@ const VisaApplicationIndex = () => {
     const [viewApplicantsApplication, setViewApplicantsApplication] =
         useState(null);
 
-    const [viewApplicants, setViewApplicants] = useState([]);
+    const [viewApplicants, setViewApplicants] =
+        useState([]);
 
     const [viewApplicantsLoading, setViewApplicantsLoading] =
         useState(false);
 
     /* =========================================================
-       DOCUMENT MODAL
+       DOCUMENTS
     ========================================================= */
 
     const [viewDocumentModalOpen, setViewDocumentModalOpen] =
@@ -87,7 +88,8 @@ const VisaApplicationIndex = () => {
     const [viewDocumentApplication, setViewDocumentApplication] =
         useState(null);
 
-    const [viewDocuments, setViewDocuments] = useState([]);
+    const [viewDocuments, setViewDocuments] =
+        useState([]);
 
     const [viewDocumentLoading, setViewDocumentLoading] =
         useState(false);
@@ -96,7 +98,7 @@ const VisaApplicationIndex = () => {
         useState(null);
 
     /* =========================================================
-       VOUCHER MODAL
+       VOUCHER
     ========================================================= */
 
     const [voucherModalOpen, setVoucherModalOpen] =
@@ -116,14 +118,16 @@ const VisaApplicationIndex = () => {
     ========================================================= */
 
     const fetchApplications = async () => {
+
         try {
+
             setLoading(true);
 
             const response =
-                await getAllVisaApplicationsCms(page);
+                await getAllInsuranceApplicationsCms(page);
 
             console.log(
-                "VISA APPLICATION CMS RESPONSE:",
+                "INSURANCE APPLICATION CMS RESPONSE:",
                 response.data
             );
 
@@ -132,10 +136,9 @@ const VisaApplicationIndex = () => {
                 const paginationData =
                     response.data?.data;
 
-                const applicationList =
-                    paginationData?.data || [];
-
-                setApplications(applicationList);
+                setApplications(
+                    paginationData?.data || []
+                );
 
                 setTotalPages(
                     paginationData?.last_page || 1
@@ -146,16 +149,17 @@ const VisaApplicationIndex = () => {
                 );
 
             } else {
+
                 throw new Error(
                     response.data?.message ||
-                    "Unable to fetch visa applications."
+                    "Unable to fetch insurance applications."
                 );
             }
 
         } catch (error) {
 
             console.error(
-                "Visa application fetch error:",
+                "Insurance application fetch error:",
                 error
             );
 
@@ -165,21 +169,24 @@ const VisaApplicationIndex = () => {
                 text:
                     error.response?.data?.message ||
                     error.message ||
-                    "Unable to fetch visa applications.",
+                    "Unable to fetch insurance applications.",
                 confirmButtonColor: "#351255",
             });
 
         } finally {
+
             setLoading(false);
         }
     };
 
     useEffect(() => {
+
         fetchApplications();
+
     }, [page]);
 
     /* =========================================================
-       CLOSE KEBAB MENU
+       CLOSE KEBAB
     ========================================================= */
 
     useEffect(() => {
@@ -200,6 +207,7 @@ const VisaApplicationIndex = () => {
         );
 
         return () => {
+
             document.removeEventListener(
                 "mousedown",
                 handleClickOutside
@@ -272,7 +280,7 @@ const VisaApplicationIndex = () => {
     };
 
     /* =========================================================
-       STATUS CLASSES
+       STATUS
     ========================================================= */
 
     const getStatusClass = (status) => {
@@ -285,15 +293,17 @@ const VisaApplicationIndex = () => {
             case "SUBMITTED":
                 return "status-submitted";
 
+            case "PROCESSING":
+                return "status-processing";
+
             case "APPROVED":
                 return "status-approved";
 
             case "REJECTED":
                 return "status-rejected";
 
-            case "PROCESSING":
-            case "IN_REVIEW":
-                return "status-processing";
+            case "COMPLETED":
+                return "status-completed";
 
             default:
                 return "status-default";
@@ -341,12 +351,12 @@ const VisaApplicationIndex = () => {
         try {
 
             const response =
-                await getVisaApplicationById(
+                await getInsuranceApplicationById(
                     application.id
                 );
 
             console.log(
-                "VISA APPLICATION DETAIL:",
+                "INSURANCE APPLICATION DETAIL:",
                 response.data
             );
 
@@ -360,14 +370,14 @@ const VisaApplicationIndex = () => {
 
                 throw new Error(
                     response.data?.message ||
-                    "Unable to fetch visa application."
+                    "Unable to fetch insurance application."
                 );
             }
 
         } catch (error) {
 
             console.error(
-                "Visa application detail error:",
+                "Insurance application detail error:",
                 error
             );
 
@@ -379,7 +389,7 @@ const VisaApplicationIndex = () => {
                 text:
                     error.response?.data?.message ||
                     error.message ||
-                    "Unable to fetch visa application details.",
+                    "Unable to fetch insurance application details.",
                 confirmButtonColor: "#351255",
             });
 
@@ -402,6 +412,7 @@ const VisaApplicationIndex = () => {
     const openViewApplicantsModal = async (application) => {
 
         setOpenMenuId(null);
+
         setViewApplicantsApplication(application);
         setViewApplicants([]);
         setViewApplicantsModalOpen(true);
@@ -410,7 +421,7 @@ const VisaApplicationIndex = () => {
         try {
 
             const response =
-                await getVisaApplicantsByApplicationId(
+                await getInsuranceApplicantsByApplicationId(
                     application.id
                 );
 
@@ -429,14 +440,14 @@ const VisaApplicationIndex = () => {
 
                 throw new Error(
                     response.data?.message ||
-                    "Unable to fetch visa applicants."
+                    "Unable to fetch insurance applicants."
                 );
             }
 
         } catch (error) {
 
             console.error(
-                "Visa applicants error:",
+                "Insurance applicants error:",
                 error
             );
 
@@ -448,7 +459,7 @@ const VisaApplicationIndex = () => {
                 text:
                     error.response?.data?.message ||
                     error.message ||
-                    "Unable to fetch visa applicants.",
+                    "Unable to fetch insurance applicants.",
                 confirmButtonColor: "#351255",
             });
 
@@ -474,26 +485,21 @@ const VisaApplicationIndex = () => {
         setOpenMenuId(null);
 
         setViewDocumentApplication(application);
-
         setViewDocuments([]);
-
         setViewDocumentModalOpen(true);
-
         setViewDocumentLoading(true);
 
         try {
 
             /*
-             * There is no separate GET visa-documents route.
-             *
-             * Your show API already loads:
+             * Insurance show() already loads:
              *
              * applicants.documents.requirement
              * applicants.documents.verifiedBy
              */
 
             const response =
-                await getVisaApplicationById(
+                await getInsuranceApplicationById(
                     application.id
                 );
 
@@ -502,17 +508,23 @@ const VisaApplicationIndex = () => {
                 const detail =
                     response.data.data;
 
-                const documents = Array.isArray(detail?.applicants)
-                    ? detail.applicants.flatMap((applicant) =>
-                        Array.isArray(applicant?.documents)
-                            ? applicant.documents.map((document) => ({
-                                ...document,
-                                applicant_full_name: applicant.applicant_full_name,
-                                visa_applicant_id: applicant.id,
-                            }))
-                            : []
-                    )
-                    : [];
+                const documents =
+                    Array.isArray(detail?.applicants)
+                        ? detail.applicants.flatMap(
+                            (applicant) =>
+                                Array.isArray(applicant?.documents)
+                                    ? applicant.documents.map(
+                                        (document) => ({
+                                            ...document,
+                                            applicant_full_name:
+                                                applicant.applicant_full_name,
+                                            insurance_applicant_id:
+                                                applicant.id,
+                                        })
+                                    )
+                                    : []
+                        )
+                        : [];
 
                 setViewDocuments(documents);
 
@@ -520,14 +532,14 @@ const VisaApplicationIndex = () => {
 
                 throw new Error(
                     response.data?.message ||
-                    "Unable to fetch visa documents."
+                    "Unable to fetch insurance documents."
                 );
             }
 
         } catch (error) {
 
             console.error(
-                "Visa documents error:",
+                "Insurance documents error:",
                 error
             );
 
@@ -539,7 +551,7 @@ const VisaApplicationIndex = () => {
                 text:
                     error.response?.data?.message ||
                     error.message ||
-                    "Unable to fetch visa documents.",
+                    "Unable to fetch insurance documents.",
                 confirmButtonColor: "#351255",
             });
 
@@ -556,9 +568,7 @@ const VisaApplicationIndex = () => {
         }
 
         setViewDocumentModalOpen(false);
-
         setViewDocumentApplication(null);
-
         setViewDocuments([]);
     };
 
@@ -619,7 +629,7 @@ const VisaApplicationIndex = () => {
             );
 
             const response =
-                await verifyVisaDocument(
+                await verifyInsuranceDocument(
                     document.id,
                     {
                         is_verified:
@@ -632,13 +642,10 @@ const VisaApplicationIndex = () => {
 
             if (response.data?.status) {
 
-                setViewDocumentModalOpen(false);
                 setViewDocumentApplication(null);
                 setViewDocuments([]);
-                setVerifyingDocumentId(null);
 
                 await Swal.fire({
-
                     icon: "success",
 
                     title: newVerifiedStatus
@@ -652,28 +659,22 @@ const VisaApplicationIndex = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
             }
 
         } catch (error) {
 
             console.error(
-                "Visa document verification error:",
+                "Insurance document verification error:",
                 error
             );
 
             Swal.fire({
-
                 icon: "error",
-
                 title: "Failed",
-
                 text:
                     error.response?.data?.message ||
                     "Unable to update document verification.",
-
-                confirmButtonColor:
-                    "#351255",
+                confirmButtonColor: "#351255",
             });
 
         } finally {
@@ -724,7 +725,7 @@ const VisaApplicationIndex = () => {
         try {
 
             const response =
-                await changeVisaApplicationStatus(
+                await changeInsuranceApplicationStatus(
                     application.id,
                     {
                         status: newStatus,
@@ -737,82 +738,66 @@ const VisaApplicationIndex = () => {
                     (previous) =>
                         previous.map(
                             (item) =>
-                                item.id ===
-                                application.id
+                                item.id === application.id
                                     ? {
-                                          ...item,
-                                          ...response
-                                              .data
-                                              .data,
-                                      }
+                                        ...item,
+                                        ...(response.data?.data || {}),
+                                    }
                                     : item
                         )
                 );
 
                 setApplicationDetail((previous) =>
-                    previous && previous.id === application.id
+                    previous &&
+                    previous.id === application.id
                         ? {
-                              ...previous,
-                              ...(response.data?.data || {}),
-                              status:
-                                  response.data?.data?.status ||
-                                  newStatus,
-                          }
+                            ...previous,
+                            ...(response.data?.data || {}),
+                            status:
+                                response.data?.data?.status ||
+                                newStatus,
+                        }
                         : previous
                 );
 
                 Swal.fire({
-
                     icon: "success",
-
                     title: "Status Updated",
-
                     text:
                         response.data?.message ||
-                        "Visa application status updated successfully.",
-
-                    confirmButtonColor:
-                        "#351255",
+                        "Insurance application status updated successfully.",
+                    confirmButtonColor: "#351255",
                 });
             }
 
         } catch (error) {
 
             console.error(
-                "Visa status update error:",
+                "Insurance status update error:",
                 error
             );
 
             Swal.fire({
-
                 icon: "error",
-
                 title: "Update Failed",
-
                 text:
                     error.response?.data?.message ||
-                    "Unable to update visa application status.",
-
-                confirmButtonColor:
-                    "#351255",
+                    "Unable to update insurance application status.",
+                confirmButtonColor: "#351255",
             });
         }
     };
 
     /* =========================================================
-       OPEN VOUCHER MODAL
+       VOUCHER
     ========================================================= */
 
     const openVoucherModal = (application) => {
 
         setOpenMenuId(null);
 
-        setSelectedApplication(
-            application
-        );
-
+        setSelectedApplication(application);
         setVoucherFile(null);
-
         setVoucherModalOpen(true);
     };
 
@@ -823,15 +808,9 @@ const VisaApplicationIndex = () => {
         }
 
         setVoucherModalOpen(false);
-
         setSelectedApplication(null);
-
         setVoucherFile(null);
     };
-
-    /* =========================================================
-       VOUCHER FILE
-    ========================================================= */
 
     const handleVoucherFileChange = (e) => {
 
@@ -845,26 +824,18 @@ const VisaApplicationIndex = () => {
         const allowedTypes = [
             "image/jpeg",
             "image/png",
+            "image/webp",
             "application/pdf",
         ];
 
-        if (
-            !allowedTypes.includes(
-                file.type
-            )
-        ) {
+        if (!allowedTypes.includes(file.type)) {
 
             Swal.fire({
-
                 icon: "warning",
-
                 title: "Invalid File",
-
                 text:
-                    "Only JPG, JPEG, PNG and PDF files are allowed.",
-
-                confirmButtonColor:
-                    "#351255",
+                    "Only JPG, JPEG, PNG, WEBP and PDF files are allowed.",
+                confirmButtonColor: "#351255",
             });
 
             e.target.value = "";
@@ -872,22 +843,19 @@ const VisaApplicationIndex = () => {
             return;
         }
 
-        if (
-            file.size >
-            10 * 1024 * 1024
-        ) {
+        /*
+         * Insurance backend max:
+         * 5120 KB = 5 MB
+         */
+
+        if (file.size > 5 * 1024 * 1024) {
 
             Swal.fire({
-
                 icon: "warning",
-
                 title: "File Too Large",
-
                 text:
-                    "Voucher must not exceed 10 MB.",
-
-                confirmButtonColor:
-                    "#351255",
+                    "Voucher must not exceed 5 MB.",
+                confirmButtonColor: "#351255",
             });
 
             e.target.value = "";
@@ -897,10 +865,6 @@ const VisaApplicationIndex = () => {
 
         setVoucherFile(file);
     };
-
-    /* =========================================================
-       UPLOAD VOUCHER
-    ========================================================= */
 
     const handleVoucherSubmit = async (e) => {
 
@@ -913,26 +877,15 @@ const VisaApplicationIndex = () => {
         if (!voucherFile) {
 
             Swal.fire({
-
                 icon: "warning",
-
                 title: "Voucher Required",
-
                 text:
                     "Please select a voucher or receipt.",
-
-                confirmButtonColor:
-                    "#351255",
+                confirmButtonColor: "#351255",
             });
 
             return;
         }
-
-        /*
-         * FormData is created HERE.
-         *
-         * BackendApi only receives and sends it.
-         */
 
         const formData =
             new FormData();
@@ -947,50 +900,33 @@ const VisaApplicationIndex = () => {
             setVoucherSubmitting(true);
 
             const response =
-                await uploadVisaApplicationVoucher(
+                await uploadInsuranceApplicationVoucher(
                     selectedApplication.id,
                     formData
                 );
 
-            console.log(
-                "VOUCHER UPLOAD RESPONSE:",
-                response.data
-            );
-
             if (response.data?.status) {
-
-                /*
-                 * Refresh list so voucher/payment
-                 * information is current.
-                 */
 
                 await fetchApplications();
 
                 setVoucherModalOpen(false);
-
                 setSelectedApplication(null);
-
                 setVoucherFile(null);
 
                 Swal.fire({
-
                     icon: "success",
-
                     title: "Voucher Uploaded",
-
                     text:
                         response.data?.message ||
-                        "Voucher uploaded successfully.",
-
-                    confirmButtonColor:
-                        "#351255",
+                        "Insurance voucher uploaded successfully.",
+                    confirmButtonColor: "#351255",
                 });
             }
 
         } catch (error) {
 
             console.error(
-                "Voucher upload error:",
+                "Insurance voucher upload error:",
                 error
             );
 
@@ -1004,30 +940,18 @@ const VisaApplicationIndex = () => {
             if (validationErrors) {
 
                 const firstError =
-                    Object.values(
-                        validationErrors
-                    )[0];
+                    Object.values(validationErrors)[0];
 
-                if (
-                    Array.isArray(
-                        firstError
-                    )
-                ) {
-                    errorMessage =
-                        firstError[0];
+                if (Array.isArray(firstError)) {
+                    errorMessage = firstError[0];
                 }
             }
 
             Swal.fire({
-
                 icon: "error",
-
                 title: "Upload Failed",
-
                 text: errorMessage,
-
-                confirmButtonColor:
-                    "#351255",
+                confirmButtonColor: "#351255",
             });
 
         } finally {
@@ -1061,11 +985,11 @@ const VisaApplicationIndex = () => {
                             <div>
 
                                 <h1>
-                                    Visa Applications
+                                    Insurance Applications
                                 </h1>
 
                                 <p>
-                                    Manage visa applications submitted by users.
+                                    Manage insurance applications submitted by users.
                                 </p>
 
                             </div>
@@ -1081,17 +1005,14 @@ const VisaApplicationIndex = () => {
                                 <div>
 
                                     <h2>
-                                        Visa Applications
+                                        Insurance Applications
                                     </h2>
 
                                     <p>
-
                                         {totalApplications}{" "}
-
                                         {totalApplications === 1
                                             ? "application"
                                             : "applications"}
-
                                     </p>
 
                                 </div>
@@ -1113,15 +1034,19 @@ const VisaApplicationIndex = () => {
                                             </th>
 
                                             <th>
-                                                Country
+                                                Insurance Plan
                                             </th>
 
                                             <th>
-                                                Visa Category
+                                                Pricing Tier
                                             </th>
 
                                             <th>
-                                                Travel Date
+                                                Coverage
+                                            </th>
+
+                                            <th>
+                                                Applicants
                                             </th>
 
                                             <th>
@@ -1151,13 +1076,13 @@ const VisaApplicationIndex = () => {
                                             <tr>
 
                                                 <td
-                                                    colSpan="9"
+                                                    colSpan="10"
                                                     className="table-message"
                                                 >
 
                                                     <div className="work-permit-loader"></div>
 
-                                                    Loading visa applications...
+                                                    Loading insurance applications...
 
                                                 </td>
 
@@ -1168,10 +1093,10 @@ const VisaApplicationIndex = () => {
                                             <tr>
 
                                                 <td
-                                                    colSpan="9"
+                                                    colSpan="10"
                                                     className="table-message"
                                                 >
-                                                    No visa applications found.
+                                                    No insurance applications found.
                                                 </td>
 
                                             </tr>
@@ -1192,8 +1117,7 @@ const VisaApplicationIndex = () => {
 
                                                         <td>
 
-                                                            {(page - 1) *
-                                                                10 +
+                                                            {(page - 1) * 10 +
                                                                 index +
                                                                 1}
 
@@ -1213,8 +1137,8 @@ const VisaApplicationIndex = () => {
                                                         <td>
 
                                                             {application
-                                                                ?.country
-                                                                ?.country_name ||
+                                                                ?.insurance_plan
+                                                                ?.name ||
                                                                 "-"}
 
                                                         </td>
@@ -1222,20 +1146,41 @@ const VisaApplicationIndex = () => {
                                                         <td>
 
                                                             {application
-                                                                ?.visa_category
-                                                                ?.name ||
-                                                                application
-                                                                    ?.visa_category
-                                                                    ?.title ||
+                                                                ?.pricing_tier
+                                                                ?.title ||
                                                                 "-"}
 
                                                         </td>
 
                                                         <td>
 
-                                                            {formatDate(
-                                                                application.intended_travel_date
-                                                            )}
+                                                            <div className="applicant-info">
+
+                                                                <span className="applicant-name">
+
+                                                                    {formatDate(
+                                                                        application.start_date
+                                                                    )}
+
+                                                                </span>
+
+                                                                <span className="applicant-email">
+
+                                                                    to{" "}
+                                                                    {formatDate(
+                                                                        application.end_date
+                                                                    )}
+
+                                                                </span>
+
+                                                            </div>
+
+                                                        </td>
+
+                                                        <td>
+
+                                                            {application.applicant_count ??
+                                                                0}
 
                                                         </td>
 
@@ -1273,14 +1218,12 @@ const VisaApplicationIndex = () => {
 
                                                                 {displayValue(
                                                                     application.payment_status ||
-                                                                    "UNPAID"
+                                                                    "PENDING"
                                                                 )}
 
                                                             </span>
 
                                                         </td>
-
-                                                        {/* ACTIONS */}
 
                                                         <td className="action-column">
 
@@ -1303,17 +1246,13 @@ const VisaApplicationIndex = () => {
                                                                         )
                                                                     }
                                                                 >
-
                                                                     <FaEllipsisV />
-
                                                                 </button>
 
                                                                 {openMenuId ===
                                                                     application.id && (
 
                                                                     <div className="kebab-menu">
-
-                                                                        {/* VIEW APPLICATION */}
 
                                                                         <button
                                                                             type="button"
@@ -1333,8 +1272,6 @@ const VisaApplicationIndex = () => {
 
                                                                         </button>
 
-                                                                        {/* VIEW APPLICANTS */}
-
                                                                         <button
                                                                             type="button"
                                                                             className="kebab-menu-item"
@@ -1353,8 +1290,6 @@ const VisaApplicationIndex = () => {
 
                                                                         </button>
 
-                                                                        {/* UPLOAD VOUCHER */}
-
                                                                         <button
                                                                             type="button"
                                                                             className="kebab-menu-item"
@@ -1372,8 +1307,6 @@ const VisaApplicationIndex = () => {
                                                                             </span>
 
                                                                         </button>
-
-                                                                        {/* VIEW DOCUMENTS */}
 
                                                                         <button
                                                                             type="button"
@@ -1401,7 +1334,6 @@ const VisaApplicationIndex = () => {
                                                         </td>
 
                                                     </tr>
-
                                                 )
                                             )
                                         )}
@@ -1412,8 +1344,6 @@ const VisaApplicationIndex = () => {
 
                             </div>
 
-                            {/* ================= PAGINATION ================= */}
-
                             <Pagination
                                 page={page}
                                 totalPages={totalPages}
@@ -1423,7 +1353,7 @@ const VisaApplicationIndex = () => {
                         </div>
 
                         {/* =================================================
-                            VIEW APPLICATION MODAL
+                            APPLICATION DETAIL
                         ================================================= */}
 
                         {viewApplicationModalOpen && (
@@ -1448,15 +1378,13 @@ const VisaApplicationIndex = () => {
                                         <div>
 
                                             <h2>
-                                                Visa Application Details
+                                                Insurance Application Details
                                             </h2>
 
                                             <p>
-
                                                 {applicationDetail
                                                     ?.application_number ||
                                                     "Application Information"}
-
                                             </p>
 
                                         </div>
@@ -1500,159 +1428,180 @@ const VisaApplicationIndex = () => {
                                                     <div className="detail-grid">
 
                                                         <div className="detail-item">
-
                                                             <span>
                                                                 Application No.
                                                             </span>
 
                                                             <strong>
-
                                                                 {displayValue(
                                                                     applicationDetail.application_number
                                                                 )}
-
                                                             </strong>
-
                                                         </div>
 
                                                         <div className="detail-item">
-
                                                             <span>
-                                                                Status
+                                                                Insurance Plan
                                                             </span>
 
                                                             <strong>
-
-                                                                <span
-                                                                    className={`work-permit-status ${getStatusClass(
-                                                                        applicationDetail.status
-                                                                    )}`}
-                                                                >
-
-                                                                    {displayValue(
-                                                                        applicationDetail.status
-                                                                    )}
-
-                                                                </span>
-
-                                                            </strong>
-
-                                                        </div>
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Payment Status
-                                                            </span>
-
-                                                            <strong>
-
-                                                                <span
-                                                                    className={`payment-status ${getPaymentStatusClass(
-                                                                        applicationDetail.payment_status
-                                                                    )}`}
-                                                                >
-
-                                                                    {displayValue(
-                                                                        applicationDetail.payment_status
-                                                                    )}
-
-                                                                </span>
-
-                                                            </strong>
-
-                                                        </div>
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Country
-                                                            </span>
-
-                                                            <strong>
-
                                                                 {applicationDetail
-                                                                    ?.country
-                                                                    ?.country_name ||
-                                                                    "-"}
-
-                                                            </strong>
-
-                                                        </div>
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Visa Category
-                                                            </span>
-
-                                                            <strong>
-
-                                                                {applicationDetail
-                                                                    ?.visa_category
+                                                                    ?.insurance_plan
                                                                     ?.name ||
-                                                                    applicationDetail
-                                                                        ?.visa_category
-                                                                        ?.title ||
                                                                     "-"}
-
                                                             </strong>
-
                                                         </div>
 
                                                         <div className="detail-item">
-
                                                             <span>
                                                                 Pricing Tier
                                                             </span>
 
                                                             <strong>
-
                                                                 {applicationDetail
                                                                     ?.pricing_tier
-                                                                    ?.name ||
-                                                                    applicationDetail
-                                                                        ?.pricing_tier
-                                                                        ?.title ||
+                                                                    ?.title ||
                                                                     "-"}
-
                                                             </strong>
-
                                                         </div>
 
                                                         <div className="detail-item">
+                                                            <span>
+                                                                Tier Duration
+                                                            </span>
 
+                                                            <strong>
+                                                                {applicationDetail
+                                                                    ?.pricing_tier
+                                                                    ?.duration_days
+                                                                    ? `${applicationDetail.pricing_tier.duration_days} Days`
+                                                                    : "-"}
+                                                            </strong>
+                                                        </div>
+
+                                                        <div className="detail-item">
+                                                            <span>
+                                                                Start Date
+                                                            </span>
+
+                                                            <strong>
+                                                                {formatDate(
+                                                                    applicationDetail.start_date
+                                                                )}
+                                                            </strong>
+                                                        </div>
+
+                                                        <div className="detail-item">
+                                                            <span>
+                                                                End Date
+                                                            </span>
+
+                                                            <strong>
+                                                                {formatDate(
+                                                                    applicationDetail.end_date
+                                                                )}
+                                                            </strong>
+                                                        </div>
+
+                                                        <div className="detail-item">
+                                                            <span>
+                                                                Applicants
+                                                            </span>
+
+                                                            <strong>
+                                                                {applicationDetail.applicant_count ??
+                                                                    0}
+                                                            </strong>
+                                                        </div>
+
+                                                        <div className="detail-item">
                                                             <span>
                                                                 Total Amount
                                                             </span>
 
                                                             <strong>
-
                                                                 {formatAmount(
                                                                     applicationDetail.total_amount
                                                                 )}
-
                                                             </strong>
-
                                                         </div>
 
                                                         <div className="detail-item">
-
                                                             <span>
-                                                                Intended Travel Date
+                                                                Status
                                                             </span>
 
                                                             <strong>
-                                                                {formatDate(
-                                                                    applicationDetail.intended_travel_date
-                                                                )}
+                                                                <span
+                                                                    className={`work-permit-status ${getStatusClass(
+                                                                        applicationDetail.status
+                                                                    )}`}
+                                                                >
+                                                                    {displayValue(
+                                                                        applicationDetail.status
+                                                                    )}
+                                                                </span>
                                                             </strong>
+                                                        </div>
 
+                                                        <div className="detail-item">
+                                                            <span>
+                                                                Payment Status
+                                                            </span>
+
+                                                            <strong>
+                                                                <span
+                                                                    className={`payment-status ${getPaymentStatusClass(
+                                                                        applicationDetail.payment_status
+                                                                    )}`}
+                                                                >
+                                                                    {displayValue(
+                                                                        applicationDetail.payment_status
+                                                                    )}
+                                                                </span>
+                                                            </strong>
                                                         </div>
 
                                                     </div>
 
                                                 </div>
+
+                                                {/* USER */}
+
+                                                {applicationDetail.user && (
+
+                                                    <div className="detail-section">
+
+                                                        <h3>
+                                                            User Information
+                                                        </h3>
+
+                                                        <div className="detail-grid">
+
+                                                            <div className="detail-item">
+                                                                <span>Name</span>
+                                                                <strong>
+                                                                    {applicationDetail
+                                                                        ?.user
+                                                                        ?.name ||
+                                                                        "-"}
+                                                                </strong>
+                                                            </div>
+
+                                                            <div className="detail-item">
+                                                                <span>Email</span>
+                                                                <strong>
+                                                                    {applicationDetail
+                                                                        ?.user
+                                                                        ?.email ||
+                                                                        "-"}
+                                                                </strong>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                )}
 
                                                 {/* VOUCHER */}
 
@@ -1725,11 +1674,10 @@ const VisaApplicationIndex = () => {
                                                                         src={
                                                                             applicationDetail.voucher_url
                                                                         }
-                                                                        alt="Visa voucher"
+                                                                        alt="Insurance voucher"
                                                                     />
 
                                                                 </a>
-
                                                             )}
 
                                                             <a
@@ -1740,15 +1688,11 @@ const VisaApplicationIndex = () => {
                                                                 rel="noreferrer"
                                                                 className="receipt-view-button"
                                                             >
-
                                                                 <FaExternalLinkAlt />
-
                                                                 View Voucher
-
                                                             </a>
 
                                                         </div>
-
                                                     )}
 
                                                 </div>
@@ -1764,10 +1708,12 @@ const VisaApplicationIndex = () => {
                                                     <div className="payment-status-buttons">
 
                                                         {[
+                                                            "DRAFT",
                                                             "SUBMITTED",
-                                                            "IN_REVIEW",
+                                                            "PROCESSING",
                                                             "APPROVED",
                                                             "REJECTED",
+                                                            "COMPLETED",
                                                         ].map(
                                                             (status) => (
 
@@ -1792,17 +1738,6 @@ const VisaApplicationIndex = () => {
                                                                             status
                                                                         )
                                                                     }
-                                                                    style={{
-                                                                        color:
-                                                                            applicationDetail.status ===
-                                                                            status
-                                                                                ? "#ffffff"
-                                                                                : "#351255",
-                                                                        fontSize:
-                                                                            "13px",
-                                                                        fontWeight:
-                                                                            600,
-                                                                    }}
                                                                 >
 
                                                                     {displayValue(
@@ -1810,7 +1745,6 @@ const VisaApplicationIndex = () => {
                                                                     )}
 
                                                                 </button>
-
                                                             )
                                                         )}
 
@@ -1867,7 +1801,6 @@ const VisaApplicationIndex = () => {
                                             <div className="modal-empty-state">
                                                 No application information found.
                                             </div>
-
                                         )}
 
                                     </div>
@@ -1892,7 +1825,7 @@ const VisaApplicationIndex = () => {
                         )}
 
                         {/* =================================================
-                            VIEW APPLICANTS MODAL
+                            APPLICANTS
                         ================================================= */}
 
                         {viewApplicantsModalOpen && (
@@ -1917,15 +1850,13 @@ const VisaApplicationIndex = () => {
                                         <div>
 
                                             <h2>
-                                                Visa Applicants
+                                                Insurance Applicants
                                             </h2>
 
                                             <p>
-
                                                 {viewApplicantsApplication
                                                     ?.application_number ||
                                                     ""}
-
                                             </p>
 
                                         </div>
@@ -1950,7 +1881,7 @@ const VisaApplicationIndex = () => {
 
                                                 <div className="work-permit-loader"></div>
 
-                                                Loading visa applicants...
+                                                Loading insurance applicants...
 
                                             </div>
 
@@ -1965,7 +1896,7 @@ const VisaApplicationIndex = () => {
                                                 </h3>
 
                                                 <p>
-                                                    No applicants were found for this visa application.
+                                                    No applicants were found for this insurance application.
                                                 </p>
 
                                             </div>
@@ -1993,8 +1924,10 @@ const VisaApplicationIndex = () => {
                                                                 <div>
 
                                                                     <span className="payment-record-label">
+
                                                                         Applicant{" "}
                                                                         {index + 1}
+
                                                                     </span>
 
                                                                     <h3>
@@ -2025,6 +1958,20 @@ const VisaApplicationIndex = () => {
                                                                 <div className="detail-item">
 
                                                                     <span>
+                                                                        Date of Birth
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {formatDate(
+                                                                            applicant.date_of_birth
+                                                                        )}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
                                                                         Email
                                                                     </span>
 
@@ -2043,11 +1990,14 @@ const VisaApplicationIndex = () => {
                                                                     </span>
 
                                                                     <strong>
+
                                                                         {applicant.country_code
                                                                             ? `${applicant.country_code} `
                                                                             : ""}
+
                                                                         {applicant.phone_number ||
                                                                             "-"}
+
                                                                     </strong>
 
                                                                 </div>
@@ -2069,27 +2019,13 @@ const VisaApplicationIndex = () => {
                                                                 <div className="detail-item">
 
                                                                     <span>
-                                                                        Passport Expiry
+                                                                        Emergency Contact
                                                                     </span>
 
                                                                     <strong>
-                                                                        {formatDate(
-                                                                            applicant.passport_expiry_date
-                                                                        )}
-                                                                    </strong>
-
-                                                                </div>
-
-                                                                <div className="detail-item">
-
-                                                                    <span>
-                                                                        Created
-                                                                    </span>
-
-                                                                    <strong>
-                                                                        {formatDateTime(
-                                                                            applicant.created_at
-                                                                        )}
+                                                                        {applicant.emergency_contact_phone ||
+                                                                            applicant.emergency_contact_number ||
+                                                                            "-"}
                                                                     </strong>
 
                                                                 </div>
@@ -2097,12 +2033,10 @@ const VisaApplicationIndex = () => {
                                                             </div>
 
                                                         </div>
-
                                                     )
                                                 )}
 
                                             </div>
-
                                         )}
 
                                     </div>
@@ -2127,7 +2061,7 @@ const VisaApplicationIndex = () => {
                         )}
 
                         {/* =================================================
-                            VIEW DOCUMENTS MODAL
+                            DOCUMENTS
                         ================================================= */}
 
                         {viewDocumentModalOpen && (
@@ -2153,15 +2087,13 @@ const VisaApplicationIndex = () => {
                                         <div>
 
                                             <h2>
-                                                Visa Documents
+                                                Insurance Documents
                                             </h2>
 
                                             <p>
-
                                                 {viewDocumentApplication
                                                     ?.application_number ||
                                                     ""}
-
                                             </p>
 
                                         </div>
@@ -2191,7 +2123,7 @@ const VisaApplicationIndex = () => {
 
                                                 <div className="work-permit-loader"></div>
 
-                                                Loading visa documents...
+                                                Loading insurance documents...
 
                                             </div>
 
@@ -2206,7 +2138,7 @@ const VisaApplicationIndex = () => {
                                                 </h3>
 
                                                 <p>
-                                                    No documents have been uploaded for this visa application.
+                                                    No documents have been uploaded for this insurance application.
                                                 </p>
 
                                             </div>
@@ -2236,8 +2168,7 @@ const VisaApplicationIndex = () => {
                                                                     <span className="payment-record-label">
 
                                                                         Document{" "}
-                                                                        {index +
-                                                                            1}
+                                                                        {index + 1}
 
                                                                     </span>
 
@@ -2245,13 +2176,11 @@ const VisaApplicationIndex = () => {
 
                                                                         {document
                                                                             ?.requirement
-                                                                            ?.document_name ||
+                                                                            ?.title ||
                                                                             document
                                                                                 ?.requirement
-                                                                                ?.title ||
-                                                                            displayValue(
-                                                                                document.document_type
-                                                                            )}
+                                                                                ?.document_type ||
+                                                                            "Document"}
 
                                                                     </h3>
 
@@ -2282,15 +2211,26 @@ const VisaApplicationIndex = () => {
                                                                     </span>
 
                                                                     <strong>
-
                                                                         {document
                                                                             ?.requirement
-                                                                            ?.document_name ||
+                                                                            ?.title ||
+                                                                            "-"}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Document Type
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {displayValue(
                                                                             document
                                                                                 ?.requirement
-                                                                                ?.title ||
-                                                                            "-"}
-
+                                                                                ?.document_type
+                                                                        )}
                                                                     </strong>
 
                                                                 </div>
@@ -2302,7 +2242,8 @@ const VisaApplicationIndex = () => {
                                                                     </span>
 
                                                                     <strong>
-                                                                        {document.applicant_full_name || "-"}
+                                                                        {document.applicant_full_name ||
+                                                                            "-"}
                                                                     </strong>
 
                                                                 </div>
@@ -2365,13 +2306,10 @@ const VisaApplicationIndex = () => {
                                                                     </span>
 
                                                                     <p>
-                                                                        {
-                                                                            document.remarks
-                                                                        }
+                                                                        {document.remarks}
                                                                     </p>
 
                                                                 </div>
-
                                                             )}
 
                                                             {document.file_url && (
@@ -2399,11 +2337,10 @@ const VisaApplicationIndex = () => {
                                                                                 src={
                                                                                     document.file_url
                                                                                 }
-                                                                                alt="Visa document"
+                                                                                alt="Insurance document"
                                                                             />
 
                                                                         </a>
-
                                                                     )}
 
                                                                     <div className="document-action-buttons">
@@ -2453,16 +2390,13 @@ const VisaApplicationIndex = () => {
                                                                     </div>
 
                                                                 </div>
-
                                                             )}
 
                                                         </div>
-
                                                     )
                                                 )}
 
                                             </div>
-
                                         )}
 
                                     </div>
@@ -2492,7 +2426,7 @@ const VisaApplicationIndex = () => {
                         )}
 
                         {/* =================================================
-                            UPLOAD VOUCHER MODAL
+                            VOUCHER
                         ================================================= */}
 
                         {voucherModalOpen && (
@@ -2522,11 +2456,9 @@ const VisaApplicationIndex = () => {
                                             </h2>
 
                                             <p>
-
                                                 {selectedApplication
                                                     ?.application_number ||
                                                     ""}
-
                                             </p>
 
                                         </div>
@@ -2557,15 +2489,28 @@ const VisaApplicationIndex = () => {
                                             <div className="payment-applicant">
 
                                                 <span>
-                                                    Applicant
+                                                    Insurance Plan
                                                 </span>
 
                                                 <strong>
-
                                                     {selectedApplication
-                                                        ?.applicant_full_name ||
+                                                        ?.insurance_plan
+                                                        ?.name ||
                                                         "-"}
+                                                </strong>
 
+                                            </div>
+
+                                            <div className="payment-applicant">
+
+                                                <span>
+                                                    Application
+                                                </span>
+
+                                                <strong>
+                                                    {selectedApplication
+                                                        ?.application_number ||
+                                                        "-"}
                                                 </strong>
 
                                             </div>
@@ -2577,12 +2522,10 @@ const VisaApplicationIndex = () => {
                                                 </span>
 
                                                 <strong>
-
                                                     {formatAmount(
                                                         selectedApplication
                                                             ?.total_amount
                                                     )}
-
                                                 </strong>
 
                                             </div>
@@ -2595,7 +2538,7 @@ const VisaApplicationIndex = () => {
 
                                                 <input
                                                     type="file"
-                                                    accept=".jpg,.jpeg,.png,.pdf"
+                                                    accept=".jpg,.jpeg,.png,.webp,.pdf"
                                                     onChange={
                                                         handleVoucherFileChange
                                                     }
@@ -2607,8 +2550,8 @@ const VisaApplicationIndex = () => {
 
                                                 <span className="payment-file-help">
 
-                                                    JPG, JPEG, PNG or PDF.
-                                                    Maximum 10 MB.
+                                                    JPG, JPEG, PNG, WEBP or PDF.
+                                                    Maximum 5 MB.
 
                                                 </span>
 
@@ -2617,13 +2560,9 @@ const VisaApplicationIndex = () => {
                                                     <span className="payment-selected-file">
 
                                                         Selected:{" "}
-
-                                                        {
-                                                            voucherFile.name
-                                                        }
+                                                        {voucherFile.name}
 
                                                     </span>
-
                                                 )}
 
                                             </div>
@@ -2678,4 +2617,4 @@ const VisaApplicationIndex = () => {
     );
 };
 
-export default VisaApplicationIndex;
+export default InsuranceApplication;

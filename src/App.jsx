@@ -41,6 +41,11 @@ import VisaCategory from './pages/Admin/Visa/VisaCategory';
 import VisaPricingTier from './pages/Admin/Visa/VisaPricingTier';
 import VisaDocumentRequirement from './pages/Admin/Visa/VisaDocumentRequirement';
 import VisaInformation from './pages/Admin/Visa/VisaInformation';
+import InsuranceApplication from './pages/Admin/Insurance/InsuranceApplication';
+import InsurancePlan from './pages/Admin/Insurance/InsurancePlan';
+import InsuranceDocumentRequirement from './pages/Admin/Insurance/InsuranceDocumentRequirement';
+import InsuranceInformation from './pages/Admin/Insurance/InsuranceInformation';
+import InsuranceDynamicFields from './pages/Admin/Insurance/InsuranceDynamicFields';
 
 function App() {
 
@@ -302,6 +307,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         {/* VISA */}
 
         <Route
@@ -345,6 +351,63 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <VisaInformation />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* INSURANCE */}
+
+        <Route
+          path="/insurance-applications"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <InsuranceApplication />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/insurance/plan"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <InsurancePlan />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/insurance/pricing-tiers"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <VisaPricingTier />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/insurance/documents"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <InsuranceDocumentRequirement />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/insurance/informations"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <InsuranceInformation />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/insurance/dynamic-fields"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <InsuranceDynamicFields />
             </ProtectedRoute>
           }
         />

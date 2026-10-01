@@ -1,0 +1,717 @@
+/* =========================================================
+   PAGE
+========================================================= */
+
+.insurance-pricing-tier-page {
+    width: 100%;
+    padding: 28px;
+    box-sizing: border-box;
+}
+
+
+.insurance-pricing-tier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 24px;
+}
+
+
+.insurance-pricing-tier-header h1 {
+    margin: 0;
+
+    font-size: 28px;
+    font-weight: 700;
+
+    color: #24152f;
+}
+
+
+.insurance-pricing-tier-header p {
+    margin: 7px 0 0;
+
+    font-size: 14px;
+
+    color: #77717d;
+}
+
+
+/* =========================================================
+   FORM CARD
+========================================================= */
+
+.insurance-pricing-tier-form-card {
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    border: 1px solid #eee9f1;
+
+    padding: 24px;
+
+    margin-bottom: 28px;
+
+    box-shadow:
+        0 3px 14px
+        rgba(38, 20, 48, 0.05);
+}
+
+
+.insurance-pricing-tier-card-header {
+    margin-bottom: 22px;
+}
+
+
+.insurance-pricing-tier-card-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+
+    color: #351255;
+}
+
+
+.insurance-pricing-tier-card-header p {
+    margin: 6px 0 0;
+
+    color: #77717d;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.insurance-pricing-tier-form {
+    width: 100%;
+}
+
+
+.insurance-pricing-tier-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 18px;
+}
+
+
+.insurance-pricing-tier-form-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+.insurance-pricing-tier-form-group label {
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #3e3343;
+}
+
+
+.insurance-pricing-tier-form-group input,
+.insurance-pricing-tier-form-group select {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid #ded7e2;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    padding: 11px 12px;
+
+    font-size: 14px;
+
+    color: #332b36;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.insurance-pricing-tier-form-group input:focus,
+.insurance-pricing-tier-form-group select:focus {
+    border-color: #351255;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            53,
+            18,
+            85,
+            0.08
+        );
+}
+
+
+.insurance-pricing-tier-form-group input:disabled,
+.insurance-pricing-tier-form-group select:disabled {
+    background: #f5f3f6;
+
+    cursor: not-allowed;
+}
+
+
+.required {
+    color: #e42b67;
+
+    margin-left: 3px;
+}
+
+
+/* =========================================================
+   PLAN SELECT
+========================================================= */
+
+.insurance-pricing-tier-plan-select {
+    max-width: 500px;
+
+    margin-bottom: 22px;
+}
+
+
+/* =========================================================
+   MULTIPLE CREATE
+========================================================= */
+
+.insurance-pricing-tier-create-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+
+.insurance-pricing-tier-create-item {
+    border:
+        1px solid #e6dfe9;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    background: #fcfbfd;
+}
+
+
+.insurance-pricing-tier-create-item-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content:
+        space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.insurance-pricing-tier-create-item-header h3 {
+    margin: 0;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #351255;
+}
+
+
+.insurance-pricing-tier-remove-btn {
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #fff0f4;
+
+    color: #e42b67;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+
+.insurance-pricing-tier-remove-btn:hover:not(:disabled) {
+    background: #e42b67;
+
+    color: #ffffff;
+}
+
+
+.insurance-pricing-tier-remove-btn:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   FORM ACTIONS
+========================================================= */
+
+.insurance-pricing-tier-create-actions,
+.insurance-pricing-tier-form-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 22px;
+}
+
+
+.insurance-pricing-tier-add-more-btn,
+.insurance-pricing-tier-submit-btn,
+.insurance-pricing-tier-cancel-btn {
+    min-height: 40px;
+
+    border-radius: 8px;
+
+    border: none;
+
+    padding: 10px 17px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+}
+
+
+.insurance-pricing-tier-add-more-btn {
+    background: #f1eaf5;
+
+    color: #351255;
+}
+
+
+.insurance-pricing-tier-add-more-btn:hover {
+    background: #e7daee;
+}
+
+
+.insurance-pricing-tier-submit-btn {
+    background: #351255;
+
+    color: #ffffff;
+}
+
+
+.insurance-pricing-tier-submit-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+
+.insurance-pricing-tier-cancel-btn {
+    background: #eeeaf0;
+
+    color: #5f5663;
+}
+
+
+.insurance-pricing-tier-cancel-btn:hover {
+    background: #e3dfe5;
+}
+
+
+.insurance-pricing-tier-submit-btn:disabled,
+.insurance-pricing-tier-add-more-btn:disabled,
+.insurance-pricing-tier-cancel-btn:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.insurance-pricing-tier-table-card {
+    background: #ffffff;
+
+    border-radius: 14px;
+
+    border: 1px solid #eee9f1;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 3px 14px
+        rgba(38, 20, 48, 0.05);
+}
+
+
+.insurance-pricing-tier-table-header {
+    padding: 20px 22px;
+
+    border-bottom:
+        1px solid #eee9f1;
+}
+
+
+.insurance-pricing-tier-table-header h2 {
+    margin: 0;
+
+    font-size: 19px;
+
+    color: #351255;
+}
+
+
+.insurance-pricing-tier-table-header p {
+    margin: 5px 0 0;
+
+    color: #89808d;
+
+    font-size: 13px;
+}
+
+
+.insurance-pricing-tier-table-responsive {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.insurance-pricing-tier-table {
+    width: 100%;
+
+    border-collapse:
+        collapse;
+
+    min-width: 950px;
+}
+
+
+.insurance-pricing-tier-table thead {
+    background: #faf8fb;
+}
+
+
+.insurance-pricing-tier-table th {
+    padding: 13px 15px;
+
+    text-align: left;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #625867;
+
+    border-bottom:
+        1px solid #ece6ef;
+
+    white-space: nowrap;
+}
+
+
+.insurance-pricing-tier-table td {
+    padding: 14px 15px;
+
+    font-size: 13px;
+
+    color: #4d4550;
+
+    border-bottom:
+        1px solid #f0ecf2;
+
+    vertical-align:
+        middle;
+}
+
+
+.insurance-pricing-tier-table tbody tr:hover {
+    background: #fdfcfd;
+}
+
+
+.insurance-pricing-tier-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   TITLE / PRICE
+========================================================= */
+
+.insurance-pricing-tier-title {
+    color: #332a37;
+
+    font-size: 14px;
+}
+
+
+.insurance-pricing-tier-price {
+    font-weight: 600;
+
+    color: #351255;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.insurance-pricing-tier-status {
+    border: none;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.insurance-pricing-tier-status.active {
+    background: #e5f7ed;
+
+    color: #1d8a4c;
+}
+
+
+.insurance-pricing-tier-status.inactive {
+    background: #f1edf2;
+
+    color: #766e79;
+}
+
+
+.insurance-pricing-tier-status:hover:not(:disabled) {
+    transform:
+        translateY(-1px);
+}
+
+
+.insurance-pricing-tier-status:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.insurance-pricing-tier-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.insurance-pricing-tier-edit-btn,
+.insurance-pricing-tier-delete-btn {
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 7px;
+
+    border: none;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition: 0.2s ease;
+}
+
+
+.insurance-pricing-tier-edit-btn {
+    background: #eee8f3;
+
+    color: #351255;
+}
+
+
+.insurance-pricing-tier-edit-btn:hover {
+    background: #351255;
+
+    color: #ffffff;
+}
+
+
+.insurance-pricing-tier-delete-btn {
+    background: #fff0f4;
+
+    color: #e42b67;
+}
+
+
+.insurance-pricing-tier-delete-btn:hover {
+    background: #e42b67;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   LOADING / EMPTY
+========================================================= */
+
+.insurance-pricing-tier-table-message {
+    text-align:
+        center !important;
+
+    padding:
+        35px !important;
+
+    color:
+        #817885 !important;
+}
+
+
+.insurance-pricing-tier-loader {
+    width: 24px;
+
+    height: 24px;
+
+    border:
+        3px solid #e7dfeb;
+
+    border-top-color:
+        #351255;
+
+    border-radius: 50%;
+
+    animation:
+        insurancePricingTierSpin
+        0.7s
+        linear
+        infinite;
+
+    margin:
+        0 auto 10px;
+}
+
+
+@keyframes insurancePricingTierSpin {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .insurance-pricing-tier-page {
+        padding: 20px;
+    }
+
+
+    .insurance-pricing-tier-form-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .insurance-pricing-tier-create-actions,
+    .insurance-pricing-tier-form-actions {
+        flex-wrap: wrap;
+    }
+
+
+    .insurance-pricing-tier-add-more-btn,
+    .insurance-pricing-tier-submit-btn,
+    .insurance-pricing-tier-cancel-btn {
+        flex: 1;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .insurance-pricing-tier-page {
+        padding: 14px;
+    }
+
+
+    .insurance-pricing-tier-form-card {
+        padding: 17px;
+    }
+
+
+    .insurance-pricing-tier-create-item {
+        padding: 15px;
+    }
+
+
+    .insurance-pricing-tier-create-actions,
+    .insurance-pricing-tier-form-actions {
+        flex-direction:
+            column;
+    }
+
+
+    .insurance-pricing-tier-add-more-btn,
+    .insurance-pricing-tier-submit-btn,
+    .insurance-pricing-tier-cancel-btn {
+        width: 100%;
+    }
+}
