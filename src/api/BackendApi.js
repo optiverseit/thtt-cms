@@ -752,6 +752,10 @@ export const verifyVisaDocument = (
 // VISA CATEGORIES
 // ============================================
 
+export const getVisaApplicantsByApplicationId = (applicationId) => {
+    return axiosInstance.get(`/visa-applications/${applicationId}/applicants`);
+};
+
 export const getAllVisaCategoriesCms = (page = 1) => {
     return axiosInstance.get(
         `/visa-categories/cms?page=${page}`

@@ -62,6 +62,7 @@ const WorkPermit = () => {
     const [paymentModalOpen, setPaymentModalOpen] = useState(false);
     const [selectedPermit, setSelectedPermit] = useState(null);
     const [paymentSubmitting, setPaymentSubmitting] = useState(false);
+    const [paymentAmountLoading, setPaymentAmountLoading] = useState(false);
 
     const [paymentForm, setPaymentForm] = useState({
         amount_npr: "",
@@ -675,9 +676,8 @@ const WorkPermit = () => {
        ADD PAYMENT
     ========================================================= */
 
-    const openPaymentModal = (permit) => {
+    const openPaymentModal = async (permit) => {
         setOpenMenuId(null);
-
         setSelectedPermit(permit);
 
         setPaymentForm({
@@ -686,8 +686,50 @@ const WorkPermit = () => {
         });
 
         setPaymentModalOpen(true);
-    };
+        setPaymentAmountLoading(true);
 
+        try {
+            const response = await getWorkPermitById(permit.id);
+
+            if (!response.data?.status) {
+                throw new Error(
+                    response.data?.message ||
+                    "Unable to fetch work permit details."
+                );
+            }
+
+            const detail = response.data.data;
+
+            const amount =
+                detail?.fee_tier?.total_cost_npr ??
+                detail?.feeTier?.total_cost_npr ??
+                "";
+
+            setSelectedPermit(detail);
+
+            setPaymentForm((previous) => ({
+                ...previous,
+                amount_npr: amount,
+            }));
+        } catch (error) {
+            console.error(
+                "Work permit amount fetch error:",
+                error
+            );
+
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text:
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Unable to load work permit amount.",
+                confirmButtonColor: "#351255",
+            });
+        } finally {
+            setPaymentAmountLoading(false);
+        }
+    };
     const closePaymentModal = () => {
         if (paymentSubmitting) {
             return;
@@ -695,6 +737,7 @@ const WorkPermit = () => {
 
         setPaymentModalOpen(false);
         setSelectedPermit(null);
+        setPaymentAmountLoading(false);
 
         setPaymentForm({
             amount_npr: "",
@@ -2225,6 +2268,17 @@ const WorkPermit = () => {
 
                                         <div className="payment-modal-body">
 
+                                            {paymentAmountLoading ? (
+
+                                                <div className="modal-loading-state">
+                                                    <div className="work-permit-loader"></div>
+                                                    Loading payment amount...
+                                                </div>
+
+                                            ) : (
+
+                                                <>
+
                                             <div className="payment-applicant">
 
                                                 <span>
@@ -2253,10 +2307,8 @@ const WorkPermit = () => {
                                                     value={
                                                         paymentForm.amount_npr
                                                     }
-                                                    onChange={
-                                                        handlePaymentChange
-                                                    }
-                                                    placeholder="Enter payment amount"
+                                                    readOnly
+                                                    placeholder="Payment amount"
                                                     disabled={
                                                         paymentSubmitting
                                                     }
@@ -2302,6 +2354,11 @@ const WorkPermit = () => {
                                                 )}
 
                                             </div>
+
+
+                                                </>
+
+                                            )}
 
                                         </div>
 

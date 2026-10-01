@@ -7,6 +7,7 @@ import {
     FaFileAlt,
     FaExternalLinkAlt,
     FaUpload,
+    FaUsers,
 } from "react-icons/fa";
 
 import {
@@ -15,6 +16,7 @@ import {
     changeVisaApplicationStatus,
     uploadVisaApplicationVoucher,
     verifyVisaDocument,
+    getVisaApplicantsByApplicationId,
 } from "../../../api/BackendApi";
 
 import "./VisaApplicationIndex.css";
@@ -58,6 +60,21 @@ const VisaApplicationIndex = () => {
         useState(null);
 
     const [applicationDetailLoading, setApplicationDetailLoading] =
+        useState(false);
+
+    /* =========================================================
+       APPLICANTS MODAL
+    ========================================================= */
+
+    const [viewApplicantsModalOpen, setViewApplicantsModalOpen] =
+        useState(false);
+
+    const [viewApplicantsApplication, setViewApplicantsApplication] =
+        useState(null);
+
+    const [viewApplicants, setViewApplicants] = useState([]);
+
+    const [viewApplicantsLoading, setViewApplicantsLoading] =
         useState(false);
 
     /* =========================================================
@@ -379,6 +396,76 @@ const VisaApplicationIndex = () => {
     };
 
     /* =========================================================
+       VIEW APPLICANTS
+    ========================================================= */
+
+    const openViewApplicantsModal = async (application) => {
+
+        setOpenMenuId(null);
+        setViewApplicantsApplication(application);
+        setViewApplicants([]);
+        setViewApplicantsModalOpen(true);
+        setViewApplicantsLoading(true);
+
+        try {
+
+            const response =
+                await getVisaApplicantsByApplicationId(
+                    application.id
+                );
+
+            if (response.data?.status) {
+
+                const applicants =
+                    response.data?.data;
+
+                setViewApplicants(
+                    Array.isArray(applicants)
+                        ? applicants
+                        : applicants?.data || []
+                );
+
+            } else {
+
+                throw new Error(
+                    response.data?.message ||
+                    "Unable to fetch visa applicants."
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Visa applicants error:",
+                error
+            );
+
+            setViewApplicantsModalOpen(false);
+
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text:
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Unable to fetch visa applicants.",
+                confirmButtonColor: "#351255",
+            });
+
+        } finally {
+
+            setViewApplicantsLoading(false);
+        }
+    };
+
+    const closeViewApplicantsModal = () => {
+
+        setViewApplicantsModalOpen(false);
+        setViewApplicantsApplication(null);
+        setViewApplicants([]);
+    };
+
+    /* =========================================================
        VIEW DOCUMENTS
     ========================================================= */
 
@@ -401,8 +488,8 @@ const VisaApplicationIndex = () => {
              *
              * Your show API already loads:
              *
-             * documents.requirement
-             * documents.verifiedBy
+             * applicants.documents.requirement
+             * applicants.documents.verifiedBy
              */
 
             const response =
@@ -415,11 +502,19 @@ const VisaApplicationIndex = () => {
                 const detail =
                     response.data.data;
 
-                setViewDocuments(
-                    Array.isArray(detail?.documents)
-                        ? detail.documents
-                        : []
-                );
+                const documents = Array.isArray(detail?.applicants)
+                    ? detail.applicants.flatMap((applicant) =>
+                        Array.isArray(applicant?.documents)
+                            ? applicant.documents.map((document) => ({
+                                ...document,
+                                applicant_full_name: applicant.applicant_full_name,
+                                visa_applicant_id: applicant.id,
+                            }))
+                            : []
+                    )
+                    : [];
+
+                setViewDocuments(documents);
 
             } else {
 
@@ -476,6 +571,12 @@ const VisaApplicationIndex = () => {
         const newVerifiedStatus =
             !Boolean(document.is_verified);
 
+        setViewDocumentModalOpen(false);
+
+        await new Promise((resolve) =>
+            setTimeout(resolve, 50)
+        );
+
         const result = await Swal.fire({
 
             icon: "question",
@@ -531,20 +632,12 @@ const VisaApplicationIndex = () => {
 
             if (response.data?.status) {
 
-                setViewDocuments(
-                    (previous) =>
-                        previous.map(
-                            (item) =>
-                                item.id ===
-                                document.id
-                                    ? response
-                                          .data
-                                          .data
-                                    : item
-                        )
-                );
+                setViewDocumentModalOpen(false);
+                setViewDocumentApplication(null);
+                setViewDocuments([]);
+                setVerifyingDocumentId(null);
 
-                Swal.fire({
+                await Swal.fire({
 
                     icon: "success",
 
@@ -654,6 +747,18 @@ const VisaApplicationIndex = () => {
                                       }
                                     : item
                         )
+                );
+
+                setApplicationDetail((previous) =>
+                    previous && previous.id === application.id
+                        ? {
+                              ...previous,
+                              ...(response.data?.data || {}),
+                              status:
+                                  response.data?.data?.status ||
+                                  newStatus,
+                          }
+                        : previous
                 );
 
                 Swal.fire({
@@ -1008,19 +1113,11 @@ const VisaApplicationIndex = () => {
                                             </th>
 
                                             <th>
-                                                Applicant
-                                            </th>
-
-                                            <th>
                                                 Country
                                             </th>
 
                                             <th>
                                                 Visa Category
-                                            </th>
-
-                                            <th>
-                                                Passport No.
                                             </th>
 
                                             <th>
@@ -1054,7 +1151,7 @@ const VisaApplicationIndex = () => {
                                             <tr>
 
                                                 <td
-                                                    colSpan="11"
+                                                    colSpan="9"
                                                     className="table-message"
                                                 >
 
@@ -1071,7 +1168,7 @@ const VisaApplicationIndex = () => {
                                             <tr>
 
                                                 <td
-                                                    colSpan="11"
+                                                    colSpan="9"
                                                     className="table-message"
                                                 >
                                                     No visa applications found.
@@ -1115,28 +1212,6 @@ const VisaApplicationIndex = () => {
 
                                                         <td>
 
-                                                            <div className="applicant-info">
-
-                                                                <span className="applicant-name">
-
-                                                                    {application.applicant_full_name ||
-                                                                        "-"}
-
-                                                                </span>
-
-                                                                <span className="applicant-email">
-
-                                                                    {application.email ||
-                                                                        "-"}
-
-                                                                </span>
-
-                                                            </div>
-
-                                                        </td>
-
-                                                        <td>
-
                                                             {application
                                                                 ?.country
                                                                 ?.country_name ||
@@ -1152,13 +1227,6 @@ const VisaApplicationIndex = () => {
                                                                 application
                                                                     ?.visa_category
                                                                     ?.title ||
-                                                                "-"}
-
-                                                        </td>
-
-                                                        <td>
-
-                                                            {application.passport_number ||
                                                                 "-"}
 
                                                         </td>
@@ -1261,6 +1329,26 @@ const VisaApplicationIndex = () => {
 
                                                                             <span>
                                                                                 View Application
+                                                                            </span>
+
+                                                                        </button>
+
+                                                                        {/* VIEW APPLICANTS */}
+
+                                                                        <button
+                                                                            type="button"
+                                                                            className="kebab-menu-item"
+                                                                            onClick={() =>
+                                                                                openViewApplicantsModal(
+                                                                                    application
+                                                                                )
+                                                                            }
+                                                                        >
+
+                                                                            <FaUsers />
+
+                                                                            <span>
+                                                                                View Applicants
                                                                             </span>
 
                                                                         </button>
@@ -1548,123 +1636,6 @@ const VisaApplicationIndex = () => {
 
                                                         </div>
 
-                                                    </div>
-
-                                                </div>
-
-                                                {/* APPLICANT */}
-
-                                                <div className="detail-section">
-
-                                                    <h3>
-                                                        Applicant Information
-                                                    </h3>
-
-                                                    <div className="detail-grid">
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Full Name
-                                                            </span>
-
-                                                            <strong>
-                                                                {displayValue(
-                                                                    applicationDetail.applicant_full_name
-                                                                )}
-                                                            </strong>
-
-                                                        </div>
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Nationality
-                                                            </span>
-
-                                                            <strong>
-                                                                {displayValue(
-                                                                    applicationDetail.nationality
-                                                                )}
-                                                            </strong>
-
-                                                        </div>
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Email
-                                                            </span>
-
-                                                            <strong>
-                                                                {displayValue(
-                                                                    applicationDetail.email
-                                                                )}
-                                                            </strong>
-
-                                                        </div>
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Phone
-                                                            </span>
-
-                                                            <strong>
-
-                                                                {applicationDetail.country_code
-                                                                    ? `${applicationDetail.country_code} `
-                                                                    : ""}
-
-                                                                {applicationDetail.phone_number ||
-                                                                    "-"}
-
-                                                            </strong>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-                                                {/* PASSPORT */}
-
-                                                <div className="detail-section">
-
-                                                    <h3>
-                                                        Passport & Travel
-                                                    </h3>
-
-                                                    <div className="detail-grid">
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Passport Number
-                                                            </span>
-
-                                                            <strong>
-                                                                {displayValue(
-                                                                    applicationDetail.passport_number
-                                                                )}
-                                                            </strong>
-
-                                                        </div>
-
-                                                        <div className="detail-item">
-
-                                                            <span>
-                                                                Passport Expiry
-                                                            </span>
-
-                                                            <strong>
-                                                                {formatDate(
-                                                                    applicationDetail.passport_expiry_date
-                                                                )}
-                                                            </strong>
-
-                                                        </div>
-
                                                         <div className="detail-item">
 
                                                             <span>
@@ -1815,21 +1786,22 @@ const VisaApplicationIndex = () => {
                                                                         applicationDetail.status ===
                                                                         status
                                                                     }
-                                                                    onClick={() => {
-
+                                                                    onClick={() =>
                                                                         handleChangeApplicationStatus(
                                                                             applicationDetail,
                                                                             status
-                                                                        );
-
-                                                                        setApplicationDetail(
-                                                                            (
-                                                                                previous
-                                                                            ) => ({
-                                                                                ...previous,
-                                                                                status,
-                                                                            })
-                                                                        );
+                                                                        )
+                                                                    }
+                                                                    style={{
+                                                                        color:
+                                                                            applicationDetail.status ===
+                                                                            status
+                                                                                ? "#ffffff"
+                                                                                : "#351255",
+                                                                        fontSize:
+                                                                            "13px",
+                                                                        fontWeight:
+                                                                            600,
                                                                     }}
                                                                 >
 
@@ -1907,6 +1879,241 @@ const VisaApplicationIndex = () => {
                                             className="payment-cancel-button"
                                             onClick={
                                                 closeApplicationDetailModal
+                                            }
+                                        >
+                                            Close
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        )}
+
+                        {/* =================================================
+                            VIEW APPLICANTS MODAL
+                        ================================================= */}
+
+                        {viewApplicantsModalOpen && (
+
+                            <div
+                                className="payment-modal-overlay"
+                                onMouseDown={(e) => {
+
+                                    if (
+                                        e.target ===
+                                        e.currentTarget
+                                    ) {
+                                        closeViewApplicantsModal();
+                                    }
+                                }}
+                            >
+
+                                <div className="payment-modal view-payment-modal">
+
+                                    <div className="payment-modal-header">
+
+                                        <div>
+
+                                            <h2>
+                                                Visa Applicants
+                                            </h2>
+
+                                            <p>
+
+                                                {viewApplicantsApplication
+                                                    ?.application_number ||
+                                                    ""}
+
+                                            </p>
+
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            className="payment-modal-close"
+                                            onClick={
+                                                closeViewApplicantsModal
+                                            }
+                                        >
+                                            ×
+                                        </button>
+
+                                    </div>
+
+                                    <div className="payment-modal-body">
+
+                                        {viewApplicantsLoading ? (
+
+                                            <div className="modal-loading-state">
+
+                                                <div className="work-permit-loader"></div>
+
+                                                Loading visa applicants...
+
+                                            </div>
+
+                                        ) : viewApplicants.length === 0 ? (
+
+                                            <div className="modal-empty-state">
+
+                                                <FaUsers />
+
+                                                <h3>
+                                                    No Applicants Found
+                                                </h3>
+
+                                                <p>
+                                                    No applicants were found for this visa application.
+                                                </p>
+
+                                            </div>
+
+                                        ) : (
+
+                                            <div className="payment-records">
+
+                                                {viewApplicants.map(
+                                                    (
+                                                        applicant,
+                                                        index
+                                                    ) => (
+
+                                                        <div
+                                                            className="payment-record-card"
+                                                            key={
+                                                                applicant.id ||
+                                                                index
+                                                            }
+                                                        >
+
+                                                            <div className="payment-record-header">
+
+                                                                <div>
+
+                                                                    <span className="payment-record-label">
+                                                                        Applicant{" "}
+                                                                        {index + 1}
+                                                                    </span>
+
+                                                                    <h3>
+                                                                        {applicant.applicant_full_name ||
+                                                                            "-"}
+                                                                    </h3>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div className="detail-grid">
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Nationality
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {displayValue(
+                                                                            applicant.nationality
+                                                                        )}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Email
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {displayValue(
+                                                                            applicant.email
+                                                                        )}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Phone
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {applicant.country_code
+                                                                            ? `${applicant.country_code} `
+                                                                            : ""}
+                                                                        {applicant.phone_number ||
+                                                                            "-"}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Passport Number
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {displayValue(
+                                                                            applicant.passport_number
+                                                                        )}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Passport Expiry
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {formatDate(
+                                                                            applicant.passport_expiry_date
+                                                                        )}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Created
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {formatDateTime(
+                                                                            applicant.created_at
+                                                                        )}
+                                                                    </strong>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    )
+                                                )}
+
+                                            </div>
+
+                                        )}
+
+                                    </div>
+
+                                    <div className="payment-modal-footer">
+
+                                        <button
+                                            type="button"
+                                            className="payment-cancel-button"
+                                            onClick={
+                                                closeViewApplicantsModal
                                             }
                                         >
                                             Close
@@ -2084,6 +2291,18 @@ const VisaApplicationIndex = () => {
                                                                                 ?.title ||
                                                                             "-"}
 
+                                                                    </strong>
+
+                                                                </div>
+
+                                                                <div className="detail-item">
+
+                                                                    <span>
+                                                                        Applicant
+                                                                    </span>
+
+                                                                    <strong>
+                                                                        {document.applicant_full_name || "-"}
                                                                     </strong>
 
                                                                 </div>
