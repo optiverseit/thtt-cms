@@ -1357,3 +1357,168 @@ export const deleteInsurancePricingTier = (
         `/insurance-pricing-tiers/delete/${id}`
     );
 };
+
+// ==================== HOTELS ====================
+
+// Public active hotels - useful for dropdowns
+export const getHotels = () => {
+    return axiosInstance.get("/hotels");
+};
+
+// ==================== HOTELS CMS ====================
+
+export const getHotelsCms = (page = 1) => {
+    return axiosInstance.get(`/hotels/cms?page=${page}`);
+};
+
+export const createHotel = (data) => {
+    return axiosInstance.post("/hotels/store", data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updateHotel = (id, data) => {
+    data.append("_method", "PUT");
+
+    return axiosInstance.post(`/hotels/update/${id}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const changeHotelStatus = (id) => {
+    return axiosInstance.patch(`/hotels/${id}/status`);
+};
+
+export const deleteHotel = (id) => {
+    return axiosInstance.delete(`/hotels/delete/${id}`);
+};
+
+
+// ==================== HOTEL PRICING TIERS ====================
+
+export const getHotelPricingTiersCms = (page = 1) => {
+    return axiosInstance.get(`/hotel-pricing-tiers/cms?page=${page}`);
+};
+
+export const createHotelPricingTiers = (data) => {
+    return axiosInstance.post("/hotel-pricing-tiers/store", data);
+};
+
+export const updateHotelPricingTier = (id, data) => {
+    return axiosInstance.put(`/hotel-pricing-tiers/update/${id}`, data);
+};
+
+export const changeHotelPricingTierStatus = (id) => {
+    return axiosInstance.patch(`/hotel-pricing-tiers/${id}/status`);
+};
+
+export const deleteHotelPricingTier = (id) => {
+    return axiosInstance.delete(`/hotel-pricing-tiers/delete/${id}`);
+};
+
+
+// ==================== HOTEL BOOKINGS ====================
+
+export const getAllHotelBookingsCms = (page = 1) => {
+    return axiosInstance.get(`/hotel-bookings/cms?page=${page}`);
+};
+
+export const getHotelBookingByIdCms = (id) => {
+    return axiosInstance.get(`/hotel-bookings/show/${id}`);
+};
+
+export const changeHotelBookingStatusCms = (id, data) => {
+    return axiosInstance.patch(`/hotel-bookings/${id}/status`, data);
+};
+
+// ==================== HOTEL INFORMATION ====================
+
+export const getHotelInformationCms = (page = 1) => {
+    return axiosInstance.get(`/hotel-information/cms?page=${page}`);
+};
+
+export const createHotelInformation = (data) => {
+    return axiosInstance.post("/hotel-information/store", data);
+};
+
+export const updateHotelInformation = (id, data) => {
+    return axiosInstance.put(`/hotel-information/update/${id}`, data);
+};
+
+export const changeHotelInformationStatus = (id) => {
+    return axiosInstance.patch(`/hotel-information/${id}/status`);
+};
+
+export const deleteHotelInformation = (id) => {
+    return axiosInstance.delete(`/hotel-information/delete/${id}`);
+};
+
+// ==================== HOTEL POLICIES ====================
+
+export const getHotelPoliciesCms = (page = 1) => {
+    return axiosInstance.get(`/hotel-policies/cms?page=${page}`);
+};
+
+export const createHotelPolicies = (data) => {
+    return axiosInstance.post("/hotel-policies/store", data);
+};
+
+export const updateHotelPolicy = (id, data) => {
+    return axiosInstance.put(`/hotel-policies/update/${id}`, data);
+};
+
+export const changeHotelPolicyStatus = (id) => {
+    return axiosInstance.patch(`/hotel-policies/${id}/status`);
+};
+
+export const deleteHotelPolicy = (id) => {
+    return axiosInstance.delete(`/hotel-policies/delete/${id}`);
+};
+
+// ==================== HOTEL TESTIMONIALS ====================
+
+export const getHotelTestimonialsCms = (page = 1) => {
+    return axiosInstance.get(`/hotel-testimonials/cms?page=${page}`);
+};
+
+export const createHotelTestimonials = (data) => {
+    return axiosInstance.post("/hotel-testimonials/store", data);
+};
+
+export const updateHotelTestimonial = (id, data) => {
+    return axiosInstance.put(`/hotel-testimonials/update/${id}`, data);
+};
+
+export const changeHotelTestimonialStatus = (id) => {
+    return axiosInstance.patch(`/hotel-testimonials/${id}/status`);
+};
+
+export const deleteHotelTestimonial = (id) => {
+    return axiosInstance.delete(`/hotel-testimonials/delete/${id}`);
+};
+
+// ==================== HOTEL FAQS ====================
+
+export const getHotelFaqsCms = (page = 1) => {
+    return axiosInstance.get(`/hotel-faqs/cms?page=${page}`);
+};
+
+export const createHotelFaqs = (data) => {
+    return axiosInstance.post("/hotel-faqs/store", data);
+};
+
+export const updateHotelFaq = (id, data) => {
+    return axiosInstance.put(`/hotel-faqs/update/${id}`, data);
+};
+
+export const changeHotelFaqStatus = (id) => {
+    return axiosInstance.patch(`/hotel-faqs/${id}/status`);
+};
+
+export const deleteHotelFaq = (id) => {
+    return axiosInstance.delete(`/hotel-faqs/delete/${id}`);
+};

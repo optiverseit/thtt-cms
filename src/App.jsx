@@ -47,6 +47,13 @@ import InsuranceDocumentRequirement from './pages/Admin/Insurance/InsuranceDocum
 import InsuranceInformation from './pages/Admin/Insurance/InsuranceInformation';
 import InsuranceDynamicFields from './pages/Admin/Insurance/InsuranceDynamicFields';
 import InsurancePricingTier from './pages/Admin/Insurance/InsurancePricingTier';
+import HotelBooking from './pages/Admin/Hotel/HotelBooking';
+import HotelPricingTier from './pages/Admin/Hotel/HotelPricingTier';
+import HotelInformation from './pages/Admin/Hotel/HotelInformation';
+import HotelPolicy from './pages/Admin/Hotel/HotelPolicy';
+import HotelTestimonial from './pages/Admin/Hotel/HotelTestimonial';
+import HotelFaq from './pages/Admin/Hotel/HotelFaq';
+import Hotel from './pages/Admin/Hotel/Hotel';
 
 function App() {
 
@@ -414,6 +421,69 @@ function App() {
         />
 
 
+        {/* HOTEL SERVICE */}
+        <Route
+          path="/hotel-bookings"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <HotelBooking />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hotels"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Hotel />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hotel/pricing-tiers"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <HotelPricingTier />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hotel/informations"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <HotelInformation />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hotel/policies"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <HotelPolicy />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hotel/testimonials"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <HotelTestimonial />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hotel/faqs"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <HotelFaq />
+            </ProtectedRoute>
+          }
+        />
 
 
         {/* USERS */}

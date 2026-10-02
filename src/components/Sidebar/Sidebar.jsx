@@ -24,12 +24,22 @@ const Sidebar = () => {
   );
 
   const [insuranceOpen, setInsuranceOpen] = useState(
-    location.pathname.startsWith("/insurance-application") ||
-    location.pathname.startsWith("/insurance/information") ||
+    location.pathname.startsWith("/insurance-applications") ||
+    location.pathname.startsWith("/insurance/plan") ||
+    location.pathname.startsWith("/insurance/informations") ||
     location.pathname.startsWith("/insurance/documents") ||
-    location.pathname.startsWith("/insurance/pricing-tier") ||
+    location.pathname.startsWith("/insurance/pricing-tiers") ||
     location.pathname.startsWith("/insurance/dynamic-fields")
-    // location.pathname.startsWith("/work-permits/payment") ||
+  );
+
+  const [hotelOpen, setHotelOpen] = useState(
+    location.pathname.startsWith("/hotel-bookings") ||
+    location.pathname.startsWith("/hotels") ||
+    location.pathname.startsWith("/hotel/pricing-tiers") ||
+    location.pathname.startsWith("/hotel/informations") ||
+    location.pathname.startsWith("/hotel/policies") ||
+    location.pathname.startsWith("/hotel/testimonials") ||
+    location.pathname.startsWith("/hotel/faqs")
   );
 
   const [packageOpen, setPackageOpen] = useState(
@@ -89,12 +99,24 @@ const Sidebar = () => {
 
   const isInsuranceActive = () => {
     return (
-      location.pathname.startsWith("/insurance-application") ||
+      location.pathname.startsWith("/insurance-applications") ||
       location.pathname.startsWith("/insurance/plan") ||
-      location.pathname.startsWith("/insurance/information") ||
+      location.pathname.startsWith("/insurance/informations") ||
       location.pathname.startsWith("/insurance/documents") ||
-      location.pathname.startsWith("/insurance/pricing-tier") ||
+      location.pathname.startsWith("/insurance/pricing-tiers") ||
       location.pathname.startsWith("/insurance/dynamic-fields")
+    );
+  };
+
+  const isHotelActive = () => {
+    return (
+      location.pathname.startsWith("/hotel-bookings") ||
+      location.pathname.startsWith("/hotels") ||
+      location.pathname.startsWith("/hotel/pricing-tiers") ||
+      location.pathname.startsWith("/hotel/informations") ||
+      location.pathname.startsWith("/hotel/policies") ||
+      location.pathname.startsWith("/hotel/testimonials") ||
+      location.pathname.startsWith("/hotel/faqs")
     );
   };
 
@@ -424,7 +446,7 @@ const Sidebar = () => {
           <button
             className={`menu-item ${isInsuranceActive() ? "active" : ""
               }`}
-            onClick={() => setInsuranceOpen(!visaOpen)}
+            onClick={() => setInsuranceOpen(!insuranceOpen)}
           >
             <span className="menu-icon">◆</span>
             <span className="menu-label">Insurance Service</span>
@@ -485,6 +507,74 @@ const Sidebar = () => {
                 onClick={() => navigate("/insurance/dynamic-fields")}
               >
                 Dynamic Field
+              </button>
+            </div>
+          )}
+        </div>
+
+
+        {/* HOTEL SERVICE */}
+        <div className="sidebar-dropdown">
+          <button
+            className={`menu-item ${isHotelActive() ? "active" : ""}`}
+            onClick={() => setHotelOpen(!hotelOpen)}
+          >
+            <span className="menu-icon">◆</span>
+            <span className="menu-label">Hotel Service</span>
+            <span className={`dropdown-arrow ${hotelOpen ? "open" : ""}`}>
+              ▼
+            </span>
+          </button>
+
+          {hotelOpen && (
+            <div className="submenu">
+              <button
+                className={`submenu-item ${location.pathname === "/hotel-bookings" ? "active" : ""}`}
+                onClick={() => navigate("/hotel-bookings")}
+              >
+                All Hotel Bookings
+              </button>
+
+              <button
+                className={`submenu-item ${location.pathname === "/hotels" ? "active" : ""}`}
+                onClick={() => navigate("/hotels")}
+              >
+                Hotels
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/hotel/pricing-tiers") ? "active" : ""}`}
+                onClick={() => navigate("/hotel/pricing-tiers")}
+              >
+                Pricing Tiers
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/hotel/informations") ? "active" : ""}`}
+                onClick={() => navigate("/hotel/informations")}
+              >
+                Hotel Information
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/hotel/policies") ? "active" : ""}`}
+                onClick={() => navigate("/hotel/policies")}
+              >
+                Policies
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/hotel/testimonials") ? "active" : ""}`}
+                onClick={() => navigate("/hotel/testimonials")}
+              >
+                Testimonials
+              </button>
+
+              <button
+                className={`submenu-item ${isActive("/hotel/faqs") ? "active" : ""}`}
+                onClick={() => navigate("/hotel/faqs")}
+              >
+                FAQs
               </button>
             </div>
           )}
