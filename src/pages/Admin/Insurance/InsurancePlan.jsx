@@ -30,6 +30,7 @@ const createEmptyForm = () => ({
     description: "",
     processing_time: "",
     status: "ACTIVE",
+    tier: "",
     display_order: 0,
     image: null,
     imagePreview: null,
@@ -363,6 +364,11 @@ const InsurancePlan = () => {
         );
 
         formData.append(
+            "tier",
+            form.tier || ""
+        );
+
+        formData.append(
             "status",
             form.status || "ACTIVE"
         );
@@ -471,6 +477,8 @@ const InsurancePlan = () => {
             processing_time:
                 plan.processing_time || "",
 
+            tier: plan.tier || "",
+
             status:
                 plan.status || "ACTIVE",
 
@@ -539,6 +547,11 @@ const InsurancePlan = () => {
         formData.append(
             "processing_time",
             form.processing_time || ""
+        );
+
+        formData.append(
+            "tier",
+            form.tier || ""
         );
 
         formData.append(
@@ -1014,6 +1027,28 @@ const InsurancePlan = () => {
 
                                     </div>
 
+                                    {/* TIER */}
+
+                                    <div className="insurance-plan-form-group">
+
+                                        <label>
+                                            Tier
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            value={form.tier}
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    "tier",
+                                                    e.target.value
+                                                )
+                                            }
+                                            placeholder="e.g. Basic, Standard, Premium"
+                                            disabled={saving}
+                                        />
+                                    </div>
+
                                     {/* STATUS */}
 
                                     <div className="insurance-plan-form-group">
@@ -1282,6 +1317,10 @@ const InsurancePlan = () => {
                                             </th>
 
                                             <th>
+                                                Tier
+                                            </th>
+
+                                            <th>
                                                 Display Order
                                             </th>
 
@@ -1409,6 +1448,10 @@ const InsurancePlan = () => {
 
                                                         </td>
 
+                                                        <td>
+                                                            {plan.tier || "-"}
+                                                        </td>
+
                                                         {/* ORDER */}
 
                                                         <td>
@@ -1425,9 +1468,9 @@ const InsurancePlan = () => {
                                                             <button
                                                                 type="button"
                                                                 className={`insurance-plan-status ${plan.status ===
-                                                                        "ACTIVE"
-                                                                        ? "active"
-                                                                        : "inactive"
+                                                                    "ACTIVE"
+                                                                    ? "active"
+                                                                    : "inactive"
                                                                     }`}
                                                                 disabled={
                                                                     changingStatusId ===
