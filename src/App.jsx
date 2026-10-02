@@ -46,6 +46,7 @@ import InsurancePlan from './pages/Admin/Insurance/InsurancePlan';
 import InsuranceDocumentRequirement from './pages/Admin/Insurance/InsuranceDocumentRequirement';
 import InsuranceInformation from './pages/Admin/Insurance/InsuranceInformation';
 import InsuranceDynamicFields from './pages/Admin/Insurance/InsuranceDynamicFields';
+import InsurancePricingTier from './pages/Admin/Insurance/InsurancePricingTier';
 
 function App() {
 
@@ -380,7 +381,7 @@ function App() {
           path="/insurance/pricing-tiers"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
-              <VisaPricingTier />
+              <InsurancePricingTier />
             </ProtectedRoute>
           }
         />
