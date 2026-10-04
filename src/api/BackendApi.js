@@ -1522,3 +1522,39 @@ export const changeHotelFaqStatus = (id) => {
 export const deleteHotelFaq = (id) => {
     return axiosInstance.delete(`/hotel-faqs/delete/${id}`);
 };
+
+// ==================== DOCUMENT CMS APIs ====================
+
+export const getAllDocumentsCms = (page = 1) => {
+    return axiosInstance.get(`/documents/cms/all?page=${page}`);
+};
+
+export const getDocumentCmsById = (id) => {
+    return axiosInstance.get(`/documents/cms/${id}`);
+};
+
+export const createDocumentCms = (formData) => {
+    return axiosInstance.post("/documents/store", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updateDocumentCms = (id, formData) => {
+    return axiosInstance.post(`/documents/${id}/update`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updateDocumentStatusCms = (id, status) => {
+    return axiosInstance.put(`/documents/${id}/status`, {
+        status: status,
+    });
+};
+
+export const deleteDocumentCms = (id) => {
+    return axiosInstance.delete(`/documents/${id}`);
+};
