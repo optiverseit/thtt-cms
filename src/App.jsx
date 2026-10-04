@@ -55,6 +55,7 @@ import HotelTestimonial from './pages/Admin/Hotel/HotelTestimonial';
 import HotelFaq from './pages/Admin/Hotel/HotelFaq';
 import Hotel from './pages/Admin/Hotel/Hotel';
 import Document from './pages/Admin/Document/Document';
+import TravelGuide from './pages/Admin/TravelGuide/TravelGuide';
 
 function App() {
 
@@ -494,6 +495,16 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Document />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* TRAVEL GUIDE */}
+        <Route
+          path="/travel-guide"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <TravelGuide />
             </ProtectedRoute>
           }
         />

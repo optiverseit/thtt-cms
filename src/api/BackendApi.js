@@ -1558,3 +1558,31 @@ export const updateDocumentStatusCms = (id, status) => {
 export const deleteDocumentCms = (id) => {
     return axiosInstance.delete(`/documents/${id}`);
 };
+
+// ==================== TRAVEL GUIDE CMS ====================
+
+export const getAllTravelGuidesCms = (page = 1) => {
+    return axiosInstance.get(`/travel-guides/cms?page=${page}`);
+};
+
+export const getTravelGuideCmsById = (id) => {
+    return axiosInstance.get(`/travel-guides/cms/${id}`);
+};
+
+export const createTravelGuideCms = (data) => {
+    return axiosInstance.post("/travel-guides/store", data);
+};
+
+export const updateTravelGuideCms = (id, data) => {
+    return axiosInstance.put(`/travel-guides/${id}`, data);
+};
+
+export const updateTravelGuideStatusCms = (id, status) => {
+    return axiosInstance.put(`/travel-guides/${id}/status`, {
+        status,
+    });
+};
+
+export const deleteTravelGuideCms = (id) => {
+    return axiosInstance.delete(`/travel-guides/${id}`);
+};
