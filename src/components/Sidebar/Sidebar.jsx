@@ -581,6 +581,15 @@ const Sidebar = () => {
         </div>
 
         <button
+          className={`menu-item ${isActive("/documents") ? "active" : ""
+            }`}
+          onClick={() => navigate("/documents")}
+        >
+          <span className="menu-icon">♙</span>
+          <span>Documents</span>
+        </button>
+
+        <button
           className={`menu-item ${isActive("/users") ? "active" : ""
             }`}
           onClick={() => navigate("/users")}

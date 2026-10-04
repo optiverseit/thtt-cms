@@ -54,6 +54,7 @@ import HotelPolicy from './pages/Admin/Hotel/HotelPolicy';
 import HotelTestimonial from './pages/Admin/Hotel/HotelTestimonial';
 import HotelFaq from './pages/Admin/Hotel/HotelFaq';
 import Hotel from './pages/Admin/Hotel/Hotel';
+import Document from './pages/Admin/Document/Document';
 
 function App() {
 
@@ -485,6 +486,17 @@ function App() {
           }
         />
 
+
+        {/* DOCUMENTS */}
+
+        <Route
+          path="/documents"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Document />
+            </ProtectedRoute>
+          }
+        />
 
         {/* USERS */}
         <Route
