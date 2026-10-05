@@ -22,7 +22,6 @@ const PERMIT_TYPES = [
 ];
 
 const createEmptyTier = () => ({
-    permit_type: "",
     age_group_label: "",
     min_age: "",
     max_age: "",
@@ -36,6 +35,7 @@ const FeeTier = () => {
     const [feeTiers, setFeeTiers] = useState([]);
     const [countries, setCountries] = useState([]);
     const [countryId, setCountryId] = useState("");
+    const [permitType, setPermitType] = useState("");
     const [tierItems, setTierItems] = useState([createEmptyTier()]);
     const [editForm, setEditForm] = useState(createEmptyTier());
     const [editingId, setEditingId] = useState(null);
@@ -73,9 +73,7 @@ const FeeTier = () => {
             Swal.fire({
                 icon: "error",
                 title: "Failed",
-                text:
-                    error.response?.data?.message ||
-                    "Unable to load permit fee tiers.",
+                text: error.response?.data?.message || "Unable to load permit fee tiers.",
                 confirmButtonColor: "#351255",
             });
         } finally {
@@ -105,10 +103,7 @@ const FeeTier = () => {
 
     const removeTierRow = (index) => {
         if (tierItems.length === 1) return;
-
-        setTierItems(
-            tierItems.filter((_, i) => i !== index)
-        );
+        setTierItems(tierItems.filter((_, i) => i !== index));
     };
 
     const handleTierChange = (index, field, value) => {
@@ -124,29 +119,20 @@ const FeeTier = () => {
 
     const resetCreateForm = () => {
         setCountryId("");
+        setPermitType("");
         setTierItems([createEmptyTier()]);
     };
 
     const validateTier = (tier, index) => {
-        if (!tier.permit_type) {
-            return `Select permit type for tier ${index + 1}.`;
-        }
-
         if (!tier.age_group_label.trim()) {
             return `Enter age group label for tier ${index + 1}.`;
         }
 
-        if (
-            tier.min_age === "" ||
-            tier.max_age === ""
-        ) {
+        if (tier.min_age === "" || tier.max_age === "") {
             return `Enter minimum and maximum age for tier ${index + 1}.`;
         }
 
-        if (
-            Number(tier.max_age) <
-            Number(tier.min_age)
-        ) {
+        if (Number(tier.max_age) < Number(tier.min_age)) {
             return `Maximum age cannot be less than minimum age for tier ${index + 1}.`;
         }
 
@@ -175,6 +161,16 @@ const FeeTier = () => {
             return;
         }
 
+        if (!permitType) {
+            Swal.fire({
+                icon: "warning",
+                title: "Permit Type Required",
+                text: "Please select a permit type.",
+                confirmButtonColor: "#351255",
+            });
+            return;
+        }
+
         for (let i = 0; i < tierItems.length; i++) {
             const error = validateTier(tierItems[i], i);
 
@@ -191,8 +187,8 @@ const FeeTier = () => {
 
         const data = {
             country_id: Number(countryId),
+            permit_type: permitType,
             tiers: tierItems.map((tier) => ({
-                permit_type: tier.permit_type,
                 age_group_label: tier.age_group_label.trim(),
                 min_age: Number(tier.min_age),
                 max_age: Number(tier.max_age),
@@ -206,16 +202,13 @@ const FeeTier = () => {
         try {
             setSaving(true);
 
-            const response =
-                await createPermitFeeTiers(data);
+            const response = await createPermitFeeTiers(data);
 
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
                     title: "Fee Tiers Added",
-                    text:
-                        response.data.message ||
-                        "Permit fee tiers created successfully.",
+                    text: response.data.message || "Permit fee tiers created successfully.",
                     confirmButtonColor: "#351255",
                 });
 
@@ -230,12 +223,10 @@ const FeeTier = () => {
                 error.response?.data?.message ||
                 "Unable to create permit fee tiers.";
 
-            const validationErrors =
-                error.response?.data?.errors;
+            const validationErrors = error.response?.data?.errors;
 
             if (validationErrors) {
-                const firstError =
-                    Object.values(validationErrors)[0];
+                const firstError = Object.values(validationErrors)[0];
 
                 if (Array.isArray(firstError)) {
                     errorMessage = firstError[0];
@@ -255,27 +246,17 @@ const FeeTier = () => {
 
     const handleEdit = (tier) => {
         setEditingId(tier.id);
-
-        setCountryId(
-            tier.country_id?.toString() || ""
-        );
+        setCountryId(tier.country_id?.toString() || "");
+        setPermitType(tier.permit_type || "");
 
         setEditForm({
-            permit_type: tier.permit_type || "",
-            age_group_label:
-                tier.age_group_label || "",
-            min_age:
-                tier.min_age?.toString() || "",
-            max_age:
-                tier.max_age?.toString() || "",
-            welfare_fund_npr:
-                tier.welfare_fund_npr?.toString() || "",
-            ssf_contribution_npr:
-                tier.ssf_contribution_npr?.toString() || "",
-            insurance_premium_npr:
-                tier.insurance_premium_npr?.toString() || "",
-            service_fee_npr:
-                tier.service_fee_npr?.toString() || "",
+            age_group_label: tier.age_group_label || "",
+            min_age: tier.min_age?.toString() || "",
+            max_age: tier.max_age?.toString() || "",
+            welfare_fund_npr: tier.welfare_fund_npr?.toString() || "",
+            ssf_contribution_npr: tier.ssf_contribution_npr?.toString() || "",
+            insurance_premium_npr: tier.insurance_premium_npr?.toString() || "",
+            service_fee_npr: tier.service_fee_npr?.toString() || "",
         });
 
         window.scrollTo({
@@ -294,14 +275,24 @@ const FeeTier = () => {
     const cancelEdit = () => {
         setEditingId(null);
         setCountryId("");
+        setPermitType("");
         setEditForm(createEmptyTier());
     };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
 
-        const validationError =
-            validateTier(editForm, 0);
+        if (!permitType) {
+            Swal.fire({
+                icon: "warning",
+                title: "Permit Type Required",
+                text: "Please select a permit type.",
+                confirmButtonColor: "#351255",
+            });
+            return;
+        }
+
+        const validationError = validateTier(editForm, 0);
 
         if (validationError) {
             Swal.fire({
@@ -315,41 +306,26 @@ const FeeTier = () => {
 
         const data = {
             country_id: Number(countryId),
-            permit_type: editForm.permit_type,
-            age_group_label:
-                editForm.age_group_label.trim(),
+            permit_type: permitType,
+            age_group_label: editForm.age_group_label.trim(),
             min_age: Number(editForm.min_age),
             max_age: Number(editForm.max_age),
-            welfare_fund_npr: Number(
-                editForm.welfare_fund_npr
-            ),
-            ssf_contribution_npr: Number(
-                editForm.ssf_contribution_npr
-            ),
-            insurance_premium_npr: Number(
-                editForm.insurance_premium_npr
-            ),
-            service_fee_npr: Number(
-                editForm.service_fee_npr
-            ),
+            welfare_fund_npr: Number(editForm.welfare_fund_npr),
+            ssf_contribution_npr: Number(editForm.ssf_contribution_npr),
+            insurance_premium_npr: Number(editForm.insurance_premium_npr),
+            service_fee_npr: Number(editForm.service_fee_npr),
         };
 
         try {
             setSaving(true);
 
-            const response =
-                await updatePermitFeeTier(
-                    editingId,
-                    data
-                );
+            const response = await updatePermitFeeTier(editingId, data);
 
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
                     title: "Fee Tier Updated",
-                    text:
-                        response.data.message ||
-                        "Permit fee tier updated successfully.",
+                    text: response.data.message || "Permit fee tier updated successfully.",
                     confirmButtonColor: "#351255",
                 });
 
@@ -363,12 +339,10 @@ const FeeTier = () => {
                 error.response?.data?.message ||
                 "Unable to update permit fee tier.";
 
-            const validationErrors =
-                error.response?.data?.errors;
+            const validationErrors = error.response?.data?.errors;
 
             if (validationErrors) {
-                const firstError =
-                    Object.values(validationErrors)[0];
+                const firstError = Object.values(validationErrors)[0];
 
                 if (Array.isArray(firstError)) {
                     errorMessage = firstError[0];
@@ -414,19 +388,16 @@ const FeeTier = () => {
             setChangingStatusId(tier.id);
 
             const response =
-                await changePermitFeeTierStatus(
-                    tier.id
-                );
+                await changePermitFeeTierStatus(tier.id);
 
             if (response.data.status) {
                 setFeeTiers((previous) =>
                     previous.map((item) =>
                         item.id === tier.id
                             ? {
-                                  ...item,
-                                  status:
-                                      response.data.data.status,
-                              }
+                                ...item,
+                                status: response.data.data.status,
+                            }
                             : item
                     )
                 );
@@ -475,8 +446,7 @@ const FeeTier = () => {
         try {
             setDeletingId(id);
 
-            const response =
-                await deletePermitFeeTier(id);
+            const response = await deletePermitFeeTier(id);
 
             if (response.data.status) {
                 await Swal.fire({
@@ -519,13 +489,12 @@ const FeeTier = () => {
         );
     };
 
-    const getPermitTypeLabel = (permitType) => {
+    const getPermitTypeLabel = (type) => {
         return (
             PERMIT_TYPES.find(
-                (type) =>
-                    type.value === permitType
+                (item) => item.value === type
             )?.label ||
-            permitType ||
+            type ||
             "N/A"
         );
     };
@@ -539,22 +508,16 @@ const FeeTier = () => {
 
                 <main className="dashboard-content">
                     <div className="fee-tier-page">
-
                         <div className="fee-tier-header">
                             <div>
-                                <h1>
-                                    Permit Fee Tiers
-                                </h1>
+                                <h1>Permit Fee Tiers</h1>
                                 <p>
-                                    Manage age-based work
-                                    permit fees for each
-                                    country and permit type.
+                                    Manage age-based work permit fees for each country and permit type.
                                 </p>
                             </div>
                         </div>
 
                         <div className="fee-tier-form-card">
-
                             <div className="fee-tier-card-header">
                                 <h2>
                                     {editingId
@@ -565,7 +528,7 @@ const FeeTier = () => {
                                 <p>
                                     {editingId
                                         ? "Update the selected permit fee tier."
-                                        : "Add multiple age-based fee tiers for a country."}
+                                        : "Select a country and permit type, then add multiple age-based fee tiers."}
                                 </p>
                             </div>
 
@@ -574,53 +537,42 @@ const FeeTier = () => {
                                     className="fee-tier-edit-form"
                                     onSubmit={handleUpdate}
                                 >
+                                    <div className="fee-tier-country-section">
+                                        <div className="fee-tier-form-group">
+                                            <label>
+                                                Country
+                                                <span className="required">*</span>
+                                            </label>
 
-                                    <div className="fee-tier-form-group fee-tier-country-field">
-                                        <label>
-                                            Country
-                                            <span className="required">
-                                                *
-                                            </span>
-                                        </label>
+                                            <select
+                                                value={countryId}
+                                                disabled
+                                            >
+                                                <option value="">
+                                                    Select Country
+                                                </option>
 
-                                        <select
-                                            value={countryId}
-                                            disabled
-                                        >
-                                            <option value="">
-                                                Select Country
-                                            </option>
-
-                                            {countries.map(
-                                                (country) => (
+                                                {countries.map((country) => (
                                                     <option
                                                         key={country.id}
                                                         value={country.id}
                                                     >
                                                         {country.country_name}
                                                     </option>
-                                                )
-                                            )}
-                                        </select>
-                                    </div>
-
-                                    <div className="fee-tier-edit-grid">
+                                                ))}
+                                            </select>
+                                        </div>
 
                                         <div className="fee-tier-form-group">
                                             <label>
                                                 Permit Type
-                                                <span className="required">
-                                                    *
-                                                </span>
+                                                <span className="required">*</span>
                                             </label>
 
                                             <select
-                                                value={editForm.permit_type}
+                                                value={permitType}
                                                 onChange={(e) =>
-                                                    handleEditChange(
-                                                        "permit_type",
-                                                        e.target.value
-                                                    )
+                                                    setPermitType(e.target.value)
                                                 }
                                                 disabled={saving}
                                             >
@@ -628,25 +580,23 @@ const FeeTier = () => {
                                                     Select Permit Type
                                                 </option>
 
-                                                {PERMIT_TYPES.map(
-                                                    (type) => (
-                                                        <option
-                                                            key={type.value}
-                                                            value={type.value}
-                                                        >
-                                                            {type.label}
-                                                        </option>
-                                                    )
-                                                )}
+                                                {PERMIT_TYPES.map((type) => (
+                                                    <option
+                                                        key={type.value}
+                                                        value={type.value}
+                                                    >
+                                                        {type.label}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
+                                    </div>
 
+                                    <div className="fee-tier-edit-grid">
                                         <div className="fee-tier-form-group">
                                             <label>
                                                 Age Group Label
-                                                <span className="required">
-                                                    *
-                                                </span>
+                                                <span className="required">*</span>
                                             </label>
 
                                             <input
@@ -666,9 +616,7 @@ const FeeTier = () => {
                                         <div className="fee-tier-form-group">
                                             <label>
                                                 Min Age
-                                                <span className="required">
-                                                    *
-                                                </span>
+                                                <span className="required">*</span>
                                             </label>
 
                                             <input
@@ -688,9 +636,7 @@ const FeeTier = () => {
                                         <div className="fee-tier-form-group">
                                             <label>
                                                 Max Age
-                                                <span className="required">
-                                                    *
-                                                </span>
+                                                <span className="required">*</span>
                                             </label>
 
                                             <input
@@ -708,9 +654,7 @@ const FeeTier = () => {
                                         </div>
 
                                         <div className="fee-tier-form-group">
-                                            <label>
-                                                Welfare Fund (NPR)
-                                            </label>
+                                            <label>Welfare Fund (NPR)</label>
 
                                             <input
                                                 type="number"
@@ -728,9 +672,7 @@ const FeeTier = () => {
                                         </div>
 
                                         <div className="fee-tier-form-group">
-                                            <label>
-                                                SSF Contribution (NPR)
-                                            </label>
+                                            <label>SSF Contribution (NPR)</label>
 
                                             <input
                                                 type="number"
@@ -748,9 +690,7 @@ const FeeTier = () => {
                                         </div>
 
                                         <div className="fee-tier-form-group">
-                                            <label>
-                                                Insurance Premium (NPR)
-                                            </label>
+                                            <label>Insurance Premium (NPR)</label>
 
                                             <input
                                                 type="number"
@@ -768,9 +708,7 @@ const FeeTier = () => {
                                         </div>
 
                                         <div className="fee-tier-form-group">
-                                            <label>
-                                                Service Fee (NPR)
-                                            </label>
+                                            <label>Service Fee (NPR)</label>
 
                                             <input
                                                 type="number"
@@ -786,11 +724,9 @@ const FeeTier = () => {
                                                 disabled={saving}
                                             />
                                         </div>
-
                                     </div>
 
                                     <div className="fee-tier-form-buttons">
-
                                         <button
                                             type="button"
                                             className="fee-tier-cancel-btn"
@@ -810,29 +746,21 @@ const FeeTier = () => {
                                                 ? "Saving..."
                                                 : "Update Fee Tier"}
                                         </button>
-
                                     </div>
-
                                 </form>
                             ) : (
                                 <form onSubmit={handleCreate}>
-
                                     <div className="fee-tier-country-section">
-
                                         <div className="fee-tier-form-group">
                                             <label>
                                                 Country
-                                                <span className="required">
-                                                    *
-                                                </span>
+                                                <span className="required">*</span>
                                             </label>
 
                                             <select
                                                 value={countryId}
                                                 onChange={(e) =>
-                                                    setCountryId(
-                                                        e.target.value
-                                                    )
+                                                    setCountryId(e.target.value)
                                                 }
                                                 disabled={saving}
                                             >
@@ -840,258 +768,224 @@ const FeeTier = () => {
                                                     Select Country
                                                 </option>
 
-                                                {countries.map(
-                                                    (country) => (
-                                                        <option
-                                                            key={country.id}
-                                                            value={country.id}
-                                                        >
-                                                            {country.country_name}
-                                                        </option>
-                                                    )
-                                                )}
+                                                {countries.map((country) => (
+                                                    <option
+                                                        key={country.id}
+                                                        value={country.id}
+                                                    >
+                                                        {country.country_name}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
 
+                                        <div className="fee-tier-form-group">
+                                            <label>
+                                                Permit Type
+                                                <span className="required">*</span>
+                                            </label>
+
+                                            <select
+                                                value={permitType}
+                                                onChange={(e) =>
+                                                    setPermitType(e.target.value)
+                                                }
+                                                disabled={saving}
+                                            >
+                                                <option value="">
+                                                    Select Permit Type
+                                                </option>
+
+                                                {PERMIT_TYPES.map((type) => (
+                                                    <option
+                                                        key={type.value}
+                                                        value={type.value}
+                                                    >
+                                                        {type.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
 
                                     <div className="fee-tier-items-list">
-
-                                        {tierItems.map(
-                                            (tier, index) => (
-                                                <div
-                                                    className="fee-tier-item-row"
-                                                    key={index}
-                                                >
-
-                                                    <div className="fee-tier-number">
-                                                        {index + 1}
-                                                    </div>
-
-                                                    <div className="fee-tier-fields">
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                Permit Type
-                                                            </label>
-
-                                                            <select
-                                                                value={tier.permit_type}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "permit_type",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                disabled={saving}
-                                                            >
-                                                                <option value="">
-                                                                    Select Permit Type
-                                                                </option>
-
-                                                                {PERMIT_TYPES.map(
-                                                                    (type) => (
-                                                                        <option
-                                                                            key={type.value}
-                                                                            value={type.value}
-                                                                        >
-                                                                            {type.label}
-                                                                        </option>
-                                                                    )
-                                                                )}
-                                                            </select>
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group fee-tier-label-field">
-                                                            <label>
-                                                                Age Group Label
-                                                            </label>
-
-                                                            <input
-                                                                type="text"
-                                                                value={tier.age_group_label}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "age_group_label",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                placeholder="e.g. Age 18 - 35"
-                                                                disabled={saving}
-                                                            />
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                Min Age
-                                                            </label>
-
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                value={tier.min_age}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "min_age",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                disabled={saving}
-                                                            />
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                Max Age
-                                                            </label>
-
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                value={tier.max_age}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "max_age",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                disabled={saving}
-                                                            />
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                Welfare Fund
-                                                            </label>
-
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                step="0.01"
-                                                                value={tier.welfare_fund_npr}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "welfare_fund_npr",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                placeholder="NPR"
-                                                                disabled={saving}
-                                                            />
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                SSF
-                                                            </label>
-
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                step="0.01"
-                                                                value={tier.ssf_contribution_npr}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "ssf_contribution_npr",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                placeholder="NPR"
-                                                                disabled={saving}
-                                                            />
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                Insurance
-                                                            </label>
-
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                step="0.01"
-                                                                value={tier.insurance_premium_npr}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "insurance_premium_npr",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                placeholder="NPR"
-                                                                disabled={saving}
-                                                            />
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                Service Fee
-                                                            </label>
-
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                step="0.01"
-                                                                value={tier.service_fee_npr}
-                                                                onChange={(e) =>
-                                                                    handleTierChange(
-                                                                        index,
-                                                                        "service_fee_npr",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                placeholder="NPR"
-                                                                disabled={saving}
-                                                            />
-                                                        </div>
-
-                                                        <div className="fee-tier-form-group">
-                                                            <label>
-                                                                Total
-                                                            </label>
-
-                                                            <div className="fee-tier-total-preview">
-                                                                NPR{" "}
-                                                                {getTotal(
-                                                                    tier
-                                                                ).toLocaleString()}
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-                                                    <button
-                                                        type="button"
-                                                        className="fee-tier-remove-btn"
-                                                        onClick={() =>
-                                                            removeTierRow(
-                                                                index
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            tierItems.length ===
-                                                                1 ||
-                                                            saving
-                                                        }
-                                                        title="Remove Fee Tier"
-                                                    >
-                                                        <FaTimes />
-                                                    </button>
-
+                                        {tierItems.map((tier, index) => (
+                                            <div
+                                                className="fee-tier-item-row"
+                                                key={index}
+                                            >
+                                                <div className="fee-tier-number">
+                                                    {index + 1}
                                                 </div>
-                                            )
-                                        )}
 
+                                                <div className="fee-tier-fields">
+                                                    <div className="fee-tier-form-group fee-tier-label-field">
+                                                        <label>
+                                                            Age Group Label
+                                                        </label>
+
+                                                        <input
+                                                            type="text"
+                                                            value={tier.age_group_label}
+                                                            onChange={(e) =>
+                                                                handleTierChange(
+                                                                    index,
+                                                                    "age_group_label",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            placeholder="e.g. Age 18 - 35"
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <div className="fee-tier-form-group">
+                                                        <label>Min Age</label>
+
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            value={tier.min_age}
+                                                            onChange={(e) =>
+                                                                handleTierChange(
+                                                                    index,
+                                                                    "min_age",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <div className="fee-tier-form-group">
+                                                        <label>Max Age</label>
+
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            value={tier.max_age}
+                                                            onChange={(e) =>
+                                                                handleTierChange(
+                                                                    index,
+                                                                    "max_age",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <div className="fee-tier-form-group">
+                                                        <label>Welfare Fund</label>
+
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value={tier.welfare_fund_npr}
+                                                            onChange={(e) =>
+                                                                handleTierChange(
+                                                                    index,
+                                                                    "welfare_fund_npr",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            placeholder="NPR"
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <div className="fee-tier-form-group">
+                                                        <label>SSF</label>
+
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value={tier.ssf_contribution_npr}
+                                                            onChange={(e) =>
+                                                                handleTierChange(
+                                                                    index,
+                                                                    "ssf_contribution_npr",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            placeholder="NPR"
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <div className="fee-tier-form-group">
+                                                        <label>Insurance</label>
+
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value={tier.insurance_premium_npr}
+                                                            onChange={(e) =>
+                                                                handleTierChange(
+                                                                    index,
+                                                                    "insurance_premium_npr",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            placeholder="NPR"
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <div className="fee-tier-form-group">
+                                                        <label>Service Fee</label>
+
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value={tier.service_fee_npr}
+                                                            onChange={(e) =>
+                                                                handleTierChange(
+                                                                    index,
+                                                                    "service_fee_npr",
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            placeholder="NPR"
+                                                            disabled={saving}
+                                                        />
+                                                    </div>
+
+                                                    <div className="fee-tier-form-group">
+                                                        <label>Total</label>
+
+                                                        <div className="fee-tier-total-preview">
+                                                            NPR{" "}
+                                                            {getTotal(
+                                                                tier
+                                                            ).toLocaleString()}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    className="fee-tier-remove-btn"
+                                                    onClick={() =>
+                                                        removeTierRow(index)
+                                                    }
+                                                    disabled={
+                                                        tierItems.length === 1 ||
+                                                        saving
+                                                    }
+                                                    title="Remove Fee Tier"
+                                                >
+                                                    <FaTimes />
+                                                </button>
+                                            </div>
+                                        ))}
                                     </div>
 
                                     <div className="fee-tier-create-actions">
-
                                         <button
                                             type="button"
                                             className="fee-tier-add-more-btn"
@@ -1112,20 +1006,14 @@ const FeeTier = () => {
                                                 ? "Saving..."
                                                 : "Save Fee Tiers"}
                                         </button>
-
                                     </div>
-
                                 </form>
                             )}
-
                         </div>
 
                         <div className="fee-tier-table-card">
-
                             <div className="fee-tier-card-header">
-                                <h2>
-                                    All Permit Fee Tiers
-                                </h2>
+                                <h2>All Permit Fee Tiers</h2>
                             </div>
 
                             {loading ? (
@@ -1139,9 +1027,7 @@ const FeeTier = () => {
                             ) : (
                                 <>
                                     <div className="fee-tier-table-wrapper">
-
                                         <table className="fee-tier-table">
-
                                             <thead>
                                                 <tr>
                                                     <th>S.N.</th>
@@ -1160,161 +1046,152 @@ const FeeTier = () => {
                                             </thead>
 
                                             <tbody>
-                                                {feeTiers.map(
-                                                    (tier, index) => (
-                                                        <tr key={tier.id}>
+                                                {feeTiers.map((tier, index) => (
+                                                    <tr key={tier.id}>
+                                                        <td>
+                                                            {(page - 1) * 10 +
+                                                                index +
+                                                                1}
+                                                        </td>
 
-                                                            <td>
-                                                                {(page - 1) *
-                                                                    10 +
-                                                                    index +
-                                                                    1}
-                                                            </td>
+                                                        <td>
+                                                            <span className="fee-tier-country-name">
+                                                                {tier.country
+                                                                    ?.country_name ||
+                                                                    tier.country_name ||
+                                                                    "N/A"}
+                                                            </span>
+                                                        </td>
 
-                                                            <td>
-                                                                <span className="fee-tier-country-name">
-                                                                    {tier.country
-                                                                        ?.country_name ||
-                                                                        tier.country_name ||
-                                                                        "N/A"}
-                                                                </span>
-                                                            </td>
+                                                        <td>
+                                                            {getPermitTypeLabel(
+                                                                tier.permit_type
+                                                            )}
+                                                        </td>
 
-                                                            <td>
-                                                                {getPermitTypeLabel(
-                                                                    tier.permit_type
-                                                                )}
-                                                            </td>
+                                                        <td>
+                                                            {tier.age_group_label}
+                                                        </td>
 
-                                                            <td>
-                                                                {tier.age_group_label}
-                                                            </td>
+                                                        <td>
+                                                            <span className="fee-tier-age">
+                                                                {tier.min_age} -{" "}
+                                                                {tier.max_age}
+                                                            </span>
+                                                        </td>
 
-                                                            <td>
-                                                                <span className="fee-tier-age">
-                                                                    {tier.min_age} -{" "}
-                                                                    {tier.max_age}
-                                                                </span>
-                                                            </td>
+                                                        <td>
+                                                            NPR{" "}
+                                                            {Number(
+                                                                tier.welfare_fund_npr ||
+                                                                    0
+                                                            ).toLocaleString()}
+                                                        </td>
 
-                                                            <td>
+                                                        <td>
+                                                            NPR{" "}
+                                                            {Number(
+                                                                tier.ssf_contribution_npr ||
+                                                                    0
+                                                            ).toLocaleString()}
+                                                        </td>
+
+                                                        <td>
+                                                            NPR{" "}
+                                                            {Number(
+                                                                tier.insurance_premium_npr ||
+                                                                    0
+                                                            ).toLocaleString()}
+                                                        </td>
+
+                                                        <td>
+                                                            NPR{" "}
+                                                            {Number(
+                                                                tier.service_fee_npr ||
+                                                                    0
+                                                            ).toLocaleString()}
+                                                        </td>
+
+                                                        <td>
+                                                            <strong className="fee-tier-total">
                                                                 NPR{" "}
                                                                 {Number(
-                                                                    tier.welfare_fund_npr ||
-                                                                        0
+                                                                    tier.total_cost_npr ||
+                                                                        getTotal(
+                                                                            tier
+                                                                        )
                                                                 ).toLocaleString()}
-                                                            </td>
+                                                            </strong>
+                                                        </td>
 
-                                                            <td>
-                                                                NPR{" "}
-                                                                {Number(
-                                                                    tier.ssf_contribution_npr ||
-                                                                        0
-                                                                ).toLocaleString()}
-                                                            </td>
-
-                                                            <td>
-                                                                NPR{" "}
-                                                                {Number(
-                                                                    tier.insurance_premium_npr ||
-                                                                        0
-                                                                ).toLocaleString()}
-                                                            </td>
-
-                                                            <td>
-                                                                NPR{" "}
-                                                                {Number(
-                                                                    tier.service_fee_npr ||
-                                                                        0
-                                                                ).toLocaleString()}
-                                                            </td>
-
-                                                            <td>
-                                                                <strong className="fee-tier-total">
-                                                                    NPR{" "}
-                                                                    {Number(
-                                                                        tier.total_cost_npr ||
-                                                                            getTotal(
-                                                                                tier
-                                                                            )
-                                                                    ).toLocaleString()}
-                                                                </strong>
-                                                            </td>
-
-                                                            <td>
-                                                                <span
-                                                                    className={`fee-tier-status ${
-                                                                        tier.status ===
-                                                                        "ACTIVE"
-                                                                            ? "fee-tier-status-active"
-                                                                            : "fee-tier-status-inactive"
-                                                                    } ${
-                                                                        changingStatusId ===
-                                                                        tier.id
-                                                                            ? "fee-tier-status-changing"
-                                                                            : ""
-                                                                    }`}
-                                                                    onClick={() => {
-                                                                        if (
-                                                                            changingStatusId !==
-                                                                            tier.id
-                                                                        ) {
-                                                                            handleStatusChange(
-                                                                                tier
-                                                                            );
-                                                                        }
-                                                                    }}
-                                                                >
-                                                                    {changingStatusId ===
+                                                        <td>
+                                                            <span
+                                                                className={`fee-tier-status ${
+                                                                    tier.status ===
+                                                                    "ACTIVE"
+                                                                        ? "fee-tier-status-active"
+                                                                        : "fee-tier-status-inactive"
+                                                                } ${
+                                                                    changingStatusId ===
                                                                     tier.id
-                                                                        ? "UPDATING..."
-                                                                        : tier.status}
-                                                                </span>
-                                                            </td>
+                                                                        ? "fee-tier-status-changing"
+                                                                        : ""
+                                                                }`}
+                                                                onClick={() => {
+                                                                    if (
+                                                                        changingStatusId !==
+                                                                        tier.id
+                                                                    ) {
+                                                                        handleStatusChange(
+                                                                            tier
+                                                                        );
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {changingStatusId ===
+                                                                tier.id
+                                                                    ? "UPDATING..."
+                                                                    : tier.status}
+                                                            </span>
+                                                        </td>
 
-                                                            <td>
-                                                                <div className="fee-tier-actions">
+                                                        <td>
+                                                            <div className="fee-tier-actions">
+                                                                <button
+                                                                    type="button"
+                                                                    className="fee-tier-edit-btn"
+                                                                    onClick={() =>
+                                                                        handleEdit(
+                                                                            tier
+                                                                        )
+                                                                    }
+                                                                    title="Edit"
+                                                                >
+                                                                    <FaPen />
+                                                                </button>
 
-                                                                    <button
-                                                                        type="button"
-                                                                        className="fee-tier-edit-btn"
-                                                                        onClick={() =>
-                                                                            handleEdit(
-                                                                                tier
-                                                                            )
-                                                                        }
-                                                                        title="Edit"
-                                                                    >
-                                                                        <FaPen />
-                                                                    </button>
-
-                                                                    <button
-                                                                        type="button"
-                                                                        className="fee-tier-delete-btn"
-                                                                        onClick={() =>
-                                                                            handleDelete(
-                                                                                tier.id
-                                                                            )
-                                                                        }
-                                                                        disabled={
-                                                                            deletingId ===
+                                                                <button
+                                                                    type="button"
+                                                                    className="fee-tier-delete-btn"
+                                                                    onClick={() =>
+                                                                        handleDelete(
                                                                             tier.id
-                                                                        }
-                                                                        title="Delete"
-                                                                    >
-                                                                        <FaTrash />
-                                                                    </button>
-
-                                                                </div>
-                                                            </td>
-
-                                                        </tr>
-                                                    )
-                                                )}
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        deletingId ===
+                                                                        tier.id
+                                                                    }
+                                                                    title="Delete"
+                                                                >
+                                                                    <FaTrash />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                             </tbody>
-
                                         </table>
-
                                     </div>
 
                                     <Pagination
@@ -1324,9 +1201,7 @@ const FeeTier = () => {
                                     />
                                 </>
                             )}
-
                         </div>
-
                     </div>
                 </main>
             </div>

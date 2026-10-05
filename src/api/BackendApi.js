@@ -490,7 +490,7 @@ export const createPermitFeeTiers = (data) => {
 
 export const updatePermitFeeTier = (id, data) => {
     return axiosInstance.put(
-        `/permit-fee-tiers/${id}`,
+        `/permit-fee-tiers/update/${id}`,
         data
     );
 };
