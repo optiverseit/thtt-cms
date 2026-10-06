@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { FaTrash, FaEye, FaTimes, FaExternalLinkAlt } from "react-icons/fa";
+
+import {
+    FaTrash,
+    FaEye,
+    FaTimes,
+    FaExternalLinkAlt,
+} from "react-icons/fa";
+
 import Swal from "sweetalert2";
 
 import {
@@ -22,48 +29,83 @@ const Booking = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalBookings, setTotalBookings] = useState(0);
 
+    // HELI DOCUMENT MODAL
     const [showDocumentModal, setShowDocumentModal] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [heliDocuments, setHeliDocuments] = useState([]);
     const [documentLoading, setDocumentLoading] = useState(false);
 
+    // PACKAGE DETAIL MODAL
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [selectedDetailBooking, setSelectedDetailBooking] = useState(null);
+
+    // =========================================================
+    // FETCH BOOKINGS
+    // =========================================================
+
     const fetchBookings = async () => {
+
         try {
+
             setLoading(true);
 
             const response = await getAllBookingsCms(page);
 
             if (response.data?.status) {
+
                 setBookings(response.data.data.data || []);
-                setTotalPages(response.data.data.last_page || 1);
-                setTotalBookings(response.data.data.total || 0);
+
+                setTotalPages(
+                    response.data.data.last_page || 1
+                );
+
+                setTotalBookings(
+                    response.data.data.total || 0
+                );
             }
 
         } catch (error) {
-            console.error("Booking fetch error:", error);
+
+            console.error(
+                "Booking fetch error:",
+                error
+            );
 
             Swal.fire({
                 icon: "error",
                 title: "Failed",
-                text: error.response?.data?.message || "Unable to fetch bookings.",
+                text:
+                    error.response?.data?.message ||
+                    "Unable to fetch bookings.",
                 confirmButtonColor: "#351255",
             });
 
         } finally {
+
             setLoading(false);
         }
     };
 
     useEffect(() => {
+
         fetchBookings();
+
     }, [page]);
+
+    // =========================================================
+    // DELETE BOOKING
+    // KEEPING THE ORIGINAL DELETE FLOW
+    // =========================================================
 
     const handleDelete = async (booking) => {
 
         const result = await Swal.fire({
             icon: "warning",
             title: "Delete Booking?",
-            text: `Are you sure you want to delete "${booking.booking_reference || `Booking #${booking.id}`}"?`,
+            text: `Are you sure you want to delete "${
+                booking.booking_reference ||
+                `Booking #${booking.id}`
+            }"?`,
             showCancelButton: true,
             confirmButtonText: "Yes, Delete",
             cancelButtonText: "Cancel",
@@ -75,55 +117,103 @@ const Booking = () => {
 
         try {
 
-            const response = await deleteBooking(booking.id);
+            const response = await deleteBooking(
+                booking.id
+            );
 
             if (response.data?.status) {
 
                 await Swal.fire({
                     icon: "success",
                     title: "Deleted",
-                    text: response.data?.message || "Booking deleted successfully.",
+                    text:
+                        response.data?.message ||
+                        "Booking deleted successfully.",
                     confirmButtonColor: "#351255",
                 });
 
-                if (bookings.length === 1 && page > 1) {
-                    setPage((prev) => prev - 1);
+                if (
+                    bookings.length === 1 &&
+                    page > 1
+                ) {
+
+                    setPage(
+                        (prev) => prev - 1
+                    );
+
                 } else {
+
                     fetchBookings();
                 }
             }
 
         } catch (error) {
 
-            console.error("Booking delete error:", error);
+            console.error(
+                "Booking delete error:",
+                error
+            );
 
             Swal.fire({
                 icon: "error",
                 title: "Delete Failed",
-                text: error.response?.data?.message || "Unable to delete booking.",
+                text:
+                    error.response?.data?.message ||
+                    "Unable to delete booking.",
                 confirmButtonColor: "#351255",
             });
         }
     };
 
+    // =========================================================
+    // PACKAGE VIEW DETAIL
+    // =========================================================
+
+    const handleViewDetail = (booking) => {
+
+        setSelectedDetailBooking(booking);
+        setShowDetailModal(true);
+    };
+
+    const closeDetailModal = () => {
+
+        setShowDetailModal(false);
+        setSelectedDetailBooking(null);
+    };
+
+    // =========================================================
+    // HELI VIEW DETAIL
+    // SAME EXISTING DOCUMENT FLOW
+    // =========================================================
+
     const handleViewDocuments = async (booking) => {
+
         try {
+
             setSelectedBooking(booking);
             setShowDocumentModal(true);
             setDocumentLoading(true);
             setHeliDocuments([]);
 
-            const response = await getHeliBookingDocuments(
-                booking.id,
-                booking.package_id
-            );
+            const response =
+                await getHeliBookingDocuments(
+                    booking.id,
+                    booking.package_id
+                );
 
             if (response.data?.status) {
-                setHeliDocuments(response.data.data || []);
+
+                setHeliDocuments(
+                    response.data.data || []
+                );
             }
 
         } catch (error) {
-            console.error("Heli document fetch error:", error);
+
+            console.error(
+                "Heli document fetch error:",
+                error
+            );
 
             Swal.fire({
                 icon: "error",
@@ -135,42 +225,69 @@ const Booking = () => {
             });
 
         } finally {
+
             setDocumentLoading(false);
         }
     };
 
     const closeDocumentModal = () => {
+
         setShowDocumentModal(false);
         setSelectedBooking(null);
         setHeliDocuments([]);
     };
 
+    // =========================================================
+    // HELPERS
+    // =========================================================
+
     const formatDate = (date) => {
+
         if (!date) return "null";
-        return new Date(date).toLocaleDateString();
+
+        return new Date(
+            date
+        ).toLocaleDateString();
     };
 
     const formatAmount = (amount) => {
-        if (amount === null || amount === undefined) return "null";
-        return `NPR ${Number(amount).toLocaleString()}`;
+
+        if (
+            amount === null ||
+            amount === undefined
+        ) {
+            return "null";
+        }
+
+        return `NPR ${Number(
+            amount
+        ).toLocaleString()}`;
     };
 
     const getVehicleId = (booking) => {
 
-        const transport = booking.transports?.find(
-            (item) => item.vehicle_id
-        );
+        const transport =
+            booking.transports?.find(
+                (item) => item.vehicle_id
+            );
 
-        return transport?.vehicle_id ?? "null";
+        return (
+            transport?.vehicle_id ??
+            "null"
+        );
     };
 
     const getHeliId = (booking) => {
 
-        const transport = booking.transports?.find(
-            (item) => item.heli_id
-        );
+        const transport =
+            booking.transports?.find(
+                (item) => item.heli_id
+            );
 
-        return transport?.heli_id ?? "null";
+        return (
+            transport?.heli_id ??
+            "null"
+        );
     };
 
     const getStatusClass = (status) => {
@@ -191,13 +308,12 @@ const Booking = () => {
         }
     };
 
-    const getHeliDocuments = () => {
-        return heliDocuments;
-    };
-
-    const documents = getHeliDocuments();
+    // =========================================================
+    // RENDER
+    // =========================================================
 
     return (
+
         <div className="dashboard-layout">
 
             <Sidebar />
@@ -214,21 +330,29 @@ const Booking = () => {
                         <div className="booking-header">
 
                             <div>
-                                <h1>Bookings</h1>
+
+                                <h1>
+                                    Bookings
+                                </h1>
+
                                 <p>
                                     View and manage customer bookings in Trip Himalaya.
                                 </p>
+
                             </div>
 
                         </div>
 
-                        {/* TABLE CARD */}
+                        {/* TABLE */}
                         <div className="booking-table-card">
 
                             <div className="booking-table-header">
 
                                 <div>
-                                    <h2>Booking List</h2>
+
+                                    <h2>
+                                        Booking List
+                                    </h2>
 
                                     <p>
                                         {totalBookings}{" "}
@@ -236,6 +360,7 @@ const Booking = () => {
                                             ? "booking"
                                             : "bookings"}
                                     </p>
+
                                 </div>
 
                             </div>
@@ -247,24 +372,69 @@ const Booking = () => {
                                     <thead>
 
                                         <tr>
+
                                             <th>S.N.</th>
-                                            <th>Booking Reference</th>
-                                            <th>User ID</th>
-                                            <th>Type</th>
-                                            <th>Package ID</th>
-                                            <th>Pricing Tier ID</th>
-                                            <th>Vehicle ID</th>
-                                            <th>Heli ID</th>
-                                            <th>People</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Total Amount</th>
-                                            <th>Status</th>
-                                            <th>Payment Status</th>
-                                            <th>Created At</th>
+
+                                            <th>
+                                                Booking Reference
+                                            </th>
+
+                                            <th>
+                                                User Email
+                                            </th>
+
+                                            <th>
+                                                Type
+                                            </th>
+
+                                            <th>
+                                                Package Name
+                                            </th>
+
+                                            <th>
+                                                Pricing Tier
+                                            </th>
+
+                                            <th>
+                                                Vehicle ID
+                                            </th>
+
+                                            <th>
+                                                Heli ID
+                                            </th>
+
+                                            <th>
+                                                People
+                                            </th>
+
+                                            <th>
+                                                Travel Date
+                                            </th>
+
+                                            <th>
+                                                End Date
+                                            </th>
+
+                                            <th>
+                                                Total Amount
+                                            </th>
+
+                                            <th>
+                                                Status
+                                            </th>
+
+                                            <th>
+                                                Payment Status
+                                            </th>
+
+                                            <th>
+                                                Created At
+                                            </th>
+
                                             <th className="action-column">
                                                 Actions
                                             </th>
+
                                         </tr>
 
                                     </thead>
@@ -274,154 +444,281 @@ const Booking = () => {
                                         {loading ? (
 
                                             <tr>
+
                                                 <td
                                                     colSpan="16"
                                                     className="table-message"
                                                 >
+
                                                     <div className="booking-loader"></div>
+
                                                     Loading bookings...
+
                                                 </td>
+
                                             </tr>
 
                                         ) : bookings.length === 0 ? (
 
                                             <tr>
+
                                                 <td
                                                     colSpan="16"
                                                     className="table-message"
                                                 >
                                                     No bookings found.
                                                 </td>
+
                                             </tr>
 
                                         ) : (
 
-                                            bookings.map((booking, index) => (
+                                            bookings.map(
+                                                (booking, index) => (
 
-                                                <tr key={booking.id}>
+                                                    <tr key={booking.id}>
 
-                                                    <td>
-                                                        {(page - 1) * 10 + index + 1}
-                                                    </td>
+                                                        {/* S.N. */}
+                                                        <td>
 
-                                                    <td>
-                                                        <span className="booking-reference">
-                                                            {booking.booking_reference || "null"}
-                                                        </span>
-                                                    </td>
+                                                            {(page - 1) * 10 +
+                                                                index +
+                                                                1}
 
-                                                    <td>
-                                                        {booking.user_id ?? "null"}
-                                                    </td>
+                                                        </td>
 
-                                                    <td>
-                                                        <span className="booking-type">
-                                                            {booking.booking_type ?? "null"}
-                                                        </span>
-                                                    </td>
+                                                        {/* BOOKING REFERENCE */}
+                                                        <td>
 
-                                                    <td>
-                                                        {booking.package_id ?? "null"}
-                                                    </td>
+                                                            <span className="booking-reference">
 
-                                                    <td>
-                                                        {booking.pricing_tier_id ?? "null"}
-                                                    </td>
+                                                                {booking.booking_reference ??
+                                                                    "null"}
 
-                                                    <td>
-                                                        {getVehicleId(booking)}
-                                                    </td>
+                                                            </span>
 
-                                                    <td>
-                                                        {getHeliId(booking)}
-                                                    </td>
+                                                        </td>
 
-                                                    <td>
-                                                        {booking.number_of_people ?? "null"}
-                                                    </td>
+                                                        {/* USER EMAIL */}
+                                                        <td>
 
-                                                    <td>
-                                                        {formatDate(booking.start_date)}
-                                                    </td>
+                                                            {booking.user?.email ??
+                                                                "null"}
 
-                                                    <td>
-                                                        {formatDate(booking.end_date)}
-                                                    </td>
+                                                        </td>
 
-                                                    <td>
-                                                        <span className="booking-amount">
-                                                            {formatAmount(booking.total_amount)}
-                                                        </span>
-                                                    </td>
+                                                        {/* TYPE */}
+                                                        <td>
 
-                                                    <td>
-                                                        <span
-                                                            className={`status-badge ${getStatusClass(
-                                                                booking.status
-                                                            )}`}
-                                                        >
-                                                            {booking.status ?? "null"}
-                                                        </span>
-                                                    </td>
+                                                            <span className="booking-type">
 
-                                                    <td>
-                                                        <span
-                                                            className={`status-badge ${getStatusClass(
-                                                                booking.payment_status
-                                                            )}`}
-                                                        >
-                                                            {booking.payment_status ?? "null"}
-                                                        </span>
-                                                    </td>
+                                                                {booking.booking_type ??
+                                                                    "null"}
 
-                                                    <td>
-                                                        {booking.created_at
-                                                            ? new Date(
-                                                                booking.created_at
-                                                            ).toLocaleDateString()
-                                                            : "null"}
-                                                    </td>
+                                                            </span>
 
-                                                    {/* ACTIONS */}
-                                                    <td className="action-column">
+                                                        </td>
 
-                                                        <div className="action-buttons">
+                                                        {/* PACKAGE NAME */}
+                                                        <td>
 
-                                                            {booking.booking_type === "HELI" ? (
+                                                            {booking.package?.title ??
+                                                                "null"}
 
-                                                                <button
-                                                                    type="button"
-                                                                    className="view-document-button"
-                                                                    onClick={() =>
-                                                                        handleViewDocuments(booking)
-                                                                    }
-                                                                >
-                                                                    <FaEye />
-                                                                    View Documents
-                                                                </button>
+                                                        </td>
 
-                                                            ) : (
+                                                        {/* PRICING TIER */}
+                                                        <td>
 
-                                                                <button
-                                                                    type="button"
-                                                                    className="delete-button"
-                                                                    onClick={() =>
-                                                                        handleDelete(booking)
-                                                                    }
-                                                                >
-                                                                    <FaTrash />
-                                                                    Delete
-                                                                </button>
+                                                            {booking.pricing_tier?.service ??
+                                                                "null"}
 
+                                                        </td>
+
+                                                        {/* VEHICLE */}
+                                                        <td>
+
+                                                            {getVehicleId(
+                                                                booking
                                                             )}
 
-                                                        </div>
+                                                        </td>
 
-                                                    </td>
+                                                        {/* HELI */}
+                                                        <td>
 
-                                                </tr>
+                                                            {getHeliId(
+                                                                booking
+                                                            )}
 
-                                            ))
+                                                        </td>
+
+                                                        {/* PEOPLE */}
+                                                        <td>
+
+                                                            {booking.number_of_people ??
+                                                                "null"}
+
+                                                        </td>
+
+                                                        {/* START DATE */}
+                                                        <td>
+
+                                                            {formatDate(
+                                                                booking.start_date
+                                                            )}
+
+                                                        </td>
+
+                                                        {/* END DATE */}
+                                                        <td>
+
+                                                            {formatDate(
+                                                                booking.end_date
+                                                            )}
+
+                                                        </td>
+
+                                                        {/* TOTAL */}
+                                                        <td>
+
+                                                            <span className="booking-amount">
+
+                                                                {formatAmount(
+                                                                    booking.total_amount
+                                                                )}
+
+                                                            </span>
+
+                                                        </td>
+
+                                                        {/* STATUS */}
+                                                        <td>
+
+                                                            <span
+                                                                className={`status-badge ${getStatusClass(
+                                                                    booking.status
+                                                                )}`}
+                                                            >
+
+                                                                {booking.status ??
+                                                                    "null"}
+
+                                                            </span>
+
+                                                        </td>
+
+                                                        {/* PAYMENT STATUS */}
+                                                        <td>
+
+                                                            <span
+                                                                className={`status-badge ${getStatusClass(
+                                                                    booking.payment_status
+                                                                )}`}
+                                                            >
+
+                                                                {booking.payment_status ??
+                                                                    "null"}
+
+                                                            </span>
+
+                                                        </td>
+
+                                                        {/* CREATED */}
+                                                        <td>
+
+                                                            {booking.created_at
+                                                                ? new Date(
+                                                                    booking.created_at
+                                                                ).toLocaleDateString()
+                                                                : "null"}
+
+                                                        </td>
+
+                                                        {/* ACTIONS */}
+                                                        <td className="action-column">
+
+                                                            <div className="action-buttons">
+
+                                                                {booking.booking_type ===
+                                                                "HELI" ? (
+
+                                                                    // HELI
+                                                                    // SAME EXISTING FUNCTION
+                                                                    // ONLY BUTTON NAME CHANGED
+
+                                                                    <button
+                                                                        type="button"
+                                                                        className="view-document-button"
+                                                                        onClick={() =>
+                                                                            handleViewDocuments(
+                                                                                booking
+                                                                            )
+                                                                        }
+                                                                    >
+
+                                                                        <FaEye />
+
+                                                                        View Detail
+
+                                                                    </button>
+
+                                                                ) : (
+
+                                                                    <>
+                                                                        {/* PACKAGE VIEW DETAIL */}
+
+                                                                        <button
+                                                                            type="button"
+                                                                            className="view-document-button"
+                                                                            onClick={() =>
+                                                                                handleViewDetail(
+                                                                                    booking
+                                                                                )
+                                                                            }
+                                                                        >
+
+                                                                            <FaEye />
+
+                                                                            View Detail
+
+                                                                        </button>
+
+                                                                        {/*
+                                                                            DELETE BUTTON TEMPORARILY COMMENTED OUT.
+
+                                                                            DELETE FUNCTION, IMPORT AND LOGIC
+                                                                            ARE STILL KEPT ABOVE.
+
+                                                                        <button
+                                                                            type="button"
+                                                                            className="delete-button"
+                                                                            onClick={() =>
+                                                                                handleDelete(
+                                                                                    booking
+                                                                                )
+                                                                            }
+                                                                        >
+
+                                                                            <FaTrash />
+
+                                                                            Delete
+
+                                                                        </button>
+                                                                        */}
+
+                                                                    </>
+
+                                                                )}
+
+                                                            </div>
+
+                                                        </td>
+
+                                                    </tr>
+
+                                                )
+                                            )
 
                                         )}
 
@@ -445,234 +742,830 @@ const Booking = () => {
 
             </div>
 
-            {/* HELI DOCUMENT MODAL */}
-            {showDocumentModal && selectedBooking && (
+            {/* =====================================================
+                PACKAGE BOOKING DETAIL MODAL
+            ===================================================== */}
 
-                <div
-                    className="booking-modal-overlay"
-                    onClick={closeDocumentModal}
-                >
+            {showDetailModal &&
+                selectedDetailBooking && (
 
                     <div
-                        className="booking-document-modal"
-                        onClick={(e) => e.stopPropagation()}
+                        className="booking-modal-overlay"
+                        onClick={closeDetailModal}
                     >
 
-                        <div className="booking-modal-header">
+                        <div
+                            className="booking-document-modal"
+                            onClick={(e) =>
+                                e.stopPropagation()
+                            }
+                        >
 
-                            <div>
-                                <h2>Helicopter Booking Documents</h2>
-
-                                <p>
-                                    {selectedBooking.booking_reference ||
-                                        `Booking #${selectedBooking.id}`}
-                                </p>
-                            </div>
-
-                            <button
-                                type="button"
-                                className="booking-modal-close"
-                                onClick={closeDocumentModal}
-                            >
-                                <FaTimes />
-                            </button>
-
-                        </div>
-
-                        <div className="booking-modal-body">
-
-                            <div className="booking-modal-summary">
+                            {/* HEADER */}
+                            <div className="booking-modal-header">
 
                                 <div>
-                                    <span>Booking ID</span>
-                                    <strong>
-                                        {selectedBooking.id}
-                                    </strong>
+
+                                    <h2>
+                                        Booking Details
+                                    </h2>
+
+                                    <p>
+
+                                        {selectedDetailBooking.booking_reference ||
+                                            `Booking #${selectedDetailBooking.id}`}
+
+                                    </p>
+
                                 </div>
 
-                                <div>
-                                    <span>Package ID</span>
-                                    <strong>
-                                        {selectedBooking.package_id ?? "-"}
-                                    </strong>
-                                </div>
+                                <button
+                                    type="button"
+                                    className="booking-modal-close"
+                                    onClick={
+                                        closeDetailModal
+                                    }
+                                >
 
-                                <div>
-                                    <span>Passengers</span>
-                                    <strong>
-                                        {selectedBooking.number_of_people ?? "-"}
-                                    </strong>
-                                </div>
+                                    <FaTimes />
 
-                                <div>
-                                    <span>Start Date</span>
-                                    <strong>
-                                        {formatDate(selectedBooking.start_date)}
-                                    </strong>
-                                </div>
+                                </button>
 
                             </div>
 
-                            {documentLoading ? (
+                            {/* BODY */}
+                            <div className="booking-modal-body">
 
-                                <div className="booking-document-empty">
-                                    <div className="booking-loader"></div>
-                                    Loading documents...
+                                {/* BOOKING */}
+                                <div className="booking-modal-summary">
+
+                                    <div>
+
+                                        <span>
+                                            Booking ID
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.id ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Booking Reference
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.booking_reference ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Booking Type
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.booking_type ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Package
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.package
+                                                ?.title ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Pricing Tier
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.pricing_tier
+                                                ?.service ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Age Group
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.pricing_tier
+                                                ?.age_group ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Number of People
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.number_of_people ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Start Date
+                                        </span>
+
+                                        <strong>
+
+                                            {formatDate(
+                                                selectedDetailBooking.start_date
+                                            )}
+
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            End Date
+                                        </span>
+
+                                        <strong>
+
+                                            {formatDate(
+                                                selectedDetailBooking.end_date
+                                            )}
+
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Total Amount
+                                        </span>
+
+                                        <strong>
+
+                                            {formatAmount(
+                                                selectedDetailBooking.total_amount
+                                            )}
+
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Status
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.status ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Payment Status
+                                        </span>
+
+                                        <strong>
+                                            {selectedDetailBooking.payment_status ??
+                                                "-"}
+                                        </strong>
+
+                                    </div>
+
                                 </div>
 
-                            ) : documents.length === 0 ? (
+                                {/* USER DETAILS */}
+                                <div
+                                    style={{
+                                        marginTop: "24px",
+                                    }}
+                                >
 
-                                <div className="booking-document-empty">
-                                    No traveller documents found for this booking.
-                                </div>
+                                    <h3
+                                        style={{
+                                            marginBottom:
+                                                "15px",
+                                            color: "#351255",
+                                        }}
+                                    >
+                                        User Details
+                                    </h3>
 
-                            ) : (
+                                    <div className="booking-modal-summary">
 
-                                <div className="booking-traveller-list">
+                                        <div>
 
-                                    {documents.map((document, index) => (
+                                            <span>
+                                                Name
+                                            </span>
 
-                                        <div
-                                            className="booking-traveller-card"
-                                            key={document.id || index}
-                                        >
+                                            <strong>
 
-                                            <div className="booking-traveller-header">
+                                                {[
+                                                    selectedDetailBooking
+                                                        .user
+                                                        ?.first_name,
 
-                                                <div>
-                                                    <span>
-                                                        Traveller {index + 1}
-                                                    </span>
+                                                    selectedDetailBooking
+                                                        .user
+                                                        ?.middle_name,
 
-                                                    <h3>
-                                                        {document.name || "Unnamed Traveller"}
-                                                    </h3>
-                                                </div>
+                                                    selectedDetailBooking
+                                                        .user
+                                                        ?.last_name,
+                                                ]
+                                                    .filter(
+                                                        Boolean
+                                                    )
+                                                    .join(
+                                                        " "
+                                                    ) ||
+                                                    "-"}
 
-                                                <span className="booking-traveller-number">
-                                                    #{index + 1}
-                                                </span>
-
-                                            </div>
-
-                                            <div className="booking-traveller-info">
-
-                                                <div>
-                                                    <span>Name</span>
-                                                    <strong>
-                                                        {document.name || "-"}
-                                                    </strong>
-                                                </div>
-
-                                                <div>
-                                                    <span>Nationality</span>
-                                                    <strong>
-                                                        {document.nationality || "-"}
-                                                    </strong>
-                                                </div>
-
-                                                <div>
-                                                    <span>Identity Number</span>
-                                                    <strong>
-                                                        {document.identity_number || "-"}
-                                                    </strong>
-                                                </div>
-
-                                                <div>
-                                                    <span>Weight</span>
-                                                    <strong>
-                                                        {document.weight
-                                                            ? `${document.weight} kg`
-                                                            : "-"}
-                                                    </strong>
-                                                </div>
-
-                                                <div>
-                                                    <span>Luggage</span>
-                                                    <strong>
-                                                        {document.luggage
-                                                            ? `${document.luggage} kg`
-                                                            : "-"}
-                                                    </strong>
-                                                </div>
-
-                                            </div>
-
-                                            <div className="booking-document-files">
-
-                                                {document.passport_nid_image && (
-
-                                                    <a
-                                                        href={document.passport_nid_image}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="booking-document-link"
-                                                    >
-                                                        <FaExternalLinkAlt />
-                                                        Passport / NID
-                                                    </a>
-
-                                                )}
-
-                                                {document.pp_size_photo && (
-
-                                                    <a
-                                                        href={document.pp_size_photo}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="booking-document-link"
-                                                    >
-                                                        <FaExternalLinkAlt />
-                                                        PP Size Photo
-                                                    </a>
-
-                                                )}
-
-                                                {document.confirmed_flight_ticket_image && (
-
-                                                    <a
-                                                        href={document.confirmed_flight_ticket_image}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="booking-document-link"
-                                                    >
-                                                        <FaExternalLinkAlt />
-                                                        Flight Ticket
-                                                    </a>
-
-                                                )}
-
-                                                {document.travel_insurance_image && (
-
-                                                    <a
-                                                        href={document.travel_insurance_image}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="booking-document-link"
-                                                    >
-                                                        <FaExternalLinkAlt />
-                                                        Travel Insurance
-                                                    </a>
-
-                                                )}
-
-                                            </div>
+                                            </strong>
 
                                         </div>
 
-                                    ))}
+                                        <div>
+
+                                            <span>
+                                                Email
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.email ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Phone
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.country_code ||
+                                                    ""}
+
+                                                {selectedDetailBooking.user
+                                                    ?.phone ||
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Gender
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.gender ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Date of Birth
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.date_of_birth
+                                                    ? formatDate(
+                                                        selectedDetailBooking
+                                                            .user
+                                                            .date_of_birth
+                                                    )
+                                                    : "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Nationality
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.nationality ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Address
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.address ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                City
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.city ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                State
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.state ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Country
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.country ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                        <div>
+
+                                            <span>
+                                                Postal Code
+                                            </span>
+
+                                            <strong>
+
+                                                {selectedDetailBooking.user
+                                                    ?.postal_code ??
+                                                    "-"}
+
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
-                            )}
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
+                )}
 
-            )}
+            {/* =====================================================
+                HELI DOCUMENT MODAL
+                EXISTING FLOW
+            ===================================================== */}
+
+            {showDocumentModal &&
+                selectedBooking && (
+
+                    <div
+                        className="booking-modal-overlay"
+                        onClick={
+                            closeDocumentModal
+                        }
+                    >
+
+                        <div
+                            className="booking-document-modal"
+                            onClick={(e) =>
+                                e.stopPropagation()
+                            }
+                        >
+
+                            {/* HEADER */}
+                            <div className="booking-modal-header">
+
+                                <div>
+
+                                    <h2>
+                                        Helicopter Booking Documents
+                                    </h2>
+
+                                    <p>
+
+                                        {selectedBooking.booking_reference ||
+                                            `Booking #${selectedBooking.id}`}
+
+                                    </p>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="booking-modal-close"
+                                    onClick={
+                                        closeDocumentModal
+                                    }
+                                >
+
+                                    <FaTimes />
+
+                                </button>
+
+                            </div>
+
+                            {/* BODY */}
+                            <div className="booking-modal-body">
+
+                                <div className="booking-modal-summary">
+
+                                    <div>
+
+                                        <span>
+                                            Booking ID
+                                        </span>
+
+                                        <strong>
+                                            {selectedBooking.id}
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Package ID
+                                        </span>
+
+                                        <strong>
+
+                                            {selectedBooking.package_id ??
+                                                "-"}
+
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Passengers
+                                        </span>
+
+                                        <strong>
+
+                                            {selectedBooking.number_of_people ??
+                                                "-"}
+
+                                        </strong>
+
+                                    </div>
+
+                                    <div>
+
+                                        <span>
+                                            Start Date
+                                        </span>
+
+                                        <strong>
+
+                                            {formatDate(
+                                                selectedBooking.start_date
+                                            )}
+
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                {documentLoading ? (
+
+                                    <div className="booking-document-empty">
+
+                                        <div className="booking-loader"></div>
+
+                                        Loading documents...
+
+                                    </div>
+
+                                ) : heliDocuments.length ===
+                                  0 ? (
+
+                                    <div className="booking-document-empty">
+
+                                        No traveller documents found for this booking.
+
+                                    </div>
+
+                                ) : (
+
+                                    <div className="booking-traveller-list">
+
+                                        {heliDocuments.map(
+                                            (
+                                                document,
+                                                index
+                                            ) => (
+
+                                                <div
+                                                    className="booking-traveller-card"
+                                                    key={
+                                                        document.id ||
+                                                        index
+                                                    }
+                                                >
+
+                                                    <div className="booking-traveller-header">
+
+                                                        <div>
+
+                                                            <span>
+
+                                                                Traveller{" "}
+                                                                {index +
+                                                                    1}
+
+                                                            </span>
+
+                                                            <h3>
+
+                                                                {document.name ||
+                                                                    "Unnamed Traveller"}
+
+                                                            </h3>
+
+                                                        </div>
+
+                                                        <span className="booking-traveller-number">
+
+                                                            #
+                                                            {index +
+                                                                1}
+
+                                                        </span>
+
+                                                    </div>
+
+                                                    <div className="booking-traveller-info">
+
+                                                        <div>
+
+                                                            <span>
+                                                                Name
+                                                            </span>
+
+                                                            <strong>
+
+                                                                {document.name ||
+                                                                    "-"}
+
+                                                            </strong>
+
+                                                        </div>
+
+                                                        <div>
+
+                                                            <span>
+                                                                Nationality
+                                                            </span>
+
+                                                            <strong>
+
+                                                                {document.nationality ||
+                                                                    "-"}
+
+                                                            </strong>
+
+                                                        </div>
+
+                                                        <div>
+
+                                                            <span>
+                                                                Identity Number
+                                                            </span>
+
+                                                            <strong>
+
+                                                                {document.identity_number ||
+                                                                    "-"}
+
+                                                            </strong>
+
+                                                        </div>
+
+                                                        <div>
+
+                                                            <span>
+                                                                Weight
+                                                            </span>
+
+                                                            <strong>
+
+                                                                {document.weight
+                                                                    ? `${document.weight} kg`
+                                                                    : "-"}
+
+                                                            </strong>
+
+                                                        </div>
+
+                                                        <div>
+
+                                                            <span>
+                                                                Luggage
+                                                            </span>
+
+                                                            <strong>
+
+                                                                {document.luggage
+                                                                    ? `${document.luggage} kg`
+                                                                    : "-"}
+
+                                                            </strong>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div className="booking-document-files">
+
+                                                        {document.passport_nid_image && (
+
+                                                            <a
+                                                                href={
+                                                                    document.passport_nid_image
+                                                                }
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="booking-document-link"
+                                                            >
+
+                                                                <FaExternalLinkAlt />
+
+                                                                Passport / NID
+
+                                                            </a>
+
+                                                        )}
+
+                                                        {document.pp_size_photo && (
+
+                                                            <a
+                                                                href={
+                                                                    document.pp_size_photo
+                                                                }
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="booking-document-link"
+                                                            >
+
+                                                                <FaExternalLinkAlt />
+
+                                                                PP Size Photo
+
+                                                            </a>
+
+                                                        )}
+
+                                                        {document.confirmed_flight_ticket_image && (
+
+                                                            <a
+                                                                href={
+                                                                    document.confirmed_flight_ticket_image
+                                                                }
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="booking-document-link"
+                                                            >
+
+                                                                <FaExternalLinkAlt />
+
+                                                                Flight Ticket
+
+                                                            </a>
+
+                                                        )}
+
+                                                        {document.travel_insurance_image && (
+
+                                                            <a
+                                                                href={
+                                                                    document.travel_insurance_image
+                                                                }
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="booking-document-link"
+                                                            >
+
+                                                                <FaExternalLinkAlt />
+
+                                                                Travel Insurance
+
+                                                            </a>
+
+                                                        )}
+
+                                                    </div>
+
+                                                </div>
+
+                                            )
+                                        )}
+
+                                    </div>
+
+                                )}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                )}
 
         </div>
     );
