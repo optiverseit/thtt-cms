@@ -24,6 +24,11 @@ export const getHeliBookingDocuments = (bookingId, packageId) => {
 };
 
 
+export const updateBookingStatusCms = (bookingId, data) => {
+    return axiosInstance.put(`/admin/bookings/${bookingId}/status`, data);
+};
+
+
 export const deleteBooking = (id) => {
     return axiosInstance.delete(`/bookings/${id}`);
 };
