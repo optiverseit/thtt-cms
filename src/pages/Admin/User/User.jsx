@@ -1,70 +1,80 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     FaPlus,
     FaPen,
     FaTrash,
+    FaSearch,
+    FaTimes,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
-
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
     getAllUsersCms,
+    searchUsersCms,
     changeUserStatus,
     deleteUser,
 } from "../../../api/BackendApi";
-
 import "./User.css";
-
 const User = () => {
     const navigate = useNavigate();
-
     const [users, setUsers] = useState([]);
-
     const [loading, setLoading] = useState(true);
-
     const [statusUpdatingId, setStatusUpdatingId] =
         useState(null);
-
     const [page, setPage] = useState(1);
-
     const [totalPages, setTotalPages] = useState(1);
-
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const searchRequestId = useRef(0);
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(search.trim()), 400);
+        return () => clearTimeout(timer);
+    }, [search]);
+    const handleSearchChange = (e) => {
+        searchRequestId.current += 1;
+        setSearch(e.target.value);
+        setPage(1);
+        setLoading(true);
+    };
+    const clearSearch = () => {
+        searchRequestId.current += 1;
+        setSearch("");
+        setDebouncedSearch("");
+        setPage(1);
+        setLoading(true);
+    };
     // ==========================================
     // FETCH USERS
     // ==========================================
-
     const fetchUsers = async () => {
+        const requestId = ++searchRequestId.current;
         try {
             setLoading(true);
-
             const response =
-                await getAllUsersCms(page);
-
+                debouncedSearch ? await searchUsersCms(debouncedSearch, page) : await getAllUsersCms(page);
+            if (requestId !== searchRequestId.current) return;
             if (response.data?.status) {
                 const responseData =
                     response.data.data;
-
                 // Supports Laravel paginate()
                 setUsers(
                     Array.isArray(responseData)
                         ? responseData
                         : responseData?.data || []
                 );
-
                 setTotalPages(
                     responseData?.last_page || 1
                 );
             }
         } catch (error) {
+            if (requestId !== searchRequestId.current) return;
             console.error(
                 "Fetch users error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -74,28 +84,23 @@ const User = () => {
                 confirmButtonColor: "#351255",
             });
         } finally {
-            setLoading(false);
+            if (requestId === searchRequestId.current) setLoading(false);
         }
     };
-
     useEffect(() => {
         fetchUsers();
-    }, [page]);
-
+    }, [page, debouncedSearch]);
     // ==========================================
     // STATUS
     // ==========================================
-
     const handleStatusChange = async (user) => {
         if (statusUpdatingId === user.id) {
             return;
         }
-
         const newStatus =
             user.status === "ACTIVE"
                 ? "INACTIVE"
                 : "ACTIVE";
-
         const result = await Swal.fire({
             icon: "warning",
             title: "Change Status?",
@@ -106,17 +111,13 @@ const User = () => {
             confirmButtonColor: "#351255",
             cancelButtonColor: "#77717d",
         });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
             setStatusUpdatingId(user.id);
-
             const response =
                 await changeUserStatus(user.id);
-
             if (response.data?.status) {
                 await Swal.fire({
                     icon: "success",
@@ -126,7 +127,6 @@ const User = () => {
                         `User status changed to ${newStatus}.`,
                     confirmButtonColor: "#351255",
                 });
-
                 await fetchUsers();
             }
         } catch (error) {
@@ -134,7 +134,6 @@ const User = () => {
                 "User status change error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -147,11 +146,9 @@ const User = () => {
             setStatusUpdatingId(null);
         }
     };
-
     // ==========================================
     // DELETE
     // ==========================================
-
     const handleDelete = async (user) => {
         const result = await Swal.fire({
             icon: "warning",
@@ -163,15 +160,12 @@ const User = () => {
             confirmButtonColor: "#f52d91",
             cancelButtonColor: "#77717d",
         });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
             const response =
                 await deleteUser(user.id);
-
             if (response.data?.status) {
                 await Swal.fire({
                     icon: "success",
@@ -181,7 +175,6 @@ const User = () => {
                         "User deleted successfully.",
                     confirmButtonColor: "#351255",
                 });
-
                 await fetchUsers();
             }
         } catch (error) {
@@ -189,7 +182,6 @@ const User = () => {
                 "Delete user error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -200,11 +192,9 @@ const User = () => {
             });
         }
     };
-
     // ==========================================
     // FULL NAME
     // ==========================================
-
     const getFullName = (user) => {
         return [
             user.first_name,
@@ -214,40 +204,30 @@ const User = () => {
             .filter(Boolean)
             .join(" ");
     };
-
     // ==========================================
     // PHONE
     // ==========================================
-
     const getPhone = (user) => {
         if (!user.phone) {
             return "-";
         }
-
         return `${user.country_code || ""} ${user.phone}`.trim();
     };
-
     return (
         <div className="dashboard-layout">
             <Sidebar />
-
             <div className="dashboard-main">
                 <Navbar />
-
                 <main className="dashboard-content">
                     <div className="user-page">
-
                         {/* HEADER */}
-
                         <div className="user-header">
                             <div>
                                 <h1>User Management</h1>
-
                                 <p>
                                     Manage users, roles, status and account information.
                                 </p>
                             </div>
-
                             <button
                                 type="button"
                                 className="user-create-btn"
@@ -259,19 +239,23 @@ const User = () => {
                                 Create User
                             </button>
                         </div>
-
                         {/* TABLE CARD */}
-
                         <div className="user-table-card">
-
                             <div className="user-card-header">
                                 <h2>Users</h2>
-
                                 <p>
                                     View and manage registered users.
                                 </p>
+                                <div style={{ position: "relative", width: "100%", maxWidth: "320px" }}>
+                                    <FaSearch style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", color: "#777", pointerEvents: "none" }} />
+                                    <input type="text" value={search} onChange={handleSearchChange} placeholder="Search users..." aria-label="Search users" style={{ width: "100%", boxSizing: "border-box", padding: "11px 36px 11px 38px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "14px", outlineColor: "#351255" }} />
+                                    {search && (
+                                        <button type="button" onClick={clearSearch} aria-label="Clear search" style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", cursor: "pointer", color: "#777" }}>
+                                            <FaTimes />
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-
                             {loading ? (
                                 <div className="user-empty">
                                     Loading...
@@ -283,7 +267,6 @@ const User = () => {
                             ) : (
                                 <>
                                     <div className="user-table-wrapper">
-
                                         <table className="user-table">
                                             <thead>
                                                 <tr>
@@ -296,30 +279,25 @@ const User = () => {
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
-
                                             <tbody>
                                                 {users.map(
                                                     (user, index) => (
                                                         <tr key={user.id}>
-
                                                             <td>
                                                                 {(page - 1) * 10 +
                                                                     index +
                                                                     1}
                                                             </td>
-
                                                             <td>
                                                                 <div className="user-info">
                                                                     <strong>
                                                                         {getFullName(user)}
                                                                     </strong>
-
                                                                     <span>
                                                                         {user.email}
                                                                     </span>
                                                                 </div>
                                                             </td>
-
                                                             <td>
                                                                 <span className="user-role">
                                                                     {user.role?.name ||
@@ -327,11 +305,9 @@ const User = () => {
                                                                         "N/A"}
                                                                 </span>
                                                             </td>
-
                                                             <td>
                                                                 {getPhone(user)}
                                                             </td>
-
                                                             <td>
                                                                 <div className="user-location">
                                                                     <strong>
@@ -339,7 +315,6 @@ const User = () => {
                                                                             user.country ||
                                                                             "-"}
                                                                     </strong>
-
                                                                     {user.city &&
                                                                         user.country && (
                                                                             <span>
@@ -348,9 +323,7 @@ const User = () => {
                                                                         )}
                                                                 </div>
                                                             </td>
-
                                                             {/* CLICKABLE STATUS */}
-
                                                             <td>
                                                                 <span
                                                                     className={`user-status ${
@@ -388,12 +361,9 @@ const User = () => {
                                                                         : user.status}
                                                                 </span>
                                                             </td>
-
                                                             {/* ACTIONS */}
-
                                                             <td>
                                                                 <div className="user-actions">
-
                                                                     <button
                                                                         type="button"
                                                                         className="user-edit-btn"
@@ -406,7 +376,6 @@ const User = () => {
                                                                     >
                                                                         <FaPen />
                                                                     </button>
-
                                                                     <button
                                                                         type="button"
                                                                         className="user-delete-btn"
@@ -419,18 +388,14 @@ const User = () => {
                                                                     >
                                                                         <FaTrash />
                                                                     </button>
-
                                                                 </div>
                                                             </td>
-
                                                         </tr>
                                                     )
                                                 )}
                                             </tbody>
                                         </table>
-
                                     </div>
-
                                     {totalPages > 1 && (
                                         <Pagination
                                             page={page}
@@ -447,5 +412,4 @@ const User = () => {
         </div>
     );
 };
-
 export default User;

@@ -11,6 +11,112 @@ export const googleLogin = (idToken) => {
     });
 };
 
+//SEARCHS
+// DONE
+export const searchPackagesCms = (search, page = 1) => {
+    return axiosInstance.get("/packages/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+
+export const searchInsurancePricingTiersCms = (search, page = 1) => {
+    return axiosInstance.get("/insurance-pricing-tiers/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+
+export const searchPackagePricingTiersCms = (search, page = 1) => {
+    return axiosInstance.get("/package-pricing-tiers/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+export const searchPackageItinerariesCms = (search, page = 1) => {
+    return axiosInstance.get("/package-itineraries/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+export const searchInsurancePlansCms = (search, page = 1) => {
+    return axiosInstance.get("/insurance-plans/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+// DONE
+export const searchBookingsCms = (search, page = 1) => {
+    return axiosInstance.get("/bookings/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+// DONE
+export const searchInsuranceApplicationsCms = (search, page = 1) => {
+    return axiosInstance.get("/insurance-applications/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+export const searchHotelsCms = (search, page = 1) => {
+    return axiosInstance.get("/hotels/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+export const searchHotelBookingsCms = (search, page = 1) => {
+    return axiosInstance.get("/hotel-bookings/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+export const searchInsuranceDocumentRequirementsCms = (search, page = 1) => {
+    return axiosInstance.get("/insurance-document-requirements/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
+// DONE
+export const searchUsersCms = (search, page = 1) => {
+    return axiosInstance.get("/users/cms/search", {
+        params: {
+            search,
+            page,
+        },
+    });
+};
+
 
 // BOOKING
 export const getAllBookingsCms = (page = 1) => {
@@ -21,6 +127,11 @@ export const getHeliBookingDocuments = (bookingId, packageId) => {
     return axiosInstance.get(
         `/${bookingId}/heli-documents/${packageId}`
     );
+};
+
+
+export const updateBookingStatusCms = (bookingId, data) => {
+    return axiosInstance.put(`/admin/bookings/${bookingId}/status`, data);
 };
 
 
