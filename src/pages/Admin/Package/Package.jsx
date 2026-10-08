@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { FaPen, FaTrash } from "react-icons/fa";
+import { FaPen, FaTrash, FaSearch, FaTimes } from "react-icons/fa";
 
 import {
     getAllPackagesCms,
+    searchPackagesCms,
     changePackageStatus,
     deletePackage
 } from "../../../api/BackendApi";
@@ -23,17 +25,48 @@ const Package = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    // SEARCH
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [totalPackages, setTotalPackages] = useState(0);
+
+    // Prevent older responses from replacing newer results
+    const requestIdRef = useRef(0);
+
+    // =========================================================
+    // SEARCH DEBOUNCE
+    // =========================================================
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search.trim());
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    // =========================================================
+    // FETCH PACKAGES
+    // =========================================================
     const fetchPackages = async () => {
+        const requestId = ++requestIdRef.current;
+
         try {
             setLoading(true);
 
-            const response = await getAllPackagesCms(page);
+            const response = debouncedSearch
+                ? await searchPackagesCms(debouncedSearch, page)
+                : await getAllPackagesCms(page);
+
+            if (requestId !== requestIdRef.current) return;
 
             if (response.data?.status) {
                 setPackages(response.data.data.data || []);
                 setTotalPages(response.data.data.last_page || 1);
+                setTotalPackages(response.data.data.total || 0);
             }
         } catch (error) {
+            if (requestId !== requestIdRef.current) return;
+
             console.error("Package fetch error:", error);
 
             Swal.fire({
@@ -45,14 +78,46 @@ const Package = () => {
                 confirmButtonColor: "#351255",
             });
         } finally {
-            setLoading(false);
+            if (requestId === requestIdRef.current) {
+                setLoading(false);
+            }
         }
     };
 
     useEffect(() => {
         fetchPackages();
-    }, [page]);
 
+        return () => {
+            requestIdRef.current += 1;
+        };
+    }, [page, debouncedSearch]);
+
+    // =========================================================
+    // SEARCH HANDLERS
+    // =========================================================
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+
+        setSearch(value);
+        setPage(1);
+
+        // Ignore results from requests started before search changed
+        requestIdRef.current += 1;
+        setLoading(true);
+    };
+
+    const handleClearSearch = () => {
+        setSearch("");
+        setDebouncedSearch("");
+        setPage(1);
+
+        requestIdRef.current += 1;
+        setLoading(true);
+    };
+
+    // =========================================================
+    // CHANGE PACKAGE STATUS
+    // =========================================================
     const handleStatusChange = async (packageItem) => {
         const newStatus =
             packageItem.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
@@ -100,6 +165,9 @@ const Package = () => {
         }
     };
 
+    // =========================================================
+    // DELETE PACKAGE
+    // =========================================================
     const handleDelete = async (packageItem) => {
         const result = await Swal.fire({
             icon: "warning",
@@ -147,21 +215,18 @@ const Package = () => {
 
     return (
         <div className="dashboard-layout">
-
             <Sidebar />
 
             <div className="dashboard-main">
-
                 <Navbar />
 
                 <main className="dashboard-content">
-
                     <div className="package-page">
 
+                        {/* HEADER */}
                         <div className="package-header">
                             <div>
                                 <h1>Packages</h1>
-
                                 <p>
                                     Manage travel and adventure packages available in Trip Himalaya.
                                 </p>
@@ -178,23 +243,45 @@ const Package = () => {
 
                         <div className="package-table-card">
 
+                            {/* TABLE HEADER */}
                             <div className="package-table-header">
                                 <div>
                                     <h2>Package List</h2>
-
                                     <p>
-                                        {packages.length}{" "}
-                                        {packages.length === 1
+                                        {totalPackages}{" "}
+                                        {totalPackages === 1
                                             ? "package"
                                             : "packages"}
                                     </p>
                                 </div>
+
+                                {/* SEARCH INPUT */}
+                                <div className="package-search-wrapper">
+                                    <FaSearch className="package-search-icon" />
+
+                                    <input
+                                        type="text"
+                                        className="package-search-input"
+                                        placeholder="Search packages..."
+                                        value={search}
+                                        onChange={handleSearchChange}
+                                    />
+
+                                    {search && (
+                                        <button
+                                            type="button"
+                                            className="package-search-clear"
+                                            onClick={handleClearSearch}
+                                            title="Clear search"
+                                        >
+                                            <FaTimes />
+                                        </button>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="package-table-responsive">
-
                                 <table className="package-table">
-
                                     <thead>
                                         <tr>
                                             <th>S.N.</th>
@@ -212,7 +299,6 @@ const Package = () => {
                                     </thead>
 
                                     <tbody>
-
                                         {loading ? (
                                             <tr>
                                                 <td
@@ -229,7 +315,9 @@ const Package = () => {
                                                     colSpan="9"
                                                     className="package-table-message"
                                                 >
-                                                    No packages found.
+                                                    {debouncedSearch
+                                                        ? `No packages found for "${debouncedSearch}".`
+                                                        : "No packages found."}
                                                 </td>
                                             </tr>
                                         ) : (
@@ -242,7 +330,6 @@ const Package = () => {
 
                                                     <td>
                                                         <div className="package-info">
-
                                                             {packageItem.image ? (
                                                                 <img
                                                                     src={packageItem.image}
@@ -264,7 +351,6 @@ const Package = () => {
                                                                     {packageItem.location || "-"}
                                                                 </span>
                                                             </div>
-
                                                         </div>
                                                     </td>
 
@@ -322,7 +408,6 @@ const Package = () => {
                                                     </td>
 
                                                     <td className="package-action-column">
-
                                                         <div className="package-action-buttons">
 
                                                             <button
@@ -348,17 +433,13 @@ const Package = () => {
                                                             </button>
 
                                                         </div>
-
                                                     </td>
 
                                                 </tr>
                                             ))
                                         )}
-
                                     </tbody>
-
                                 </table>
-
                             </div>
 
                             <Pagination
@@ -368,13 +449,9 @@ const Package = () => {
                             />
 
                         </div>
-
                     </div>
-
                 </main>
-
             </div>
-
         </div>
     );
 };

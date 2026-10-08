@@ -1,15 +1,17 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     FaTrash,
     FaEye,
     FaTimes,
     FaExternalLinkAlt,
     FaEdit,
+    FaSearch,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 import {
     getAllBookingsCms,
+    searchBookingsCms,
     deleteBooking,
     getHeliBookingDocuments,
     updateBookingStatusCms,
@@ -25,6 +27,31 @@ const Booking = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalBookings, setTotalBookings] = useState(0);
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const requestIdRef = useRef(0);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search.trim());
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    const handleSearchChange = (event) => {
+        requestIdRef.current += 1;
+        setSearch(event.target.value);
+        setPage(1);
+        setLoading(true);
+    };
+
+    const clearSearch = () => {
+        requestIdRef.current += 1;
+        setSearch("");
+        setDebouncedSearch("");
+        setPage(1);
+        setLoading(true);
+    };
 
     // HELI DOCUMENT MODAL
     const [showDocumentModal, setShowDocumentModal] = useState(false);
@@ -47,10 +74,15 @@ const Booking = () => {
     // FETCH BOOKINGS
     // =========================================================
     const fetchBookings = async () => {
+        const requestId = ++requestIdRef.current;
         try {
             setLoading(true);
 
-            const response = await getAllBookingsCms(page);
+            const response = debouncedSearch
+                ? await searchBookingsCms(debouncedSearch, page)
+                : await getAllBookingsCms(page);
+
+            if (requestId !== requestIdRef.current) return;
 
             if (response.data?.status) {
                 setBookings(response.data.data.data || []);
@@ -58,6 +90,7 @@ const Booking = () => {
                 setTotalBookings(response.data.data.total || 0);
             }
         } catch (error) {
+            if (requestId !== requestIdRef.current) return;
             console.error("Booking fetch error:", error);
 
             Swal.fire({
@@ -69,13 +102,14 @@ const Booking = () => {
                 confirmButtonColor: "#351255",
             });
         } finally {
-            setLoading(false);
+            if (requestId === requestIdRef.current) setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchBookings();
-    }, [page]);
+        return () => { requestIdRef.current += 1; };
+    }, [page, debouncedSearch]);
 
     // =========================================================
     // DELETE BOOKING
@@ -417,6 +451,27 @@ const Booking = () => {
                                             ? "booking"
                                             : "bookings"}
                                     </p>
+                                </div>
+                                <div style={{ position: "relative", width: "100%", maxWidth: "320px" }}>
+                                    <FaSearch style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", color: "#777", pointerEvents: "none" }} />
+                                    <input
+                                        type="text"
+                                        value={search}
+                                        onChange={handleSearchChange}
+                                        placeholder="Search bookings..."
+                                        aria-label="Search bookings"
+                                        style={{ width: "100%", boxSizing: "border-box", padding: "11px 36px 11px 38px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "14px", outlineColor: "#351255" }}
+                                    />
+                                    {search && (
+                                        <button
+                                            type="button"
+                                            onClick={clearSearch}
+                                            aria-label="Clear search"
+                                            style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", cursor: "pointer", color: "#777" }}
+                                        >
+                                            <FaTimes />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 

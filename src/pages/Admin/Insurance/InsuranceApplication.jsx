@@ -8,10 +8,13 @@ import {
     FaExternalLinkAlt,
     FaUpload,
     FaUsers,
+    FaSearch,
+    FaTimes,
 } from "react-icons/fa";
 
 import {
     getAllInsuranceApplicationsCms,
+    searchInsuranceApplicationsCms,
     getInsuranceApplicationById,
     getInsuranceApplicantsByApplicationId,
     uploadInsuranceApplicationVoucher,
@@ -41,6 +44,19 @@ const InsuranceApplication = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalApplications, setTotalApplications] = useState(0);
+
+    // SEARCH
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    const searchRequestId = useRef(0);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search.trim());
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [search]);
+
 
     /* =========================================================
        ACTION MENU
@@ -118,13 +134,17 @@ const InsuranceApplication = () => {
     ========================================================= */
 
     const fetchApplications = async () => {
+        const requestId = ++searchRequestId.current;
 
         try {
 
             setLoading(true);
 
-            const response =
-                await getAllInsuranceApplicationsCms(page);
+            const response = debouncedSearch
+                ? await searchInsuranceApplicationsCms(debouncedSearch, page)
+                : await getAllInsuranceApplicationsCms(page);
+
+            if (requestId !== searchRequestId.current) return;
 
             console.log(
                 "INSURANCE APPLICATION CMS RESPONSE:",
@@ -157,6 +177,7 @@ const InsuranceApplication = () => {
             }
 
         } catch (error) {
+            if (requestId !== searchRequestId.current) return;
 
             console.error(
                 "Insurance application fetch error:",
@@ -174,16 +195,13 @@ const InsuranceApplication = () => {
             });
 
         } finally {
-
-            setLoading(false);
+            if (requestId === searchRequestId.current) setLoading(false);
         }
     };
 
     useEffect(() => {
-
         fetchApplications();
-
-    }, [page]);
+    }, [page, debouncedSearch]);
 
     /* =========================================================
        CLOSE KEBAB
@@ -1015,6 +1033,12 @@ const InsuranceApplication = () => {
                                             : "applications"}
                                     </p>
 
+                                </div>
+
+                                <div style={{ position: "relative", width: "100%", maxWidth: "320px" }}>
+                                    <FaSearch style={{ position: "absolute", left: "13px", top: "50%", transform: "translateY(-50%)", color: "#777", pointerEvents: "none" }} />
+                                    <input type="text" value={search} onChange={(e) => { searchRequestId.current += 1; setSearch(e.target.value); setPage(1); setLoading(true); }} placeholder="Search insurance applications..." aria-label="Search insurance applications" style={{ width: "100%", boxSizing: "border-box", padding: "11px 36px 11px 38px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "14px", outlineColor: "#351255" }} />
+                                    {search && <button type="button" onClick={() => { searchRequestId.current += 1; setSearch(""); setDebouncedSearch(""); setPage(1); setLoading(true); }} aria-label="Clear search" style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", cursor: "pointer", color: "#777" }}><FaTimes /></button>}
                                 </div>
 
                             </div>
