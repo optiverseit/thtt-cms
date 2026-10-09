@@ -1597,11 +1597,19 @@ export const getHotelTestimonialsCms = (page = 1) => {
 };
 
 export const createHotelTestimonials = (data) => {
-    return axiosInstance.post("/hotel-testimonials/store", data);
+    return axiosInstance.post("/hotel-testimonials/store", data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 };
 
 export const updateHotelTestimonial = (id, data) => {
-    return axiosInstance.put(`/hotel-testimonials/update/${id}`, data);
+    return axiosInstance.post(`/hotel-testimonials/update/${id}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 };
 
 export const changeHotelTestimonialStatus = (id) => {

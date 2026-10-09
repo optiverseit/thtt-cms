@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
   getHotels,
   getHotelTestimonialsCms,
@@ -13,9 +11,7 @@ import {
   changeHotelTestimonialStatus,
   deleteHotelTestimonial,
 } from "../../../api/BackendApi";
-
 import "./HotelTestimonial.css";
-
 const createEmptyTestimonial = () => ({
   guest_name: "",
   guest_country: "",
@@ -23,56 +19,74 @@ const createEmptyTestimonial = () => ({
   review: "",
   display_order: 0,
   status: "ACTIVE",
+  image: null,
+  image_url: null,
 });
+const TestimonialImagePreview = ({ file, imageUrl }) => {
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  const src = file ? previewUrl : imageUrl;
+  if (!src) return null;
+
+  return (
+    <div style={{ marginTop: "10px" }}>
+      <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "6px" }}>
+        {file ? "New image preview" : "Current image"}
+      </p>
+      <img
+        src={src}
+        alt="Guest testimonial preview"
+        style={{ width: "110px", height: "110px", objectFit: "cover", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+      />
+    </div>
+  );
+};
 
 const HotelTestimonial = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [hotels, setHotels] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
-
   const [showModal, setShowModal] = useState(false);
-
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
   const [hotelId, setHotelId] = useState("");
-
   const [testimonialRows, setTestimonialRows] = useState([
     createEmptyTestimonial(),
   ]);
-
   useEffect(() => {
     fetchTestimonials(currentPage);
   }, [currentPage]);
-
   useEffect(() => {
     fetchHotels();
   }, []);
-
   // =========================================================
   // FETCH TESTIMONIALS
   // =========================================================
-
   const fetchTestimonials = async (page = 1) => {
     try {
       setLoading(true);
-
       const response = await getHotelTestimonialsCms(page);
       const paginationData = response.data?.data;
-
       setTestimonials(paginationData?.data || []);
       setCurrentPage(paginationData?.current_page || 1);
       setLastPage(paginationData?.last_page || 1);
       setTotal(paginationData?.total || 0);
     } catch (error) {
       console.error("Failed to fetch hotel testimonials:", error);
-
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -84,16 +98,13 @@ const HotelTestimonial = () => {
       setLoading(false);
     }
   };
-
   // =========================================================
   // FETCH HOTELS
   // =========================================================
-
   const fetchHotels = async () => {
     try {
       const response = await getHotels();
       const data = response.data?.data;
-
       if (Array.isArray(data)) {
         setHotels(data);
       } else if (Array.isArray(data?.data)) {
@@ -106,34 +117,27 @@ const HotelTestimonial = () => {
       setHotels([]);
     }
   };
-
   // =========================================================
   // FORM
   // =========================================================
-
   const resetForm = () => {
     setHotelId("");
     setTestimonialRows([createEmptyTestimonial()]);
     setIsEditing(false);
     setEditingId(null);
   };
-
   const openCreateModal = () => {
     resetForm();
     setShowModal(true);
   };
-
   const closeModal = () => {
     if (saving) return;
-
     setShowModal(false);
     resetForm();
   };
-
   // =========================================================
   // TESTIMONIAL ROWS
   // =========================================================
-
   const handleTestimonialChange = (index, field, value) => {
     setTestimonialRows((previous) =>
       previous.map((item, itemIndex) =>
@@ -146,67 +150,58 @@ const HotelTestimonial = () => {
       )
     );
   };
-
   const addTestimonialRow = () => {
     setTestimonialRows((previous) => [
       ...previous,
       createEmptyTestimonial(),
     ]);
   };
-
   const removeTestimonialRow = (index) => {
     if (testimonialRows.length === 1) return;
-
     setTestimonialRows((previous) =>
       previous.filter((_, itemIndex) => itemIndex !== index)
     );
   };
-
   // =========================================================
   // CREATE
   // =========================================================
-
   const handleCreate = async (event) => {
     event.preventDefault();
-
     if (!hotelId) {
       Swal.fire({
         icon: "warning",
         title: "Hotel Required",
         text: "Please select a hotel.",
       });
-
       return;
     }
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         testimonials: testimonialRows.map((item) => ({
           guest_name: item.guest_name.trim(),
-
           guest_country: item.guest_country.trim()
             ? item.guest_country.trim()
             : null,
-
           rating: Number(item.rating),
-
           review: item.review.trim(),
-
           display_order:
             item.display_order === ""
               ? 0
               : Number(item.display_order),
-
           status: item.status || "ACTIVE",
         })),
       };
-
-      const response = await createHotelTestimonials(payload);
-
+      const formData = new FormData();
+      formData.append("hotel_id", payload.hotel_id);
+      payload.testimonials.forEach((testimonial, index) => {
+        Object.entries(testimonial).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) formData.append(`testimonials[${index}][${key}]`, value);
+        });
+        if (testimonialRows[index].image) formData.append(`testimonials[${index}][image]`, testimonialRows[index].image);
+      });
+      const response = await createHotelTestimonials(formData);
       await Swal.fire({
         icon: "success",
         title: "Created",
@@ -214,10 +209,8 @@ const HotelTestimonial = () => {
           response.data?.message ||
           "Hotel testimonials created successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       if (currentPage === 1) {
         await fetchTestimonials(1);
       } else {
@@ -225,13 +218,10 @@ const HotelTestimonial = () => {
       }
     } catch (error) {
       console.error("Failed to create testimonials:", error);
-
       const errors = error.response?.data?.errors;
-
       const firstError = errors
         ? Object.values(errors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -244,17 +234,13 @@ const HotelTestimonial = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // OPEN EDIT
   // =========================================================
-
   const openEditModal = (testimonial) => {
     setIsEditing(true);
     setEditingId(testimonial.id);
-
     setHotelId(String(testimonial.hotel_id));
-
     setTestimonialRows([
       {
         guest_name: testimonial.guest_name || "",
@@ -263,52 +249,42 @@ const HotelTestimonial = () => {
         review: testimonial.review || "",
         display_order: testimonial.display_order ?? 0,
         status: testimonial.status || "ACTIVE",
+        image: null,
+        image_url: testimonial.image_url || null,
       },
     ]);
-
     setShowModal(true);
   };
-
   // =========================================================
   // UPDATE
   // =========================================================
-
   const handleUpdate = async (event) => {
     event.preventDefault();
-
     if (!editingId) return;
-
     const item = testimonialRows[0];
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         guest_name: item.guest_name.trim(),
-
         guest_country: item.guest_country.trim()
           ? item.guest_country.trim()
           : null,
-
         rating: Number(item.rating),
-
         review: item.review.trim(),
-
         display_order:
           item.display_order === ""
             ? 0
             : Number(item.display_order),
-
         status: item.status,
       };
-
-      const response = await updateHotelTestimonial(
-        editingId,
-        payload
-      );
-
+      const formData = new FormData();
+      Object.entries(payload).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) formData.append(key, value);
+      });
+      if (item.image) formData.append("image", item.image);
+      formData.append("_method", "PUT");
+      const response = await updateHotelTestimonial(editingId, formData);
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -316,20 +292,15 @@ const HotelTestimonial = () => {
           response.data?.message ||
           "Hotel testimonial updated successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       await fetchTestimonials(currentPage);
     } catch (error) {
       console.error("Failed to update testimonial:", error);
-
       const errors = error.response?.data?.errors;
-
       const firstError = errors
         ? Object.values(errors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -342,17 +313,14 @@ const HotelTestimonial = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // STATUS
   // =========================================================
-
   const handleStatusChange = async (testimonial) => {
     const nextStatus =
       testimonial.status === "ACTIVE"
         ? "INACTIVE"
         : "ACTIVE";
-
     const result = await Swal.fire({
       icon: "question",
       title: "Change status?",
@@ -360,14 +328,11 @@ const HotelTestimonial = () => {
       showCancelButton: true,
       confirmButtonText: "Yes, change it",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response = await changeHotelTestimonialStatus(
         testimonial.id
       );
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -377,7 +342,6 @@ const HotelTestimonial = () => {
         timer: 1300,
         showConfirmButton: false,
       });
-
       await fetchTestimonials(currentPage);
     } catch (error) {
       Swal.fire({
@@ -389,11 +353,9 @@ const HotelTestimonial = () => {
       });
     }
   };
-
   // =========================================================
   // DELETE
   // =========================================================
-
   const handleDelete = async (testimonial) => {
     const result = await Swal.fire({
       icon: "warning",
@@ -403,14 +365,11 @@ const HotelTestimonial = () => {
       confirmButtonText: "Delete",
       confirmButtonColor: "#d33",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response = await deleteHotelTestimonial(
         testimonial.id
       );
-
       await Swal.fire({
         icon: "success",
         title: "Deleted",
@@ -418,7 +377,6 @@ const HotelTestimonial = () => {
           response.data?.message ||
           "Hotel testimonial deleted successfully.",
       });
-
       await fetchTestimonials(currentPage);
     } catch (error) {
       Swal.fire({
@@ -430,11 +388,9 @@ const HotelTestimonial = () => {
       });
     }
   };
-
   // =========================================================
   // HELPERS
   // =========================================================
-
   const getHotelName = (testimonial) => {
     return (
       testimonial.hotel?.hotel_name ||
@@ -442,24 +398,18 @@ const HotelTestimonial = () => {
       "-"
     );
   };
-
   const renderStars = (rating) => {
     const value = Number(rating) || 0;
-
     return "★".repeat(value) + "☆".repeat(5 - value);
   };
-
   // =========================================================
   // UI
   // =========================================================
-
   return (
     <div className="dashboard-layout">
       <Sidebar />
-
       <div className="dashboard-main">
         <Navbar />
-
         <main className="dashboard-content">
           <div className="hotel-testimonial-page">
             <div className="hotel-testimonial-page-header">
@@ -469,7 +419,6 @@ const HotelTestimonial = () => {
                   Manage guest reviews and ratings for hotels.
                 </p>
               </div>
-
               <button
                 type="button"
                 className="hotel-testimonial-add-button"
@@ -478,7 +427,6 @@ const HotelTestimonial = () => {
                 + Add Testimonials
               </button>
             </div>
-
             <div className="hotel-testimonial-card">
               <div className="hotel-testimonial-card-header">
                 <div>
@@ -491,7 +439,6 @@ const HotelTestimonial = () => {
                   </p>
                 </div>
               </div>
-
               <div className="hotel-testimonial-table-wrapper">
                 <table className="hotel-testimonial-table">
                   <thead>
@@ -499,6 +446,7 @@ const HotelTestimonial = () => {
                       <th>S.N.</th>
                       <th>Hotel</th>
                       <th>Guest</th>
+                      <th>Image</th>
                       <th>Country</th>
                       <th>Rating</th>
                       <th>Review</th>
@@ -507,12 +455,11 @@ const HotelTestimonial = () => {
                       <th>Actions</th>
                     </tr>
                   </thead>
-
                   <tbody>
                     {loading ? (
                       <tr>
                         <td
-                          colSpan="9"
+                          colSpan="10"
                           className="hotel-testimonial-empty"
                         >
                           Loading hotel testimonials...
@@ -521,7 +468,7 @@ const HotelTestimonial = () => {
                     ) : testimonials.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="9"
+                          colSpan="10"
                           className="hotel-testimonial-empty"
                         >
                           No hotel testimonials found.
@@ -533,19 +480,16 @@ const HotelTestimonial = () => {
                           <td>
                             {(currentPage - 1) * 10 + index + 1}
                           </td>
-
                           <td>
                             <strong>
                               {getHotelName(testimonial)}
                             </strong>
                           </td>
-
                           <td>{testimonial.guest_name}</td>
-
+                            <td>{testimonial.image_url ? <img src={testimonial.image_url} alt={testimonial.guest_name || "Guest"} style={{ width: "56px", height: "56px", objectFit: "cover", borderRadius: "8px" }} /> : "-"}</td>
                           <td>
                             {testimonial.guest_country || "-"}
                           </td>
-
                           <td>
                             <span
                               className="hotel-testimonial-rating"
@@ -554,17 +498,14 @@ const HotelTestimonial = () => {
                               {renderStars(testimonial.rating)}
                             </span>
                           </td>
-
                           <td>
                             <div className="hotel-testimonial-review">
                               {testimonial.review}
                             </div>
                           </td>
-
                           <td>
                             {testimonial.display_order ?? 0}
                           </td>
-
                           <td>
                             <button
                               type="button"
@@ -580,7 +521,6 @@ const HotelTestimonial = () => {
                               {testimonial.status}
                             </button>
                           </td>
-
                           <td>
                             <div className="hotel-testimonial-actions">
                               <button
@@ -592,7 +532,6 @@ const HotelTestimonial = () => {
                               >
                                 Edit
                               </button>
-
                               <button
                                 type="button"
                                 className="hotel-testimonial-delete"
@@ -610,7 +549,6 @@ const HotelTestimonial = () => {
                   </tbody>
                 </table>
               </div>
-
               {!loading && lastPage > 1 && (
                 <div className="hotel-testimonial-pagination">
                   <Pagination
@@ -624,7 +562,6 @@ const HotelTestimonial = () => {
           </div>
         </main>
       </div>
-
       {showModal && (
         <div
           className="hotel-testimonial-modal-overlay"
@@ -641,14 +578,12 @@ const HotelTestimonial = () => {
                     ? "Edit Hotel Testimonial"
                     : "Add Hotel Testimonials"}
                 </h2>
-
                 <p>
                   {isEditing
                     ? "Update this guest testimonial."
                     : "Select a hotel and add one or more guest testimonials."}
                 </p>
               </div>
-
               <button
                 type="button"
                 className="hotel-testimonial-modal-close"
@@ -657,7 +592,6 @@ const HotelTestimonial = () => {
                 ×
               </button>
             </div>
-
             <form
               onSubmit={
                 isEditing
@@ -669,7 +603,6 @@ const HotelTestimonial = () => {
                 <div className="hotel-testimonial-hotel-field">
                   <div className="hotel-testimonial-form-group">
                     <label>Hotel *</label>
-
                     <select
                       value={hotelId}
                       onChange={(event) =>
@@ -680,7 +613,6 @@ const HotelTestimonial = () => {
                       <option value="">
                         Select Hotel
                       </option>
-
                       {hotels.map((hotel) => (
                         <option
                           key={hotel.id}
@@ -694,7 +626,6 @@ const HotelTestimonial = () => {
                     </select>
                   </div>
                 </div>
-
                 {testimonialRows.map((item, index) => (
                   <div
                     key={index}
@@ -706,7 +637,6 @@ const HotelTestimonial = () => {
                           ? "Testimonial"
                           : `Testimonial ${index + 1}`}
                       </h3>
-
                       {!isEditing &&
                         testimonialRows.length > 1 && (
                           <button
@@ -720,11 +650,9 @@ const HotelTestimonial = () => {
                           </button>
                         )}
                     </div>
-
                     <div className="hotel-testimonial-fields-grid">
                       <div className="hotel-testimonial-form-group">
                         <label>Guest Name *</label>
-
                         <input
                           type="text"
                           value={item.guest_name}
@@ -739,10 +667,8 @@ const HotelTestimonial = () => {
                           required
                         />
                       </div>
-
                       <div className="hotel-testimonial-form-group">
                         <label>Guest Country</label>
-
                         <input
                           type="text"
                           value={item.guest_country}
@@ -756,10 +682,8 @@ const HotelTestimonial = () => {
                           placeholder="e.g. Australia"
                         />
                       </div>
-
                       <div className="hotel-testimonial-form-group">
                         <label>Rating *</label>
-
                         <select
                           value={item.rating}
                           onChange={(event) =>
@@ -788,10 +712,8 @@ const HotelTestimonial = () => {
                           </option>
                         </select>
                       </div>
-
                       <div className="hotel-testimonial-form-group">
                         <label>Display Order</label>
-
                         <input
                           type="number"
                           min="0"
@@ -805,10 +727,8 @@ const HotelTestimonial = () => {
                           }
                         />
                       </div>
-
                       <div className="hotel-testimonial-form-group">
                         <label>Status</label>
-
                         <select
                           value={item.status}
                           onChange={(event) =>
@@ -822,17 +742,14 @@ const HotelTestimonial = () => {
                           <option value="ACTIVE">
                             Active
                           </option>
-
                           <option value="INACTIVE">
                             Inactive
                           </option>
                         </select>
                       </div>
                     </div>
-
                     <div className="hotel-testimonial-form-group hotel-testimonial-review-field">
                       <label>Review *</label>
-
                       <textarea
                         rows="4"
                         value={item.review}
@@ -846,10 +763,15 @@ const HotelTestimonial = () => {
                         placeholder="Enter guest review..."
                         required
                       />
+                    <div className="hotel-testimonial-form-group" style={{ marginTop: "15px" }}>
+                      <label>Guest Image</label>
+                      <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => handleTestimonialChange(index, "image", event.target.files?.[0] || null)} />
+                      {item.image && <p style={{ fontSize: "12px" }}>Selected: {item.image.name}</p>}
+                      <TestimonialImagePreview file={item.image} imageUrl={item.image_url} />
+                    </div>
                     </div>
                   </div>
                 ))}
-
                 {!isEditing && (
                   <button
                     type="button"
@@ -860,7 +782,6 @@ const HotelTestimonial = () => {
                   </button>
                 )}
               </div>
-
               <div className="hotel-testimonial-modal-footer">
                 <button
                   type="button"
@@ -870,7 +791,6 @@ const HotelTestimonial = () => {
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   className="hotel-testimonial-save"
@@ -894,5 +814,4 @@ const HotelTestimonial = () => {
     </div>
   );
 };
-
 export default HotelTestimonial;
