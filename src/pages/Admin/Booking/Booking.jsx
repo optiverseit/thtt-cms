@@ -811,43 +811,33 @@ const Booking = () => {
                                     <select
                                         id="payment-status-select"
                                         value={paymentStatus}
-                                        onChange={(e) =>
-                                            setPaymentStatus(
-                                                e.target.value
-                                            )
-                                        }
+                                        onChange={(e) => setPaymentStatus(e.target.value)}
                                         disabled={
                                             savingStatus ||
-                                            !canEditPaymentStatus(
-                                                statusBooking
-                                            )
+                                            !canEditPaymentStatus(statusBooking)
                                         }
                                         style={{
                                             width: "100%",
                                             padding: "12px",
                                             borderRadius: "8px",
                                             border: "1px solid #ddd",
-                                            background:
-                                                canEditPaymentStatus(
-                                                    statusBooking
-                                                )
-                                                    ? "#fff"
-                                                    : "#f5f5f5",
-                                            cursor:
-                                                canEditPaymentStatus(
-                                                    statusBooking
-                                                )
-                                                    ? "pointer"
-                                                    : "not-allowed",
+                                            background: canEditPaymentStatus(statusBooking)
+                                                ? "#fff"
+                                                : "#f5f5f5",
+                                            color: "#351255",
+                                            WebkitTextFillColor: "#351255",
+                                            cursor: canEditPaymentStatus(statusBooking)
+                                                ? "pointer"
+                                                : "not-allowed",
                                         }}
                                     >
-                                        <option value="PENDING">
+                                        <option value="PENDING" style={{ color: "#351255", backgroundColor: "#fff" }}>
                                             PENDING
                                         </option>
-                                        <option value="PAID">
+                                        <option value="PAID" style={{ color: "#351255", backgroundColor: "#fff" }}>
                                             PAID
                                         </option>
-                                        <option value="FAILED">
+                                        <option value="FAILED" style={{ color: "#351255", backgroundColor: "#fff" }}>
                                             FAILED
                                         </option>
                                     </select>
