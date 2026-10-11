@@ -437,8 +437,8 @@ const VisaPricingTier = () => {
                             tier.display_order === ""
                                 ? index
                                 : Number(
-                                      tier.display_order
-                                  ),
+                                    tier.display_order
+                                ),
                     })
                 ),
         };
@@ -659,8 +659,8 @@ const VisaPricingTier = () => {
                 editForm.display_order === ""
                     ? 0
                     : Number(
-                          editForm.display_order
-                      ),
+                        editForm.display_order
+                    ),
         };
 
 
@@ -776,14 +776,14 @@ const VisaPricingTier = () => {
                             (item) =>
                                 item.id === tier.id
                                     ? {
-                                          ...item,
-                                          status:
-                                              response
-                                                  .data
-                                                  ?.data
-                                                  ?.status ||
-                                              newStatus,
-                                      }
+                                        ...item,
+                                        status:
+                                            response
+                                                .data
+                                                ?.data
+                                                ?.status ||
+                                            newStatus,
+                                    }
                                     : item
                         )
                 );
@@ -966,19 +966,24 @@ const VisaPricingTier = () => {
     ===================================================== */
 
     const getCategoryName = (tier) => {
+        const category = visaCategories.find(
+            (item) => String(item.id) === String(tier.visa_category_id)
+        );
 
-        return (
+        const countryName =
+            tier.visa_category?.country?.country_name ||
+            category?.country?.country_name ||
+            "";
+
+        const categoryName =
             tier.visa_category?.name ||
             tier.category?.name ||
-            visaCategories.find(
-                (category) =>
-                    String(category.id) ===
-                    String(
-                        tier.visa_category_id
-                    )
-            )?.name ||
-            "-"
-        );
+            category?.name ||
+            "-";
+
+        return countryName
+            ? `${countryName} - ${categoryName}`
+            : categoryName;
     };
 
 
@@ -1098,26 +1103,11 @@ const VisaPricingTier = () => {
                                                     Select Visa Category
                                                 </option>
 
-                                                {visaCategories.map(
-                                                    (category) => (
-
-                                                        <option
-                                                            key={
-                                                                category.id
-                                                            }
-                                                            value={
-                                                                category.id
-                                                            }
-                                                        >
-
-                                                            {
-                                                                category.name
-                                                            }
-
-                                                        </option>
-
-                                                    )
-                                                )}
+                                                {visaCategories.map((category) => (
+                                                    <option key={category.id} value={category.id}>
+                                                        {`${category.country?.country_name || "Unknown Country"} - ${category.name}`}
+                                                    </option>
+                                                ))}
 
                                             </select>
 
@@ -1384,26 +1374,11 @@ const VisaPricingTier = () => {
                                                     Select Visa Category
                                                 </option>
 
-                                                {visaCategories.map(
-                                                    (category) => (
-
-                                                        <option
-                                                            key={
-                                                                category.id
-                                                            }
-                                                            value={
-                                                                category.id
-                                                            }
-                                                        >
-
-                                                            {
-                                                                category.name
-                                                            }
-
-                                                        </option>
-
-                                                    )
-                                                )}
+                                                {visaCategories.map((category) => (
+                                                    <option key={category.id} value={category.id}>
+                                                        {`${category.country?.country_name || "Unknown Country"} - ${category.name}`}
+                                                    </option>
+                                                ))}
 
                                             </select>
 
@@ -1448,7 +1423,7 @@ const VisaPricingTier = () => {
                                                             }
                                                             disabled={
                                                                 pricingTierItems.length ===
-                                                                    1 ||
+                                                                1 ||
                                                                 saving
                                                             }
                                                             title="Remove Pricing Tier"
@@ -1785,7 +1760,7 @@ const VisaPricingTier = () => {
                                             </tr>
 
                                         ) : pricingTiers.length ===
-                                          0 ? (
+                                            0 ? (
 
                                             <tr>
 
@@ -1857,7 +1832,7 @@ const VisaPricingTier = () => {
 
                                                                 {Number(
                                                                     tier.price_npr ||
-                                                                        0
+                                                                    0
                                                                 ).toLocaleString()}
 
                                                             </span>
@@ -1877,12 +1852,11 @@ const VisaPricingTier = () => {
 
                                                             <button
                                                                 type="button"
-                                                                className={`visa-pricing-tier-status ${
-                                                                    tier.status ===
+                                                                className={`visa-pricing-tier-status ${tier.status ===
                                                                     "ACTIVE"
-                                                                        ? "active"
-                                                                        : "inactive"
-                                                                }`}
+                                                                    ? "active"
+                                                                    : "inactive"
+                                                                    }`}
                                                                 disabled={
                                                                     changingStatusId ===
                                                                     tier.id
@@ -1895,7 +1869,7 @@ const VisaPricingTier = () => {
                                                             >
 
                                                                 {changingStatusId ===
-                                                                tier.id
+                                                                    tier.id
                                                                     ? "Updating..."
                                                                     : tier.status}
 

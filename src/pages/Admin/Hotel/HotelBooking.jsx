@@ -1,43 +1,34 @@
 import { useEffect, useRef, useState } from "react";
-
+import Swal from "sweetalert2";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
   getAllHotelBookingsCms,
   getHotelBookingByIdCms,
   changeHotelBookingStatusCms,
 } from "../../../api/BackendApi";
-
 import "./HotelBooking.css";
-
 const HotelBooking = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [totalBookings, setTotalBookings] = useState(0);
-
   const [openMenuId, setOpenMenuId] = useState(null);
-
   const [selectedBooking, setSelectedBooking] = useState(null);
-
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewLoading, setViewLoading] = useState(false);
-
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState("PENDING");
+  const [statusLoading, setStatusLoading] = useState(false);
   const [cancellationReason, setCancellationReason] = useState("");
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
-
   const menuRef = useRef(null);
-
   useEffect(() => {
     fetchBookings(page);
   }, [page]);
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -47,9 +38,7 @@ const HotelBooking = () => {
         setOpenMenuId(null);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener(
         "mousedown",
@@ -57,16 +46,12 @@ const HotelBooking = () => {
       );
     };
   }, []);
-
   const fetchBookings = async (currentPage = 1) => {
     try {
       setLoading(true);
-
       const response =
         await getAllHotelBookingsCms(currentPage);
-
       const paginationData = response.data?.data;
-
       setBookings(paginationData?.data || []);
       setPage(paginationData?.current_page || 1);
       setLastPage(paginationData?.last_page || 1);
@@ -76,124 +61,133 @@ const HotelBooking = () => {
         "Failed to fetch hotel bookings:",
         error
       );
-
       setBookings([]);
     } finally {
       setLoading(false);
     }
   };
-
   const handleViewBooking = async (booking) => {
     try {
       setOpenMenuId(null);
       setViewLoading(true);
       setSelectedBooking(null);
       setIsViewModalOpen(true);
-
       const response =
         await getHotelBookingByIdCms(booking.id);
-
       setSelectedBooking(response.data?.data || null);
     } catch (error) {
       console.error(
         "Failed to fetch hotel booking details:",
         error
       );
-
       setIsViewModalOpen(false);
-
-      alert(
-        error.response?.data?.message ||
-          "Failed to fetch hotel booking details."
-      );
+      Swal.fire({ icon: "error", title: "Failed", text: error.response?.data?.message || "Failed to fetch hotel booking details.", confirmButtonColor: "#351255" });
     } finally {
       setViewLoading(false);
     }
   };
-
-  const handleOpenStatusModal = (booking) => {
-    setSelectedBooking(booking);
-
-    setSelectedStatus(
-      booking.status || "PENDING"
-    );
-
-    setCancellationReason(
-      booking.cancellation_reason || ""
-    );
-
-    setIsStatusModalOpen(true);
-    setOpenMenuId(null);
+  const getPayLaterPayment = (booking) => {
+    const payments = Array.isArray(booking?.payments) ? booking.payments : [];
+    return [...payments].filter((payment) => payment.provider === "PAYLATER").sort((a, b) => Number(b.id) - Number(a.id))[0] || null;
   };
-
-  const handleChangeStatus = async () => {
-    if (!selectedBooking || !selectedStatus) {
-      return;
-    }
-
-    if (
-      selectedStatus === "CANCELLED" &&
-      !cancellationReason.trim()
-    ) {
-      alert("Cancellation reason is required.");
-      return;
-    }
-
+  const canEditPaymentStatus = (booking) => {
+    if (!booking) return false;
+    const payments = Array.isArray(booking.payments) ? booking.payments : [];
+    const payLater = getPayLaterPayment(booking);
+    return Boolean(payLater) && booking.payment_status !== "PAID" && payLater.status !== "PAID" && !payments.some((payment) => payment.status === "PAID");
+  };
+  const handleOpenStatusModal = async (booking) => {
+    setOpenMenuId(null);
+    setSelectedBooking(booking);
+    setSelectedStatus(booking.status || "PENDING");
+    setSelectedPaymentStatus(booking.payment_status || "PENDING");
+    setCancellationReason(booking.cancellation_reason || "");
+    setIsStatusModalOpen(true);
     try {
-      setIsUpdatingStatus(true);
-
-      await changeHotelBookingStatusCms(
-        selectedBooking.id,
-        {
-          status: selectedStatus,
-
-          cancellation_reason:
-            selectedStatus === "CANCELLED"
-              ? cancellationReason.trim()
-              : null,
+      setStatusLoading(true);
+      const response = await getHotelBookingByIdCms(booking.id);
+      const detail = response.data?.data;
+      if (detail) {
+        setSelectedBooking(detail);
+        setSelectedStatus(detail.status || "PENDING");
+        setSelectedPaymentStatus(detail.payment_status || "PENDING");
+        setCancellationReason(detail.cancellation_reason || "");
+      }
+    } catch (error) {
+      console.error("Failed to fetch hotel payment information:", error);
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+  const closeStatusModal = () => {
+    if (isUpdatingStatus) return;
+    setIsStatusModalOpen(false);
+    setSelectedBooking(null);
+    setSelectedStatus("");
+    setSelectedPaymentStatus("PENDING");
+    setCancellationReason("");
+  };
+  const handleChangeStatus = async () => {
+    if (!selectedBooking || isUpdatingStatus || statusLoading) return;
+    const payload = {};
+    if (selectedStatus !== selectedBooking.status) {
+      payload.status = selectedStatus;
+      if (selectedStatus === "CANCELLED") {
+        if (!cancellationReason.trim()) {
+          await Swal.fire({ icon: "warning", title: "Cancellation Reason Required", text: "Cancellation reason is required.", confirmButtonColor: "#351255" });
+          return;
         }
-      );
-
-      setIsStatusModalOpen(false);
+        payload.cancellation_reason = cancellationReason.trim();
+      }
+    }
+    if (canEditPaymentStatus(selectedBooking) && selectedPaymentStatus !== selectedBooking.payment_status) {
+      payload.payment_status = selectedPaymentStatus;
+    }
+    if (Object.keys(payload).length === 0) {
+      await Swal.fire({ icon: "info", title: "No Changes", text: "No status changes made.", confirmButtonColor: "#351255" });
+      return;
+    }
+    setIsStatusModalOpen(false);
+    if (payload.payment_status === "PAID") {
+      const confirmation = await Swal.fire({ icon: "warning", title: "Confirm Payment?", text: "Mark this PAYLATER payment as PAID? You cannot change its payment status afterward.", showCancelButton: true, confirmButtonText: "Yes, Mark as Paid", cancelButtonText: "Cancel", confirmButtonColor: "#351255" });
+      if (!confirmation.isConfirmed) {
+        setIsStatusModalOpen(true);
+        return;
+      }
+    }
+    setIsUpdatingStatus(true);
+    try {
+      Swal.fire({
+        title: "Updating Status...",
+        text: "Please wait while the booking is being updated.",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => Swal.showLoading()
+      });
+      const response = await changeHotelBookingStatusCms(selectedBooking.id, payload);
+      if (!response.data?.status) throw new Error(response.data?.message || "Failed to update hotel booking status.");
+      Swal.close();
       setSelectedBooking(null);
       setSelectedStatus("");
+      setSelectedPaymentStatus("PENDING");
       setCancellationReason("");
-
       await fetchBookings(page);
     } catch (error) {
-      console.error(
-        "Failed to update hotel booking status:",
-        error
-      );
-
-      alert(
-        error.response?.data?.message ||
-          "Failed to update hotel booking status."
-      );
+      Swal.close();
+      console.error("Failed to update hotel booking status:", error);
+      setIsStatusModalOpen(true);
+      await Swal.fire({ icon: "error", title: "Update Failed", text: error.response?.data?.message || error.message || "Failed to update hotel booking status.", confirmButtonColor: "#351255" });
     } finally {
       setIsUpdatingStatus(false);
     }
   };
-
   const closeViewModal = () => {
     setIsViewModalOpen(false);
     setSelectedBooking(null);
   };
-
-  const closeStatusModal = () => {
-    if (isUpdatingStatus) {
-      return;
-    }
-
-    setIsStatusModalOpen(false);
-    setSelectedBooking(null);
-    setSelectedStatus("");
-    setCancellationReason("");
-  };
-
   const formatDate = (date) => {
     if (!date) return "-";
-
     return new Date(date).toLocaleDateString(
       "en-US",
       {
@@ -203,10 +197,8 @@ const HotelBooking = () => {
       }
     );
   };
-
   const formatDateTime = (date) => {
     if (!date) return "-";
-
     return new Date(date).toLocaleString(
       "en-US",
       {
@@ -218,7 +210,6 @@ const HotelBooking = () => {
       }
     );
   };
-
   const formatAmount = (amount) => {
     if (
       amount === null ||
@@ -226,7 +217,6 @@ const HotelBooking = () => {
     ) {
       return "-";
     }
-
     return `NPR ${Number(
       amount
     ).toLocaleString("en-US", {
@@ -234,10 +224,8 @@ const HotelBooking = () => {
       maximumFractionDigits: 2,
     })}`;
   };
-
   const formatStatus = (status) => {
     if (!status) return "-";
-
     return status
       .toLowerCase()
       .split("_")
@@ -248,42 +236,34 @@ const HotelBooking = () => {
       )
       .join(" ");
   };
-
   const getStatusClass = (status) => {
     switch (status?.toUpperCase()) {
       case "CONFIRMED":
       case "COMPLETED":
       case "CHECKED_OUT":
         return "hotel-booking-status-success";
-
       case "PROCESSING":
       case "CHECKED_IN":
         return "hotel-booking-status-processing";
-
       case "CANCELLED":
         return "hotel-booking-status-cancelled";
-
       case "PENDING":
       default:
         return "hotel-booking-status-pending";
     }
   };
-
   const getPaymentStatusClass = (status) => {
     switch (status?.toUpperCase()) {
       case "PAID":
         return "hotel-payment-paid";
-
       case "FAILED":
       case "REFUNDED":
         return "hotel-payment-failed";
-
       case "PENDING":
       default:
         return "hotel-payment-pending";
     }
   };
-
   const getHotelName = (booking) => {
     return (
       booking?.hotel?.name ||
@@ -291,9 +271,10 @@ const HotelBooking = () => {
       "-"
     );
   };
-
   const getPricingTierName = (booking) => {
     return (
+      booking?.pricing_tier?.room_name ||
+      booking?.pricingTier?.room_name ||
       booking?.pricing_tier?.title ||
       booking?.pricingTier?.title ||
       booking?.pricing_tier?.room_type ||
@@ -301,7 +282,6 @@ const HotelBooking = () => {
       "-"
     );
   };
-
   const getLatestPayment = (booking) => {
     if (
       !booking?.payments ||
@@ -309,37 +289,30 @@ const HotelBooking = () => {
     ) {
       return null;
     }
-
     return booking.payments[
       booking.payments.length - 1
     ];
   };
-
   return (
     <div className="dashboard-layout">
       <Sidebar />
-
       <div className="dashboard-main">
         <Navbar />
-
         <main className="dashboard-content">
           <div className="hotel-booking-page">
             <div className="hotel-booking-header">
               <div>
                 <h1>Hotel Bookings</h1>
-
                 <p>
                   View and manage hotel bookings
                   submitted by customers.
                 </p>
               </div>
             </div>
-
             <div className="hotel-booking-table-card">
               <div className="hotel-booking-table-header">
                 <div>
                   <h2>Hotel Booking List</h2>
-
                   <p>
                     {totalBookings}{" "}
                     {totalBookings === 1
@@ -348,7 +321,6 @@ const HotelBooking = () => {
                   </p>
                 </div>
               </div>
-
               <div className="hotel-booking-table-responsive">
                 <table className="hotel-booking-table">
                   <thead>
@@ -364,13 +336,11 @@ const HotelBooking = () => {
                       <th>Total Amount</th>
                       <th>Status</th>
                       <th>Payment</th>
-
                       <th className="hotel-booking-action-column">
                         Actions
                       </th>
                     </tr>
                   </thead>
-
                   <tbody>
                     {loading ? (
                       <tr>
@@ -379,7 +349,6 @@ const HotelBooking = () => {
                           className="hotel-booking-table-message"
                         >
                           <div className="hotel-booking-loader" />
-
                           Loading hotel bookings...
                         </td>
                       </tr>
@@ -401,7 +370,6 @@ const HotelBooking = () => {
                                 index +
                                 1}
                             </td>
-
                             <td>
                               <span className="hotel-booking-reference">
                                 {
@@ -409,7 +377,6 @@ const HotelBooking = () => {
                                 }
                               </span>
                             </td>
-
                             <td>
                               <div className="hotel-booking-guest">
                                 <strong>
@@ -417,39 +384,32 @@ const HotelBooking = () => {
                                     booking.primary_guest_name
                                   }
                                 </strong>
-
                                 <span>
                                   {booking.email}
                                 </span>
                               </div>
                             </td>
-
                             <td>
                               {getHotelName(booking)}
                             </td>
-
                             <td>
                               {getPricingTierName(
                                 booking
                               )}
                             </td>
-
                             <td>
                               {formatDate(
                                 booking.check_in_date
                               )}
                             </td>
-
                             <td>
                               {formatDate(
                                 booking.check_out_date
                               )}
                             </td>
-
                             <td>
                               {booking.total_guests}
                             </td>
-
                             <td>
                               <span className="hotel-booking-amount">
                                 {formatAmount(
@@ -457,7 +417,6 @@ const HotelBooking = () => {
                                 )}
                               </span>
                             </td>
-
                             <td>
                               <span
                                 className={`hotel-booking-status ${getStatusClass(
@@ -469,7 +428,6 @@ const HotelBooking = () => {
                                 )}
                               </span>
                             </td>
-
                             <td>
                               <span
                                 className={`hotel-payment-status ${getPaymentStatusClass(
@@ -481,7 +439,6 @@ const HotelBooking = () => {
                                 )}
                               </span>
                             </td>
-
                             <td className="hotel-booking-action-cell">
                               <div
                                 className="hotel-booking-action-wrapper"
@@ -506,7 +463,6 @@ const HotelBooking = () => {
                                 >
                                   ⋮
                                 </button>
-
                                 {openMenuId ===
                                   booking.id && (
                                   <div className="hotel-booking-action-menu">
@@ -520,7 +476,6 @@ const HotelBooking = () => {
                                     >
                                       View Details
                                     </button>
-
                                     <button
                                       type="button"
                                       onClick={() =>
@@ -542,7 +497,6 @@ const HotelBooking = () => {
                   </tbody>
                 </table>
               </div>
-
               {!loading && lastPage > 1 && (
                 <div className="hotel-booking-pagination">
                   <Pagination
@@ -556,7 +510,6 @@ const HotelBooking = () => {
           </div>
         </main>
       </div>
-
       {isViewModalOpen && (
         <div
           className="hotel-booking-modal-overlay"
@@ -571,7 +524,6 @@ const HotelBooking = () => {
             <div className="hotel-booking-modal-header">
               <div>
                 <h2>Hotel Booking Details</h2>
-
                 {selectedBooking && (
                   <p>
                     {
@@ -580,7 +532,6 @@ const HotelBooking = () => {
                   </p>
                 )}
               </div>
-
               <button
                 type="button"
                 className="hotel-booking-modal-close"
@@ -589,12 +540,10 @@ const HotelBooking = () => {
                 ×
               </button>
             </div>
-
             {viewLoading ? (
               <div className="hotel-booking-modal-body">
                 <div className="hotel-booking-table-message">
                   <div className="hotel-booking-loader" />
-
                   Loading booking details...
                 </div>
               </div>
@@ -603,47 +552,39 @@ const HotelBooking = () => {
                 <div className="hotel-booking-modal-body">
                   <div className="hotel-booking-detail-section">
                     <h3>Booking Information</h3>
-
                     <div className="hotel-booking-detail-grid">
                       <div className="hotel-booking-detail-item">
                         <span>
                           Booking Reference
                         </span>
-
                         <strong>
                           {
                             selectedBooking.booking_reference
                           }
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>
                           Booking Status
                         </span>
-
                         <strong>
                           {formatStatus(
                             selectedBooking.status
                           )}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>
                           Payment Status
                         </span>
-
                         <strong>
                           {formatStatus(
                             selectedBooking.payment_status
                           )}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Total Amount</span>
-
                         <strong>
                           {formatAmount(
                             selectedBooking.total_amount
@@ -652,41 +593,32 @@ const HotelBooking = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="hotel-booking-detail-section">
                     <h3>Guest Information</h3>
-
                     <div className="hotel-booking-detail-grid">
                       <div className="hotel-booking-detail-item">
                         <span>Primary Guest</span>
-
                         <strong>
                           {selectedBooking.primary_guest_name ||
                             "-"}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Email</span>
-
                         <strong>
                           {selectedBooking.email ||
                             "-"}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Phone Number</span>
-
                         <strong>
                           {selectedBooking.phone_number ||
                             "-"}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Nationality</span>
-
                         <strong>
                           {selectedBooking.nationality ||
                             "-"}
@@ -694,100 +626,81 @@ const HotelBooking = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="hotel-booking-detail-section">
                     <h3>
                       Hotel & Stay Information
                     </h3>
-
                     <div className="hotel-booking-detail-grid">
                       <div className="hotel-booking-detail-item">
                         <span>Hotel</span>
-
                         <strong>
                           {getHotelName(
                             selectedBooking
                           )}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>
                           Room / Pricing Tier
                         </span>
-
                         <strong>
                           {getPricingTierName(
                             selectedBooking
                           )}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Check-in Date</span>
-
                         <strong>
                           {formatDate(
                             selectedBooking.check_in_date
                           )}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Check-out Date</span>
-
                         <strong>
                           {formatDate(
                             selectedBooking.check_out_date
                           )}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Number of Days</span>
-
                         <strong>
                           {selectedBooking.number_of_days ??
                             "-"}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Total Guests</span>
-
                         <strong>
                           {selectedBooking.total_guests ??
                             "-"}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Beds in Room</span>
-
                         <strong>
                           {selectedBooking.beds_in_room ??
                             "-"}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>
                           Travelling with Children
                         </span>
-
                         <strong>
                           {selectedBooking.travelling_with_children
                             ? "Yes"
                             : "No"}
                         </strong>
                       </div>
-
                       {selectedBooking.travelling_with_children && (
                         <div className="hotel-booking-detail-item">
                           <span>
                             Number of Children
                           </span>
-
                           <strong>
                             {selectedBooking.number_of_children ??
                               0}
@@ -796,11 +709,9 @@ const HotelBooking = () => {
                       )}
                     </div>
                   </div>
-
                   {selectedBooking.special_requests && (
                     <div className="hotel-booking-detail-section">
                       <h3>Special Requests</h3>
-
                       <div className="hotel-booking-special-request">
                         {
                           selectedBooking.special_requests
@@ -808,30 +719,25 @@ const HotelBooking = () => {
                       </div>
                     </div>
                   )}
-
                   {selectedBooking.status ===
                     "CANCELLED" && (
                     <div className="hotel-booking-detail-section">
                       <h3>
                         Cancellation Information
                       </h3>
-
                       <div className="hotel-booking-detail-grid">
                         <div className="hotel-booking-detail-item">
                           <span>Cancelled At</span>
-
                           <strong>
                             {formatDateTime(
                               selectedBooking.cancelled_at
                             )}
                           </strong>
                         </div>
-
                         <div className="hotel-booking-detail-item hotel-booking-detail-full">
                           <span>
                             Cancellation Reason
                           </span>
-
                           <strong>
                             {selectedBooking.cancellation_reason ||
                               "-"}
@@ -840,27 +746,22 @@ const HotelBooking = () => {
                       </div>
                     </div>
                   )}
-
                   <div className="hotel-booking-detail-section">
                     <h3>Payment Information</h3>
-
                     {getLatestPayment(
                       selectedBooking
                     ) ? (
                       <div className="hotel-booking-detail-grid">
                         <div className="hotel-booking-detail-item">
                           <span>Provider</span>
-
                           <strong>
                             {getLatestPayment(
                               selectedBooking
                             )?.provider || "-"}
                           </strong>
                         </div>
-
                         <div className="hotel-booking-detail-item">
                           <span>Amount</span>
-
                           <strong>
                             {formatAmount(
                               getLatestPayment(
@@ -869,12 +770,10 @@ const HotelBooking = () => {
                             )}
                           </strong>
                         </div>
-
                         <div className="hotel-booking-detail-item">
                           <span>
                             Payment Status
                           </span>
-
                           <strong>
                             {formatStatus(
                               getLatestPayment(
@@ -883,12 +782,10 @@ const HotelBooking = () => {
                             )}
                           </strong>
                         </div>
-
                         <div className="hotel-booking-detail-item">
                           <span>
                             Transaction ID
                           </span>
-
                           <strong>
                             {getLatestPayment(
                               selectedBooking
@@ -896,10 +793,8 @@ const HotelBooking = () => {
                               "-"}
                           </strong>
                         </div>
-
                         <div className="hotel-booking-detail-item">
                           <span>Paid At</span>
-
                           <strong>
                             {formatDateTime(
                               getLatestPayment(
@@ -915,14 +810,11 @@ const HotelBooking = () => {
                       </p>
                     )}
                   </div>
-
                   <div className="hotel-booking-detail-section">
                     <h3>System Information</h3>
-
                     <div className="hotel-booking-detail-grid">
                       <div className="hotel-booking-detail-item">
                         <span>User</span>
-
                         <strong>
                           {selectedBooking.user
                             ?.name ||
@@ -932,10 +824,8 @@ const HotelBooking = () => {
                             "-"}
                         </strong>
                       </div>
-
                       <div className="hotel-booking-detail-item">
                         <span>Created At</span>
-
                         <strong>
                           {formatDateTime(
                             selectedBooking.created_at
@@ -945,7 +835,6 @@ const HotelBooking = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="hotel-booking-modal-footer">
                   <button
                     type="button"
@@ -960,7 +849,6 @@ const HotelBooking = () => {
           </div>
         </div>
       )}
-
       {isStatusModalOpen &&
         selectedBooking && (
           <div
@@ -978,14 +866,12 @@ const HotelBooking = () => {
                   <h2>
                     Change Booking Status
                   </h2>
-
                   <p>
                     {
                       selectedBooking.booking_reference
                     }
                   </p>
                 </div>
-
                 <button
                   type="button"
                   className="hotel-booking-modal-close"
@@ -999,23 +885,19 @@ const HotelBooking = () => {
                   ×
                 </button>
               </div>
-
               <div className="hotel-booking-modal-body">
                 <div className="hotel-booking-form-group">
                   <label>
                     Booking Status
                   </label>
-
                   <select
                     value={selectedStatus}
                     onChange={(event) => {
                       const status =
                         event.target.value;
-
                       setSelectedStatus(
                         status
                       );
-
                       if (
                         status !==
                         "CANCELLED"
@@ -1029,40 +911,32 @@ const HotelBooking = () => {
                     <option value="PENDING">
                       Pending
                     </option>
-
                     <option value="CONFIRMED">
                       Confirmed
                     </option>
-
                     <option value="PROCESSING">
                       Processing
                     </option>
-
                     <option value="CHECKED_IN">
                       Checked In
                     </option>
-
                     <option value="CHECKED_OUT">
                       Checked Out
                     </option>
-
                     <option value="CANCELLED">
                       Cancelled
                     </option>
-
                     <option value="COMPLETED">
                       Completed
                     </option>
                   </select>
                 </div>
-
                 {selectedStatus ===
                   "CANCELLED" && (
                   <div className="hotel-booking-form-group">
                     <label>
                       Cancellation Reason
                     </label>
-
                     <textarea
                       rows="4"
                       value={
@@ -1077,8 +951,23 @@ const HotelBooking = () => {
                     />
                   </div>
                 )}
-              </div>
-
+                <div className="hotel-booking-form-group" style={{ marginTop: "18px" }}>
+    <label>Payment Status</label>
+    <select
+      value={selectedPaymentStatus}
+      onChange={(event) => setSelectedPaymentStatus(event.target.value)}
+      disabled={isUpdatingStatus || statusLoading || !canEditPaymentStatus(selectedBooking)}
+      style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "8px", background: canEditPaymentStatus(selectedBooking) ? "#fff" : "#f5f5f5", color: "#351255" }}
+    >
+      <option value="PENDING">Pending</option>
+      <option value="PAID">Paid</option>
+      <option value="FAILED">Failed</option>
+    </select>
+    <p style={{ marginTop: "8px", fontSize: "12px", color: "#777" }}>
+      {statusLoading ? "Checking payment details..." : selectedBooking.payment_status === "PAID" ? "This booking is already paid. Payment status cannot be changed." : canEditPaymentStatus(selectedBooking) ? "Payment status can be updated for this unpaid PAYLATER booking." : "Payment status can only be updated for an unpaid PAYLATER booking."}
+    </p>
+  </div>
+</div>
               <div className="hotel-booking-modal-footer">
                 <button
                   type="button"
@@ -1092,7 +981,6 @@ const HotelBooking = () => {
                 >
                   Cancel
                 </button>
-
                 <button
                   type="button"
                   className="hotel-booking-primary-button"
@@ -1114,5 +1002,4 @@ const HotelBooking = () => {
     </div>
   );
 };
-
 export default HotelBooking;
