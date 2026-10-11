@@ -8,6 +8,7 @@ import {
     FaPlus,
     FaFileAlt,
     FaExternalLinkAlt,
+    FaEdit,
 } from "react-icons/fa";
 
 import {
@@ -18,6 +19,7 @@ import {
     changeWorkPermitPaymentStatus,
     getWorkPermitDocuments,
     verifyWorkPermitDocument,
+    changeWorkPermitStatus,
 } from "../../../api/BackendApi";
 
 import "./WorkPermit.css";
@@ -99,6 +101,102 @@ const WorkPermit = () => {
 
     const [applicationDetailLoading, setApplicationDetailLoading] =
         useState(false);
+
+    /* =========================================================
+       UPDATE APPLICATION STATUS MODAL
+    ========================================================= */
+    const [statusModalOpen, setStatusModalOpen] = useState(false);
+    const [statusPermit, setStatusPermit] = useState(null);
+    const [statusDetailLoading, setStatusDetailLoading] = useState(false);
+    const [savingApplicationStatus, setSavingApplicationStatus] = useState(false);
+    const [selectedApplicationStatus, setSelectedApplicationStatus] = useState("SUBMITTED");
+    const [selectedApplicationPaymentStatus, setSelectedApplicationPaymentStatus] = useState("PENDING");
+
+    const permitStatusOptions = ["DRAFT", "SUBMITTED", "DOCUMENT_VERIFICATION", "SSF_INSURANCE_PAID", "FEO_PROCESSING", "APPROVED", "ISSUED", "REJECTED", "CANCELLED"];
+    const getPayLaterForPermit = (permit) => (Array.isArray(permit?.payments) ? permit.payments : [])
+        .filter((payment) => payment.provider === "PAYLATER")
+        .sort((a, b) => Number(b.id) - Number(a.id))[0] || null;
+    const canUpdatePermitPayment = (permit) => {
+        const payLater = getPayLaterForPermit(permit);
+        const payments = Array.isArray(permit?.payments) ? permit.payments : [];
+        return Boolean(payLater) && permit?.payment_status !== "PAID" &&
+            payLater.status !== "PAID" && !payments.some((payment) => payment.status === "PAID");
+    };
+    const openApplicationStatusModal = async (permit) => {
+        setOpenMenuId(null);
+        setStatusPermit(permit);
+        setSelectedApplicationStatus(permit.status || "SUBMITTED");
+        setSelectedApplicationPaymentStatus(permit.payment_status || "PENDING");
+        setStatusModalOpen(true);
+        setStatusDetailLoading(true);
+        try {
+            const response = await getWorkPermitById(permit.id);
+            if (!response.data?.status) throw new Error(response.data?.message || "Unable to load work permit.");
+            const detail = response.data.data;
+            setStatusPermit(detail);
+            setSelectedApplicationStatus(detail.status || "SUBMITTED");
+            setSelectedApplicationPaymentStatus(detail.payment_status || "PENDING");
+        } catch (error) {
+            setStatusModalOpen(false);
+            await Swal.fire({ icon: "error", title: "Failed", text: error.response?.data?.message || error.message || "Unable to load work permit.", confirmButtonColor: "#351255" });
+        } finally {
+            setStatusDetailLoading(false);
+        }
+    };
+    const closeApplicationStatusModal = () => {
+        if (savingApplicationStatus) return;
+        setStatusModalOpen(false);
+        setStatusPermit(null);
+    };
+    const handleSaveApplicationStatus = async () => {
+        if (!statusPermit || savingApplicationStatus || statusDetailLoading) return;
+        const payload = {};
+        if (selectedApplicationStatus !== statusPermit.status) payload.status = selectedApplicationStatus;
+        if (canUpdatePermitPayment(statusPermit) && selectedApplicationPaymentStatus !== statusPermit.payment_status) {
+            payload.payment_status = selectedApplicationPaymentStatus;
+        }
+        if (!Object.keys(payload).length) {
+            closeApplicationStatusModal();
+            await Swal.fire({ icon: "info", title: "No Changes", text: "No status changes made.", confirmButtonColor: "#351255" });
+            return;
+        }
+        setStatusModalOpen(false);
+        if (payload.payment_status === "PAID") {
+            const result = await Swal.fire({
+                icon: "warning", title: "Confirm Payment?",
+                text: "Mark this PAYLATER payment as PAID? This cannot be undone through this status form.",
+                showCancelButton: true, confirmButtonText: "Yes, Mark as Paid",
+                cancelButtonText: "Cancel", confirmButtonColor: "#351255"
+            });
+            if (!result.isConfirmed) { setStatusModalOpen(true); return; }
+        }
+        setSavingApplicationStatus(true);
+        try {
+            Swal.fire({
+                title: "Updating Status...",
+                text: "Please wait while the work permit is being updated.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => Swal.showLoading()
+            });
+            const response = await changeWorkPermitStatus(statusPermit.id, payload);
+            if (!response.data?.status) throw new Error(response.data?.message || "Update failed.");
+            Swal.close();
+            setStatusPermit(null);
+            await fetchWorkPermits();
+        } catch (error) {
+            Swal.close();
+            setStatusModalOpen(true);
+            await Swal.fire({
+                icon: "error", title: "Update Failed",
+                text: error.response?.data?.message || error.message || "Unable to update work permit.",
+                confirmButtonColor: "#351255"
+            });
+        } finally {
+            setSavingApplicationStatus(false);
+        }
+    };
 
     /* =========================================================
        VIEW DOCUMENTS MODAL
@@ -1143,6 +1241,12 @@ const WorkPermit = () => {
                                                                                     </span>
                                                                                 </button>
 
+                                                                                {/* UPDATE STATUS */}
+                                                                                <button type="button" className="kebab-menu-item" onClick={() => openApplicationStatusModal(permit)}>
+                                                                                    <FaEdit />
+                                                                                    <span>Update Status</span>
+                                                                                </button>
+
                                                                                 {/* VIEW PAYMENT */}
 
                                                                                 <button
@@ -1223,6 +1327,45 @@ const WorkPermit = () => {
                             />
 
                         </div>
+
+                        {/* =================================================
+                            UPDATE APPLICATION STATUS MODAL
+                        ================================================= */}
+                        {statusModalOpen && statusPermit && (
+                            <div className="payment-modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) closeApplicationStatusModal(); }}>
+                                <div className="payment-modal" style={{ maxWidth: "520px", width: "95%" }}>
+                                    <div className="payment-modal-header">
+                                        <div><h2>Update Work Permit Status</h2><p>{statusPermit.application_number || `Application #${statusPermit.id}`}</p></div>
+                                        <button type="button" className="payment-modal-close" onClick={closeApplicationStatusModal} disabled={savingApplicationStatus}>×</button>
+                                    </div>
+                                    <div className="payment-modal-body">
+                                        {statusDetailLoading ? (
+                                            <div className="modal-loading-state"><div className="work-permit-loader"></div>Loading application...</div>
+                                        ) : (
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "17px" }}>
+                                                <div className="payment-form-group">
+                                                    <label>Application Status</label>
+                                                    <select value={selectedApplicationStatus} onChange={(e) => setSelectedApplicationStatus(e.target.value)} disabled={savingApplicationStatus} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd" }}>
+                                                        {permitStatusOptions.map((status) => <option key={status} value={status}>{status.replaceAll("_", " ")}</option>)}
+                                                    </select>
+                                                </div>
+                                                <div className="payment-form-group">
+                                                    <label>Payment Status</label>
+                                                    <select value={selectedApplicationPaymentStatus} onChange={(e) => setSelectedApplicationPaymentStatus(e.target.value)} disabled={savingApplicationStatus || !canUpdatePermitPayment(statusPermit)} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid #ddd", background: canUpdatePermitPayment(statusPermit) ? "#fff" : "#f5f5f5" }}>
+                                                        <option value="PENDING">PENDING</option><option value="PAID">PAID</option><option value="FAILED">FAILED</option>
+                                                    </select>
+                                                    <p style={{ fontSize: "12px", color: "#777", marginTop: "6px" }}>{statusPermit.payment_status === "PAID" ? "Already paid. Payment status is locked." : canUpdatePermitPayment(statusPermit) ? "Only unpaid PAYLATER payments can be updated." : "Payment status requires an unpaid PAYLATER payment in the application details."}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="payment-modal-footer">
+                                        <button type="button" className="payment-cancel-button" onClick={closeApplicationStatusModal} disabled={savingApplicationStatus}>Cancel</button>
+                                        <button type="button" className="payment-submit-button" onClick={handleSaveApplicationStatus} disabled={savingApplicationStatus || statusDetailLoading}>{savingApplicationStatus ? "Saving..." : "Save Changes"}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* =================================================
                             VIEW APPLICATION MODAL

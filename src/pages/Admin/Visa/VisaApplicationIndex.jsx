@@ -8,6 +8,7 @@ import {
     FaExternalLinkAlt,
     FaUpload,
     FaUsers,
+    FaEdit,
 } from "react-icons/fa";
 
 import {
@@ -61,6 +62,16 @@ const VisaApplicationIndex = () => {
 
     const [applicationDetailLoading, setApplicationDetailLoading] =
         useState(false);
+
+    /* =========================================================
+       UPDATE STATUS MODAL
+    ========================================================= */
+    const [statusModalOpen, setStatusModalOpen] = useState(false);
+    const [statusApplication, setStatusApplication] = useState(null);
+    const [statusLoading, setStatusLoading] = useState(false);
+    const [savingStatus, setSavingStatus] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState("SUBMITTED");
+    const [selectedPaymentStatus, setSelectedPaymentStatus] = useState("PENDING");
 
     /* =========================================================
        APPLICANTS MODAL
@@ -683,121 +694,151 @@ const VisaApplicationIndex = () => {
     };
 
     /* =========================================================
-       CHANGE APPLICATION STATUS
+       UPDATE APPLICATION AND PAYMENT STATUS
     ========================================================= */
+    const getPayLaterPayment = (application) => {
+        const payments = Array.isArray(application?.payments) ? application.payments : [];
+        return [...payments]
+            .filter((payment) => String(payment.provider).toUpperCase() === "PAYLATER")
+            .sort((a, b) => Number(b.id) - Number(a.id))[0] || null;
+    };
 
-    const handleChangeApplicationStatus = async (
-        application,
-        newStatus
-    ) => {
+    const canEditPaymentStatus = (application) => {
+        if (!application) return false;
+        const payments = Array.isArray(application.payments) ? application.payments : [];
+        const payment = getPayLaterPayment(application);
+        return Boolean(payment) &&
+            application.payment_status !== "PAID" &&
+            payment.status !== "PAID" &&
+            !payments.some((item) => item.status === "PAID");
+    };
 
-        if (application.status === newStatus) {
-            return;
-        }
-
+    const openStatusModal = async (application) => {
         setOpenMenuId(null);
-
-        const result = await Swal.fire({
-
-            icon: "question",
-
-            title: "Change Application Status?",
-
-            text:
-                `Change application status from ` +
-                `${displayValue(application.status)} to ` +
-                `${displayValue(newStatus)}?`,
-
-            showCancelButton: true,
-
-            confirmButtonText: "Yes, Change",
-
-            cancelButtonText: "Cancel",
-
-            confirmButtonColor: "#351255",
-        });
-
-        if (!result.isConfirmed) {
-            return;
-        }
-
+        setStatusApplication(application);
+        setSelectedStatus(application.status || "SUBMITTED");
+        setSelectedPaymentStatus(application.payment_status || "PENDING");
+        setStatusModalOpen(true);
+        setStatusLoading(true);
         try {
-
-            const response =
-                await changeVisaApplicationStatus(
-                    application.id,
-                    {
-                        status: newStatus,
-                    }
-                );
-
-            if (response.data?.status) {
-
-                setApplications(
-                    (previous) =>
-                        previous.map(
-                            (item) =>
-                                item.id ===
-                                application.id
-                                    ? {
-                                          ...item,
-                                          ...response
-                                              .data
-                                              .data,
-                                      }
-                                    : item
-                        )
-                );
-
-                setApplicationDetail((previous) =>
-                    previous && previous.id === application.id
-                        ? {
-                              ...previous,
-                              ...(response.data?.data || {}),
-                              status:
-                                  response.data?.data?.status ||
-                                  newStatus,
-                          }
-                        : previous
-                );
-
-                Swal.fire({
-
-                    icon: "success",
-
-                    title: "Status Updated",
-
-                    text:
-                        response.data?.message ||
-                        "Visa application status updated successfully.",
-
-                    confirmButtonColor:
-                        "#351255",
-                });
-            }
-
+            const response = await getVisaApplicationById(application.id);
+            if (!response.data?.status) throw new Error(response.data?.message || "Unable to load application.");
+            const detail = response.data.data;
+            setStatusApplication({ ...application, ...detail });
+            setSelectedStatus(detail.status || application.status || "SUBMITTED");
+            setSelectedPaymentStatus(detail.payment_status || application.payment_status || "PENDING");
         } catch (error) {
-
-            console.error(
-                "Visa status update error:",
-                error
-            );
-
-            Swal.fire({
-
-                icon: "error",
-
-                title: "Update Failed",
-
-                text:
-                    error.response?.data?.message ||
-                    "Unable to update visa application status.",
-
-                confirmButtonColor:
-                    "#351255",
+            setStatusModalOpen(false);
+            await Swal.fire({
+                icon: "error", title: "Failed",
+                text: error.response?.data?.message || error.message || "Unable to load application status.",
+                confirmButtonColor: "#351255"
             });
+        } finally {
+            setStatusLoading(false);
         }
     };
+
+    const closeStatusModal = () => {
+        if (savingStatus) return;
+        setStatusModalOpen(false);
+        setStatusApplication(null);
+    };
+
+
+
+    const handleUpdateStatus = async () => {
+        if (!statusApplication || savingStatus || statusLoading) return;
+
+        const payload = {};
+
+        if (selectedStatus !== statusApplication.status) {
+            payload.status = selectedStatus;
+        }
+
+        if (
+            canEditPaymentStatus(statusApplication) &&
+            selectedPaymentStatus !== statusApplication.payment_status
+        ) {
+            payload.payment_status = selectedPaymentStatus;
+        }
+
+        if (!Object.keys(payload).length) {
+            closeStatusModal();
+            await Swal.fire({
+                icon: "info",
+                title: "No Changes",
+                text: "No status changes were made.",
+                confirmButtonColor: "#351255"
+            });
+            return;
+        }
+
+        setStatusModalOpen(false);
+
+        if (payload.payment_status === "PAID") {
+            const confirmation = await Swal.fire({
+                icon: "warning",
+                title: "Confirm Payment?",
+                text: "This will mark the PAYLATER payment as PAID. Its payment status cannot be changed afterward.",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Mark as Paid",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "#351255"
+            });
+
+            if (!confirmation.isConfirmed) {
+                setStatusModalOpen(true);
+                return;
+            }
+        }
+
+        setSavingStatus(true);
+
+        try {
+            Swal.fire({
+                title: "Updating Status...",
+                text: "Please wait while the application is being updated.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            const response = await changeVisaApplicationStatus(
+                statusApplication.id,
+                payload
+            );
+
+            if (!response.data?.status) {
+                throw new Error(response.data?.message || "Update failed.");
+            }
+
+            Swal.close();
+
+            setStatusApplication(null);
+
+            await fetchApplications();
+
+        } catch (error) {
+            Swal.close();
+            setStatusModalOpen(true);
+
+            await Swal.fire({
+                icon: "error",
+                title: "Update Failed",
+                text: error.response?.data?.message ||
+                    error.message ||
+                    "Unable to update visa application.",
+                confirmButtonColor: "#351255"
+            });
+
+        } finally {
+            setSavingStatus(false);
+        }
+    };
+
+
 
     /* =========================================================
        OPEN VOUCHER MODAL
@@ -1288,7 +1329,7 @@ const VisaApplicationIndex = () => {
                                                                 className="kebab-wrapper"
                                                                 ref={
                                                                     openMenuId ===
-                                                                    application.id
+                                                                        application.id
                                                                         ? menuRef
                                                                         : null
                                                                 }
@@ -1311,90 +1352,96 @@ const VisaApplicationIndex = () => {
                                                                 {openMenuId ===
                                                                     application.id && (
 
-                                                                    <div className="kebab-menu">
+                                                                        <div className="kebab-menu">
 
-                                                                        {/* VIEW APPLICATION */}
+                                                                            {/* VIEW APPLICATION */}
 
-                                                                        <button
-                                                                            type="button"
-                                                                            className="kebab-menu-item"
-                                                                            onClick={() =>
-                                                                                openApplicationDetailModal(
-                                                                                    application
-                                                                                )
-                                                                            }
-                                                                        >
+                                                                            <button
+                                                                                type="button"
+                                                                                className="kebab-menu-item"
+                                                                                onClick={() =>
+                                                                                    openApplicationDetailModal(
+                                                                                        application
+                                                                                    )
+                                                                                }
+                                                                            >
 
-                                                                            <FaEye />
+                                                                                <FaEye />
 
-                                                                            <span>
-                                                                                View Application
-                                                                            </span>
+                                                                                <span>
+                                                                                    View Application
+                                                                                </span>
 
-                                                                        </button>
+                                                                            </button>
 
-                                                                        {/* VIEW APPLICANTS */}
+                                                                            {/* UPDATE STATUS */}
+                                                                            <button type="button" className="kebab-menu-item" onClick={() => openStatusModal(application)}>
+                                                                                <FaEdit />
+                                                                                <span>Update Status</span>
+                                                                            </button>
 
-                                                                        <button
-                                                                            type="button"
-                                                                            className="kebab-menu-item"
-                                                                            onClick={() =>
-                                                                                openViewApplicantsModal(
-                                                                                    application
-                                                                                )
-                                                                            }
-                                                                        >
+                                                                            {/* VIEW APPLICANTS */}
 
-                                                                            <FaUsers />
+                                                                            <button
+                                                                                type="button"
+                                                                                className="kebab-menu-item"
+                                                                                onClick={() =>
+                                                                                    openViewApplicantsModal(
+                                                                                        application
+                                                                                    )
+                                                                                }
+                                                                            >
 
-                                                                            <span>
-                                                                                View Applicants
-                                                                            </span>
+                                                                                <FaUsers />
 
-                                                                        </button>
+                                                                                <span>
+                                                                                    View Applicants
+                                                                                </span>
 
-                                                                        {/* UPLOAD VOUCHER */}
+                                                                            </button>
 
-                                                                        <button
-                                                                            type="button"
-                                                                            className="kebab-menu-item"
-                                                                            onClick={() =>
-                                                                                openVoucherModal(
-                                                                                    application
-                                                                                )
-                                                                            }
-                                                                        >
+                                                                            {/* UPLOAD VOUCHER */}
 
-                                                                            <FaUpload />
+                                                                            <button
+                                                                                type="button"
+                                                                                className="kebab-menu-item"
+                                                                                onClick={() =>
+                                                                                    openVoucherModal(
+                                                                                        application
+                                                                                    )
+                                                                                }
+                                                                            >
 
-                                                                            <span>
-                                                                                Upload Voucher/Receipt
-                                                                            </span>
+                                                                                <FaUpload />
 
-                                                                        </button>
+                                                                                <span>
+                                                                                    Upload Voucher/Receipt
+                                                                                </span>
 
-                                                                        {/* VIEW DOCUMENTS */}
+                                                                            </button>
 
-                                                                        <button
-                                                                            type="button"
-                                                                            className="kebab-menu-item"
-                                                                            onClick={() =>
-                                                                                openViewDocumentsModal(
-                                                                                    application
-                                                                                )
-                                                                            }
-                                                                        >
+                                                                            {/* VIEW DOCUMENTS */}
 
-                                                                            <FaFileAlt />
+                                                                            <button
+                                                                                type="button"
+                                                                                className="kebab-menu-item"
+                                                                                onClick={() =>
+                                                                                    openViewDocumentsModal(
+                                                                                        application
+                                                                                    )
+                                                                                }
+                                                                            >
 
-                                                                            <span>
-                                                                                View Documents
-                                                                            </span>
+                                                                                <FaFileAlt />
 
-                                                                        </button>
+                                                                                <span>
+                                                                                    View Documents
+                                                                                </span>
 
-                                                                    </div>
-                                                                )}
+                                                                            </button>
+
+                                                                        </div>
+                                                                    )}
 
                                                             </div>
 
@@ -1712,25 +1759,25 @@ const VisaApplicationIndex = () => {
                                                                 applicationDetail.voucher_url
                                                             ) && (
 
-                                                                <a
-                                                                    href={
-                                                                        applicationDetail.voucher_url
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
-                                                                    className="payment-receipt-preview"
-                                                                >
-
-                                                                    <img
-                                                                        src={
+                                                                    <a
+                                                                        href={
                                                                             applicationDetail.voucher_url
                                                                         }
-                                                                        alt="Visa voucher"
-                                                                    />
+                                                                        target="_blank"
+                                                                        rel="noreferrer"
+                                                                        className="payment-receipt-preview"
+                                                                    >
 
-                                                                </a>
+                                                                        <img
+                                                                            src={
+                                                                                applicationDetail.voucher_url
+                                                                            }
+                                                                            alt="Visa voucher"
+                                                                        />
 
-                                                            )}
+                                                                    </a>
+
+                                                                )}
 
                                                             <a
                                                                 href={
@@ -1750,71 +1797,6 @@ const VisaApplicationIndex = () => {
                                                         </div>
 
                                                     )}
-
-                                                </div>
-
-                                                {/* STATUS */}
-
-                                                <div className="detail-section">
-
-                                                    <h3>
-                                                        Application Status
-                                                    </h3>
-
-                                                    <div className="payment-status-buttons">
-
-                                                        {[
-                                                            "SUBMITTED",
-                                                            "IN_REVIEW",
-                                                            "APPROVED",
-                                                            "REJECTED",
-                                                        ].map(
-                                                            (status) => (
-
-                                                                <button
-                                                                    key={
-                                                                        status
-                                                                    }
-                                                                    type="button"
-                                                                    className={`payment-status-action-btn ${
-                                                                        applicationDetail.status ===
-                                                                        status
-                                                                            ? "active"
-                                                                            : ""
-                                                                    }`}
-                                                                    disabled={
-                                                                        applicationDetail.status ===
-                                                                        status
-                                                                    }
-                                                                    onClick={() =>
-                                                                        handleChangeApplicationStatus(
-                                                                            applicationDetail,
-                                                                            status
-                                                                        )
-                                                                    }
-                                                                    style={{
-                                                                        color:
-                                                                            applicationDetail.status ===
-                                                                            status
-                                                                                ? "#ffffff"
-                                                                                : "#351255",
-                                                                        fontSize:
-                                                                            "13px",
-                                                                        fontWeight:
-                                                                            600,
-                                                                    }}
-                                                                >
-
-                                                                    {displayValue(
-                                                                        status
-                                                                    )}
-
-                                                                </button>
-
-                                                            )
-                                                        )}
-
-                                                    </div>
 
                                                 </div>
 
@@ -1888,6 +1870,67 @@ const VisaApplicationIndex = () => {
 
                                 </div>
 
+                            </div>
+                        )}
+
+                        {/* =================================================
+                            UPDATE STATUS MODAL
+                        ================================================= */}
+                        {statusModalOpen && statusApplication && (
+                            <div className="payment-modal-overlay" onMouseDown={(e) => {
+                                if (e.target === e.currentTarget) closeStatusModal();
+                            }}>
+                                <div className="payment-modal" style={{ maxWidth: "520px", width: "95%" }}>
+                                    <div className="payment-modal-header">
+                                        <div>
+                                            <h2>Update Visa Application Status</h2>
+                                            <p>{statusApplication.application_number || `Application #${statusApplication.id}`}</p>
+                                        </div>
+                                        <button type="button" className="payment-modal-close" onClick={closeStatusModal} disabled={savingStatus}>×</button>
+                                    </div>
+                                    <div className="payment-modal-body">
+                                        {statusLoading ? (
+                                            <div className="modal-loading-state">Loading application status...</div>
+                                        ) : (
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                                                <div className="payment-form-group">
+                                                    <label htmlFor="visa-application-status">Application Status</label>
+                                                    <select id="visa-application-status" value={selectedStatus}
+                                                        onChange={(e) => setSelectedStatus(e.target.value)} disabled={savingStatus}
+                                                        style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "8px", background: "#fff", color: "#351255" }}>
+                                                        {["DRAFT", "SUBMITTED", "PROCESSING", "APPROVED", "REJECTED", "COMPLETED"].map((status) => (
+                                                            <option key={status} value={status}>{displayValue(status)}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div className="payment-form-group">
+                                                    <label htmlFor="visa-payment-status">Payment Status</label>
+                                                    <select id="visa-payment-status" value={selectedPaymentStatus}
+                                                        onChange={(e) => setSelectedPaymentStatus(e.target.value)}
+                                                        disabled={savingStatus || !canEditPaymentStatus(statusApplication)}
+                                                        style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "8px", background: canEditPaymentStatus(statusApplication) ? "#fff" : "#f5f5f5", color: "#351255" }}>
+                                                        {["PENDING", "PAID", "FAILED"].map((status) => (
+                                                            <option key={status} value={status}>{status}</option>
+                                                        ))}
+                                                    </select>
+                                                    <p style={{ fontSize: "12px", marginTop: "8px", color: "#777" }}>
+                                                        {statusApplication.payment_status === "PAID"
+                                                            ? "Already paid. Payment status cannot be changed."
+                                                            : canEditPaymentStatus(statusApplication)
+                                                                ? "Payment status can be updated for this unpaid PAYLATER application."
+                                                                : "Only unpaid PAYLATER payments can be updated. The details API must include payments."}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="payment-modal-footer">
+                                        <button type="button" className="payment-cancel-button" onClick={closeStatusModal} disabled={savingStatus}>Cancel</button>
+                                        <button type="button" className="payment-submit-button" onClick={handleUpdateStatus} disabled={savingStatus || statusLoading}>
+                                            {savingStatus ? "Saving..." : "Save Changes"}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
@@ -2138,7 +2181,7 @@ const VisaApplicationIndex = () => {
 
                                     if (
                                         e.target ===
-                                            e.currentTarget &&
+                                        e.currentTarget &&
                                         !verifyingDocumentId
                                     ) {
                                         closeViewDocumentsModal();
@@ -2258,11 +2301,10 @@ const VisaApplicationIndex = () => {
                                                                 </div>
 
                                                                 <span
-                                                                    className={`payment-status ${
-                                                                        document.is_verified
-                                                                            ? "payment-paid"
-                                                                            : "payment-pending"
-                                                                    }`}
+                                                                    className={`payment-status ${document.is_verified
+                                                                        ? "payment-paid"
+                                                                        : "payment-pending"
+                                                                        }`}
                                                                 >
 
                                                                     {document.is_verified
@@ -2386,25 +2428,25 @@ const VisaApplicationIndex = () => {
                                                                         document.file_url
                                                                     ) && (
 
-                                                                        <a
-                                                                            href={
-                                                                                document.file_url
-                                                                            }
-                                                                            target="_blank"
-                                                                            rel="noreferrer"
-                                                                            className="payment-receipt-preview"
-                                                                        >
-
-                                                                            <img
-                                                                                src={
+                                                                            <a
+                                                                                href={
                                                                                     document.file_url
                                                                                 }
-                                                                                alt="Visa document"
-                                                                            />
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                                className="payment-receipt-preview"
+                                                                            >
 
-                                                                        </a>
+                                                                                <img
+                                                                                    src={
+                                                                                        document.file_url
+                                                                                    }
+                                                                                    alt="Visa document"
+                                                                                />
 
-                                                                    )}
+                                                                            </a>
+
+                                                                        )}
 
                                                                     <div className="document-action-buttons">
 
@@ -2425,11 +2467,10 @@ const VisaApplicationIndex = () => {
 
                                                                         <button
                                                                             type="button"
-                                                                            className={`payment-status-action-btn ${
-                                                                                document.is_verified
-                                                                                    ? "reject"
-                                                                                    : "verify"
-                                                                            }`}
+                                                                            className={`payment-status-action-btn ${document.is_verified
+                                                                                ? "reject"
+                                                                                : "verify"
+                                                                                }`}
                                                                             disabled={
                                                                                 verifyingDocumentId ===
                                                                                 document.id
@@ -2442,11 +2483,11 @@ const VisaApplicationIndex = () => {
                                                                         >
 
                                                                             {verifyingDocumentId ===
-                                                                            document.id
+                                                                                document.id
                                                                                 ? "Updating..."
                                                                                 : document.is_verified
-                                                                                  ? "Unverify"
-                                                                                  : "Verify"}
+                                                                                    ? "Unverify"
+                                                                                    : "Verify"}
 
                                                                         </button>
 
@@ -2503,7 +2544,7 @@ const VisaApplicationIndex = () => {
 
                                     if (
                                         e.target ===
-                                            e.currentTarget &&
+                                        e.currentTarget &&
                                         !voucherSubmitting
                                     ) {
                                         closeVoucherModal();

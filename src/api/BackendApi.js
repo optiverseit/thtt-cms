@@ -1137,14 +1137,8 @@ export const uploadInsuranceApplicationVoucher = (
     );
 };
 
-export const changeInsuranceApplicationStatus = (
-    id,
-    data
-) => {
-    return axiosInstance.patch(
-        `/insurance-applications/${id}/status`,
-        data
-    );
+export const changeInsuranceApplicationStatus = (id, data) => {
+    return axiosInstance.put(`/insurance-applications/${id}/status`, data);
 };
 
 
