@@ -2,47 +2,35 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FaPen, FaTrash } from "react-icons/fa";
-
 import {
     getAllVehiclesCms,
     changeVehicleStatus,
     deleteVehicle,
 } from "../../../api/BackendApi";
-
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import "./Vehicle.css";
-
 const Vehicle = () => {
     const navigate = useNavigate();
-
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const [statusLoadingId, setStatusLoadingId] =
         useState(null);
-
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-
     useEffect(() => {
         fetchVehicles();
     }, [page]);
-
     const fetchVehicles = async () => {
         try {
             setLoading(true);
-
             const response =
                 await getAllVehiclesCms(page);
-
             if (response.data?.status) {
                 setVehicles(
                     response.data.data.data || []
                 );
-
                 setTotalPages(
                     response.data.data.last_page || 1
                 );
@@ -52,7 +40,6 @@ const Vehicle = () => {
                 "Vehicle fetch error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -65,7 +52,6 @@ const Vehicle = () => {
             setLoading(false);
         }
     };
-
     /*
     |--------------------------------------------------------------------------
     | GET VEHICLE DISPLAY IMAGE
@@ -85,7 +71,6 @@ const Vehicle = () => {
     | ]
     |
     */
-
     const getVehicleImage = (vehicle) => {
         if (
             Array.isArray(vehicle.images) &&
@@ -97,22 +82,18 @@ const Vehicle = () => {
                 null
             );
         }
-
         return null;
     };
-
     /*
     |--------------------------------------------------------------------------
     | STATUS CHANGE
     |--------------------------------------------------------------------------
     */
-
     const handleStatusChange = async (vehicle) => {
         const newStatus =
             vehicle.status === "ACTIVE"
                 ? "INACTIVE"
                 : "ACTIVE";
-
         const result = await Swal.fire({
             icon: "question",
             title: "Change Status?",
@@ -123,19 +104,15 @@ const Vehicle = () => {
             confirmButtonColor: "#351255",
             cancelButtonColor: "#77717d",
         });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
             setStatusLoadingId(vehicle.id);
-
             const response =
                 await changeVehicleStatus(
                     vehicle.id
                 );
-
             if (response.data?.status) {
                 await Swal.fire({
                     icon: "success",
@@ -147,7 +124,6 @@ const Vehicle = () => {
                     timer: 1300,
                     showConfirmButton: false,
                 });
-
                 await fetchVehicles();
             }
         } catch (error) {
@@ -155,7 +131,6 @@ const Vehicle = () => {
                 "Vehicle status error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Update Failed",
@@ -168,13 +143,11 @@ const Vehicle = () => {
             setStatusLoadingId(null);
         }
     };
-
     /*
     |--------------------------------------------------------------------------
     | DELETE
     |--------------------------------------------------------------------------
     */
-
     const handleDelete = async (vehicle) => {
         const result = await Swal.fire({
             icon: "warning",
@@ -186,15 +159,12 @@ const Vehicle = () => {
             confirmButtonColor: "#d33",
             cancelButtonColor: "#351255",
         });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
             const response =
                 await deleteVehicle(vehicle.id);
-
             if (response.data?.status) {
                 await Swal.fire({
                     icon: "success",
@@ -204,7 +174,6 @@ const Vehicle = () => {
                         "Vehicle deleted successfully.",
                     confirmButtonColor: "#351255",
                 });
-
                 /*
                 |--------------------------------------------------------------------------
                 | PAGE FIX AFTER DELETE
@@ -214,7 +183,6 @@ const Vehicle = () => {
                 | go back one page instead of leaving an empty page.
                 |
                 */
-
                 if (
                     vehicles.length === 1 &&
                     page > 1
@@ -231,7 +199,6 @@ const Vehicle = () => {
                 "Vehicle delete error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Delete Failed",
@@ -242,29 +209,22 @@ const Vehicle = () => {
             });
         }
     };
-
     return (
         <div className="dashboard-layout">
             <Sidebar />
-
             <div className="dashboard-main">
                 <Navbar />
-
                 <main className="dashboard-content">
                     <div className="vehicle-page">
-
                         {/* HEADER */}
-
                         <div className="vehicle-header">
                             <div>
                                 <h1>Vehicles</h1>
-
                                 <p>
                                     Manage vehicles available
                                     for travel packages.
                                 </p>
                             </div>
-
                             <button
                                 className="create-vehicle-button"
                                 onClick={() =>
@@ -276,15 +236,11 @@ const Vehicle = () => {
                                 + Create Vehicle
                             </button>
                         </div>
-
                         {/* CARD */}
-
                         <div className="vehicle-card">
-
                             {loading ? (
                                 <div className="vehicle-loading">
                                     <div className="vehicle-loader"></div>
-
                                     <p>
                                         Loading vehicles...
                                     </p>
@@ -294,7 +250,6 @@ const Vehicle = () => {
                                     <h3>
                                         No Vehicles Found
                                     </h3>
-
                                     <p>
                                         Create your first
                                         vehicle to get
@@ -304,64 +259,51 @@ const Vehicle = () => {
                             ) : (
                                 <>
                                     <div className="vehicle-table-wrapper">
-
                                         <table className="vehicle-table">
-
                                             <thead>
                                                 <tr>
                                                     <th>
                                                         S.N.
                                                     </th>
-
                                                     <th>
                                                         Vehicle
                                                     </th>
-
                                                     <th>
                                                         Route
                                                     </th>
-
                                                     <th>
                                                         Capacity
                                                     </th>
-
                                                     <th>
                                                         Duration
                                                     </th>
-
                                                     <th>
                                                         Price
                                                     </th>
-
                                                     <th>
                                                         Status
                                                     </th>
-
                                                     <th className="action-column">
                                                         Actions
                                                     </th>
                                                 </tr>
                                             </thead>
-
                                             <tbody>
-
                                                 {vehicles.map(
                                                     (
                                                         vehicle,
                                                         index
                                                     ) => {
-
                                                         const vehicleImage =
                                                             getVehicleImage(
                                                                 vehicle
                                                             );
-
                                                         const capacity =
                                                             Number(
                                                                 vehicle.capacity ??
                                                                     0
                                                             );
-
+                                                        /*
                                                         const remainingSeats =
                                                             vehicle.remaining_seats !==
                                                                 null &&
@@ -371,16 +313,15 @@ const Vehicle = () => {
                                                                       vehicle.remaining_seats
                                                                   )
                                                                 : capacity;
-
+                                                        */
+                                                        const reservedSeats = vehicle.reserved_seats ?? 0;
                                                         return (
                                                             <tr
                                                                 key={
                                                                     vehicle.id
                                                                 }
                                                             >
-
                                                                 {/* SERIAL NUMBER */}
-
                                                                 <td>
                                                                     {(page -
                                                                         1) *
@@ -388,14 +329,10 @@ const Vehicle = () => {
                                                                         index +
                                                                         1}
                                                                 </td>
-
                                                                 {/* VEHICLE */}
-
                                                                 <td>
                                                                     <div className="vehicle-info">
-
                                                                         <div className="vehicle-image">
-
                                                                             {vehicleImage ? (
                                                                                 <img
                                                                                     src={
@@ -407,26 +344,20 @@ const Vehicle = () => {
                                                                                 />
                                                                             ) : (
                                                                                 <div className="vehicle-image-placeholder">
-
                                                                                     {vehicle.name
                                                                                         ?.charAt(
                                                                                             0
                                                                                         )
                                                                                         .toUpperCase()}
-
                                                                                 </div>
                                                                             )}
-
                                                                         </div>
-
                                                                         <div className="vehicle-details">
-
                                                                             <span className="vehicle-name">
                                                                                 {
                                                                                     vehicle.name
                                                                                 }
                                                                             </span>
-
                                                                             {vehicle.description && (
                                                                                 <span className="vehicle-description">
                                                                                     {
@@ -434,76 +365,55 @@ const Vehicle = () => {
                                                                                     }
                                                                                 </span>
                                                                             )}
-
                                                                         </div>
-
                                                                     </div>
                                                                 </td>
-
                                                                 {/* ROUTE */}
-
                                                                 <td>
                                                                     <div className="vehicle-route">
-
                                                                         <span>
                                                                             {
                                                                                 vehicle.from_location
                                                                             }
                                                                         </span>
-
                                                                         <span className="route-arrow">
                                                                             →
                                                                         </span>
-
                                                                         <span>
                                                                             {
                                                                                 vehicle.to_location
                                                                             }
                                                                         </span>
-
                                                                     </div>
                                                                 </td>
-
-                                                                {/* CAPACITY / REMAINING SEATS */}
-
+                                                                {/* CAPACITY / RESERVED SEATS */}
                                                                 <td>
                                                                     <span className="vehicle-capacity">
-
                                                                         {
-                                                                            remainingSeats
+                                                                            reservedSeats
                                                                         }{" "}
                                                                         /{" "}
                                                                         {
                                                                             capacity
                                                                         }{" "}
-                                                                        seats
-
+                                                                        reserved seats
                                                                     </span>
                                                                 </td>
-
                                                                 {/* DURATION */}
-
                                                                 <td>
                                                                     {vehicle.duration ||
                                                                         "-"}
                                                                 </td>
-
                                                                 {/* PRICE */}
-
                                                                 <td>
                                                                     <span className="vehicle-price">
-
                                                                         Rs.{" "}
-
                                                                         {
                                                                             vehicle.price
                                                                         }
-
                                                                     </span>
                                                                 </td>
-
                                                                 {/* STATUS */}
-
                                                                 <td>
                                                                     <button
                                                                         className={`vehicle-status ${
@@ -522,21 +432,15 @@ const Vehicle = () => {
                                                                             vehicle.id
                                                                         }
                                                                     >
-
                                                                         {statusLoadingId ===
                                                                         vehicle.id
                                                                             ? "Updating..."
                                                                             : vehicle.status}
-
                                                                     </button>
                                                                 </td>
-
                                                                 {/* ACTIONS */}
-
                                                                 <td className="action-column">
-
                                                                     <div className="action-buttons">
-
                                                                         <button
                                                                             className="edit-button"
                                                                             onClick={() =>
@@ -548,7 +452,6 @@ const Vehicle = () => {
                                                                             <FaPen />
                                                                             Edit
                                                                         </button>
-
                                                                         <button
                                                                             className="delete-button"
                                                                             onClick={() =>
@@ -560,22 +463,15 @@ const Vehicle = () => {
                                                                             <FaTrash />
                                                                             Delete
                                                                         </button>
-
                                                                     </div>
-
                                                                 </td>
-
                                                             </tr>
                                                         );
                                                     }
                                                 )}
-
                                             </tbody>
-
                                         </table>
-
                                     </div>
-
                                     <Pagination
                                         page={page}
                                         totalPages={
@@ -587,14 +483,11 @@ const Vehicle = () => {
                                     />
                                 </>
                             )}
-
                         </div>
-
                     </div>
                 </main>
             </div>
         </div>
     );
 };
-
 export default Vehicle;

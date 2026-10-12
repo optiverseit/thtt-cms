@@ -252,6 +252,14 @@ const Sidebar = () => {
               </button>
 
               <button
+                className={`submenu-item ${isActive("/packages/policy") ? "active" : ""
+                  }`}
+                onClick={() => navigate("/packages/policy")}
+              >
+                Policies
+              </button>
+
+              <button
                 className={`submenu-item ${isActive("/packages/highlights") ? "active" : ""
                   }`}
                 onClick={() => navigate("/packages/highlights")}
@@ -327,13 +335,13 @@ const Sidebar = () => {
                 All Work Permits
               </button>
 
-              {/* <button
-                className={`submenu-item ${isActive("/work-permits/country") ? "active" : ""
+              <button
+                className={`submenu-item ${isActive("/work-permits/highlights") ? "active" : ""
                   }`}
-                onClick={() => navigate("/work-permits/country")}
+                onClick={() => navigate("/work-permits/highlights")}
               >
-                Country
-              </button> */}
+                WorkPermit Highlights
+              </button>
 
               <button
                 className={`submenu-item ${isActive("/work-permits/feetiers") ? "active" : ""

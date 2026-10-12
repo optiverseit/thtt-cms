@@ -237,6 +237,11 @@ export const getAllPackagesCms = (page = 1) => {
     return axiosInstance.get(`/packages/cms?page=${page}`);
 };
 
+//ACTIVE PACKAGES
+export const getPackages = () => {
+    return axiosInstance.get(`/packages`);
+};
+
 export const createPackage = (data) => {
     return axiosInstance.post("/packages", data, {
         headers: {
@@ -793,6 +798,61 @@ export const deleteWorkPermitInformation = (id) => {
         `/work-permit-information/${id}`
     );
 };
+
+
+// ============================================
+// WORK PERMIT HIGHLIGHTS
+// ============================================
+
+// Get all work permit highlights for CMS
+export const getAllWorkPermitHighlightsCms = (page = 1) => {
+    return axiosInstance.get(
+        `/work-permit-highlights/cms?page=${page}`
+    );
+};
+
+// Get work permit highlights by country ID
+export const getWorkPermitHighlightByCountry = (countryId) => {
+    return axiosInstance.get(
+        `/work-permit-highlights/country/${countryId}`
+    );
+};
+
+// Create work permit highlights
+// FormData with Cloudinary image
+export const createWorkPermitHighlight = (formData) => {
+    return axiosInstance.post(
+        `/work-permit-highlights/store`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+};
+
+// Update work permit highlights by country ID
+// FormData with optional new image
+export const updateWorkPermitHighlight = (countryId, formData) => {
+    return axiosInstance.post(
+        `/work-permit-highlights/${countryId}/update`,
+        formData,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+};
+
+// Delete work permit highlights by country ID
+export const deleteWorkPermitHighlight = (countryId) => {
+    return axiosInstance.delete(
+        `/work-permit-highlights/${countryId}`
+    );
+};
+
 
 // VISA SERVICES
 // ================= VISA APPLICATIONS =================
@@ -1698,4 +1758,100 @@ export const updateTravelGuideStatusCms = (id, status) => {
 
 export const deleteTravelGuideCms = (id) => {
     return axiosInstance.delete(`/travel-guides/${id}`);
+};
+
+
+// ==================== PACKAGE TESTIMONIAL CMS ====================
+
+export const getPackageTestimonialsCms = (packageId, page = 1) => {
+    return axiosInstance.get(`/package-testimonials/cms/${packageId}?page=${page}`);
+};
+
+export const getPublicPackageTestimonials = (packageId, page = 1) => {
+    return axiosInstance.get(`/package-public-testimonials/${packageId}?page=${page}`);
+};
+
+export const createPackageTestimonials = (formData) => {
+    return axiosInstance.post(`/package-testimonials/store`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updatePackageTestimonial = (id, formData) => {
+    return axiosInstance.post(`/package-testimonials/${id}/update`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const changePackageTestimonialStatus = (id) => {
+    return axiosInstance.put(`/package-testimonials/${id}/status`);
+};
+
+export const deletePackageTestimonial = (id) => {
+    return axiosInstance.delete(`/package-testimonials/${id}`);
+};
+
+
+// ==================== PACKAGE GALLERY CMS ====================
+
+export const getPackageGalleryCms = (packageId, page = 1) => {
+    return axiosInstance.get(`/package-gallery/cms/${packageId}?page=${page}`);
+};
+
+export const getPublicPackageGallery = (packageId, page = 1) => {
+    return axiosInstance.get(`/package-public-gallery/${packageId}?page=${page}`);
+};
+
+export const createPackageGallery = (formData) => {
+    return axiosInstance.post(`/package-gallery/store`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updatePackageGallery = (id, formData) => {
+    return axiosInstance.post(`/package-gallery/${id}/update`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const changePackageGalleryStatus = (id) => {
+    return axiosInstance.put(`/package-gallery/${id}/status`);
+};
+
+export const deletePackageGallery = (id) => {
+    return axiosInstance.delete(`/package-gallery/${id}`);
+};
+
+// ==================== PACKAGE POLICY CMS ====================
+
+export const getPackagePoliciesCms = (packageId, page = 1) => {
+    return axiosInstance.get(`/package-policies/cms/${packageId}?page=${page}`);
+};
+
+export const getPublicPackagePolicies = (packageId, page = 1) => {
+    return axiosInstance.get(`/package-public-policies/${packageId}?page=${page}`);
+};
+
+export const createPackagePolicies = (data) => {
+    return axiosInstance.post(`/package-policies/store`, data);
+};
+
+export const updatePackagePolicy = (id, data) => {
+    return axiosInstance.put(`/package-policies/${id}`, data);
+};
+
+export const changePackagePolicyStatus = (id) => {
+    return axiosInstance.put(`/package-policies/${id}/status`);
+};
+
+export const deletePackagePolicy = (id) => {
+    return axiosInstance.delete(`/package-policies/${id}`);
 };

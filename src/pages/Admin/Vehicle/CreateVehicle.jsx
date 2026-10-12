@@ -1,102 +1,76 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-
 import { createVehicle } from "../../../api/BackendApi";
-
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
-
 import "./CreateVehicle.css";
-
 const CreateVehicle = () => {
     const navigate = useNavigate();
-
     const [saving, setSaving] = useState(false);
-
     /*
     |--------------------------------------------------------------------------
     | MULTIPLE IMAGE PREVIEWS
     |--------------------------------------------------------------------------
     */
-
     const [imagePreviews, setImagePreviews] = useState([]);
-
     /*
     |--------------------------------------------------------------------------
     | FORM DATA
     |--------------------------------------------------------------------------
     */
-
     const [formData, setFormData] = useState({
         name: "",
-
         vehicle_type: "",
         fuel_type: "",
         trip_type: "",
-
         capacity: "",
-
+        reserved_seats: "",
         from_location: "",
         to_location: "",
-
         duration: "",
-
         bags_per_person: "",
         max_luggage: "",
-
         available_from: "",
         available_to: "",
-
         price: "",
-
         description: "",
-
         images: [],
     });
-
     /*
     |--------------------------------------------------------------------------
     | NORMAL INPUT CHANGE
     |--------------------------------------------------------------------------
     */
-
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
-
     /*
     |--------------------------------------------------------------------------
     | MULTIPLE IMAGE CHANGE
     |--------------------------------------------------------------------------
     */
-
     const handleImageChange = (e) => {
         const files = Array.from(
             e.target.files || []
         );
-
         if (files.length === 0) {
             return;
         }
-
         const allowedTypes = [
             "image/jpeg",
             "image/png",
             "image/webp",
         ];
-
         /*
         |--------------------------------------------------------------------------
         | VALIDATE EVERY IMAGE
         |--------------------------------------------------------------------------
         */
-
         for (const file of files) {
             if (!allowedTypes.includes(file.type)) {
                 Swal.fire({
@@ -107,11 +81,9 @@ const CreateVehicle = () => {
                         "Only JPG, JPEG, PNG and WEBP images are allowed.",
                     confirmButtonColor: "#351255",
                 });
-
                 e.target.value = "";
                 return;
             }
-
             if (file.size > 5 * 1024 * 1024) {
                 Swal.fire({
                     icon: "warning",
@@ -121,18 +93,15 @@ const CreateVehicle = () => {
                         "image size of 5 MB.",
                     confirmButtonColor: "#351255",
                 });
-
                 e.target.value = "";
                 return;
             }
         }
-
         /*
         |--------------------------------------------------------------------------
         | APPEND IMAGES
         |--------------------------------------------------------------------------
         */
-
         setFormData((prev) => ({
             ...prev,
             images: [
@@ -140,36 +109,29 @@ const CreateVehicle = () => {
                 ...files,
             ],
         }));
-
         const previews = files.map(
             (file) =>
                 URL.createObjectURL(file)
         );
-
         setImagePreviews((prev) => [
             ...prev,
             ...previews,
         ]);
-
         /*
         |--------------------------------------------------------------------------
         | RESET FILE INPUT
         |--------------------------------------------------------------------------
         */
-
         e.target.value = "";
     };
-
     /*
     |--------------------------------------------------------------------------
     | REMOVE SELECTED IMAGE
     |--------------------------------------------------------------------------
     */
-
     const handleRemoveImage = (index) => {
         const previewToRemove =
             imagePreviews[index];
-
         if (
             previewToRemove &&
             previewToRemove.startsWith("blob:")
@@ -178,16 +140,13 @@ const CreateVehicle = () => {
                 previewToRemove
             );
         }
-
         setFormData((prev) => ({
             ...prev,
-
             images: prev.images.filter(
                 (_, imageIndex) =>
                     imageIndex !== index
             ),
         }));
-
         setImagePreviews((prev) =>
             prev.filter(
                 (_, imageIndex) =>
@@ -195,66 +154,57 @@ const CreateVehicle = () => {
             )
         );
     };
-
     /*
     |--------------------------------------------------------------------------
     | VALIDATION
     |--------------------------------------------------------------------------
     */
-
     const validateForm = () => {
         if (!formData.name.trim()) {
             return "Vehicle name is required.";
         }
-
         if (!formData.vehicle_type.trim()) {
             return "Vehicle type is required.";
         }
-
         if (!formData.fuel_type) {
             return "Fuel type is required.";
         }
-
         if (!formData.trip_type) {
             return "Trip type is required.";
         }
-
         if (
             !formData.capacity ||
             Number(formData.capacity) < 1
         ) {
             return "Capacity must be at least 1.";
         }
-
+        if (formData.reserved_seats !== "" && (Number(formData.reserved_seats) < 0 || Number(formData.reserved_seats) > Number(formData.capacity) || !Number.isInteger(Number(formData.reserved_seats)))) {
+            return "Reserved seats must be a whole number between 0 and capacity.";
+        }
         if (!formData.from_location.trim()) {
             return "From location is required.";
         }
-
         if (!formData.to_location.trim()) {
             return "To location is required.";
         }
-
         if (
             formData.price === "" ||
             Number(formData.price) < 0
         ) {
             return "Please enter a valid price.";
         }
-
         if (
             formData.bags_per_person !== "" &&
             Number(formData.bags_per_person) < 0
         ) {
             return "Bags per person cannot be negative.";
         }
-
         if (
             formData.max_luggage !== "" &&
             Number(formData.max_luggage) < 0
         ) {
             return "Maximum luggage cannot be negative.";
         }
-
         if (
             formData.available_from &&
             formData.available_to &&
@@ -263,22 +213,17 @@ const CreateVehicle = () => {
         ) {
             return "Available To date cannot be before Available From date.";
         }
-
         return null;
     };
-
     /*
     |--------------------------------------------------------------------------
     | SUBMIT
     |--------------------------------------------------------------------------
     */
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const validationError =
             validateForm();
-
         if (validationError) {
             Swal.fire({
                 icon: "warning",
@@ -286,71 +231,60 @@ const CreateVehicle = () => {
                 text: validationError,
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
         /*
         |--------------------------------------------------------------------------
         | CREATE MULTIPART FORM DATA
         |--------------------------------------------------------------------------
         */
-
         const data = new FormData();
-
         data.append(
             "name",
             formData.name.trim()
         );
-
         data.append(
             "vehicle_type",
             formData.vehicle_type.trim()
         );
-
         data.append(
             "fuel_type",
             formData.fuel_type
         );
-
         data.append(
             "trip_type",
             formData.trip_type
         );
-
         data.append(
             "capacity",
             formData.capacity
         );
-
+        if (formData.reserved_seats !== "") {
+            data.append("reserved_seats", formData.reserved_seats);
+        }
         data.append(
             "from_location",
             formData.from_location.trim()
         );
-
         data.append(
             "to_location",
             formData.to_location.trim()
         );
-
         data.append(
             "price",
             formData.price
         );
-
         /*
         |--------------------------------------------------------------------------
         | OPTIONAL FIELDS
         |--------------------------------------------------------------------------
         */
-
         if (formData.duration.trim()) {
             data.append(
                 "duration",
                 formData.duration.trim()
             );
         }
-
         if (
             formData.bags_per_person !== ""
         ) {
@@ -359,7 +293,6 @@ const CreateVehicle = () => {
                 formData.bags_per_person
             );
         }
-
         if (
             formData.max_luggage !== ""
         ) {
@@ -368,34 +301,29 @@ const CreateVehicle = () => {
                 formData.max_luggage
             );
         }
-
         if (formData.available_from) {
             data.append(
                 "available_from",
                 formData.available_from
             );
         }
-
         if (formData.available_to) {
             data.append(
                 "available_to",
                 formData.available_to
             );
         }
-
         if (formData.description.trim()) {
             data.append(
                 "description",
                 formData.description.trim()
             );
         }
-
         /*
         |--------------------------------------------------------------------------
         | MULTIPLE IMAGES
         |--------------------------------------------------------------------------
         */
-
         formData.images.forEach(
             (image) => {
                 data.append(
@@ -404,26 +332,11 @@ const CreateVehicle = () => {
                 );
             }
         );
-
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORTANT
-        |--------------------------------------------------------------------------
-        |
-        | Do NOT send remaining_seats.
-        |
-        | Backend should automatically create:
-        |
-        | remaining_seats = capacity
-        |
-        */
-
+        // remaining_seats is not sent; reserved_seats is supplied from the form.
         try {
             setSaving(true);
-
             const response =
                 await createVehicle(data);
-
             if (response.data?.status) {
                 await Swal.fire({
                     icon: "success",
@@ -435,7 +348,6 @@ const CreateVehicle = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 navigate("/vehicles");
             }
         } catch (error) {
@@ -443,22 +355,18 @@ const CreateVehicle = () => {
                 "Vehicle create error:",
                 error
             );
-
             let errorMessage =
                 error.response?.data
                     ?.message ||
                 "Unable to create vehicle.";
-
             const validationErrors =
                 error.response?.data
                     ?.errors;
-
             if (validationErrors) {
                 const firstError =
                     Object.values(
                         validationErrors
                     )[0];
-
                 if (
                     Array.isArray(
                         firstError
@@ -468,7 +376,6 @@ const CreateVehicle = () => {
                         firstError[0];
                 }
             }
-
             Swal.fire({
                 icon: "error",
                 title: "Create Failed",
@@ -480,35 +387,24 @@ const CreateVehicle = () => {
             setSaving(false);
         }
     };
-
     return (
         <div className="dashboard-layout">
-
             <Sidebar />
-
             <div className="dashboard-main">
-
                 <Navbar />
-
                 <main className="dashboard-content">
-
                     <div className="create-vehicle-page">
-
                         {/* HEADER */}
-
                         <div className="create-vehicle-header">
-
                             <div>
                                 <h1>
                                     Create Vehicle
                                 </h1>
-
                                 <p>
                                     Add a new vehicle
                                     for vehicle rental.
                                 </p>
                             </div>
-
                             <button
                                 type="button"
                                 className="create-vehicle-back-button"
@@ -521,49 +417,35 @@ const CreateVehicle = () => {
                             >
                                 Back to Vehicles
                             </button>
-
                         </div>
-
                         <form
                             className="create-vehicle-form"
                             onSubmit={handleSubmit}
                         >
-
                             {/* ================================================= */}
                             {/* VEHICLE INFORMATION */}
                             {/* ================================================= */}
-
                             <div className="create-vehicle-card">
-
                                 <div className="create-vehicle-card-header">
-
                                     <h2>
                                         Vehicle Information
                                     </h2>
-
                                     <p>
                                         Enter the basic
                                         details of the
                                         vehicle.
                                     </p>
-
                                 </div>
-
                                 <div className="create-vehicle-card-body">
-
                                     <div className="create-vehicle-grid">
-
                                         {/* VEHICLE NAME */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Vehicle Name
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <input
                                                 type="text"
                                                 name="name"
@@ -578,20 +460,15 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* VEHICLE TYPE */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Vehicle Type
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <input
                                                 type="text"
                                                 name="vehicle_type"
@@ -606,20 +483,15 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* FUEL TYPE */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Fuel Type
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <select
                                                 name="fuel_type"
                                                 value={
@@ -635,37 +507,28 @@ const CreateVehicle = () => {
                                                 <option value="">
                                                     Select Fuel Type
                                                 </option>
-
                                                 <option value="PETROL">
                                                     Petrol
                                                 </option>
-
                                                 <option value="DIESEL">
                                                     Diesel
                                                 </option>
-
                                                 <option value="ELECTRIC">
                                                     Electric
                                                 </option>
-
                                                 <option value="HYBRID">
                                                     Hybrid
                                                 </option>
                                             </select>
-
                                         </div>
-
                                         {/* TRIP TYPE */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Trip Type
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <select
                                                 name="trip_type"
                                                 value={
@@ -681,29 +544,22 @@ const CreateVehicle = () => {
                                                 <option value="">
                                                     Select Trip Type
                                                 </option>
-
                                                 <option value="ONE_WAY">
                                                     One Way
                                                 </option>
-
                                                 <option value="ROUND_TRIP">
                                                     Round Trip
                                                 </option>
                                             </select>
-
                                         </div>
-
                                         {/* CAPACITY */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Total Seats
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <input
                                                 type="number"
                                                 name="capacity"
@@ -719,17 +575,17 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
-                                        {/* DURATION */}
-
+                                        {/* RESERVED SEATS */}
                                         <div className="create-vehicle-group">
-
+                                            <label>Reserved Seats</label>
+                                            <input type="number" name="reserved_seats" min="0" max={formData.capacity || undefined} value={formData.reserved_seats} onChange={handleChange} placeholder="e.g. 2" disabled={saving} />
+                                        </div>
+                                        {/* DURATION */}
+                                        <div className="create-vehicle-group">
                                             <label>
                                                 Duration
                                             </label>
-
                                             <input
                                                 type="text"
                                                 name="duration"
@@ -744,20 +600,15 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* FROM */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 From Location
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <input
                                                 type="text"
                                                 name="from_location"
@@ -772,20 +623,15 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* TO */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 To Location
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <input
                                                 type="text"
                                                 name="to_location"
@@ -800,20 +646,15 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* PRICE */}
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Price Per Person
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <input
                                                 type="number"
                                                 name="price"
@@ -830,44 +671,29 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {/* ================================================= */}
                             {/* LUGGAGE */}
                             {/* ================================================= */}
-
                             <div className="create-vehicle-card">
-
                                 <div className="create-vehicle-card-header">
-
                                     <h2>
                                         Luggage Information
                                     </h2>
-
                                     <p>
                                         Enter baggage and
                                         luggage allowance.
                                     </p>
-
                                 </div>
-
                                 <div className="create-vehicle-card-body">
-
                                     <div className="create-vehicle-grid">
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Bags Per Person
                                             </label>
-
                                             <input
                                                 type="number"
                                                 name="bags_per_person"
@@ -883,15 +709,11 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Max Luggage (kg)
                                             </label>
-
                                             <input
                                                 type="number"
                                                 name="max_luggage"
@@ -908,44 +730,29 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {/* ================================================= */}
                             {/* AVAILABILITY */}
                             {/* ================================================= */}
-
                             <div className="create-vehicle-card">
-
                                 <div className="create-vehicle-card-header">
-
                                     <h2>
                                         Vehicle Availability
                                     </h2>
-
                                     <p>
                                         Set the available
                                         rental date range.
                                     </p>
-
                                 </div>
-
                                 <div className="create-vehicle-card-body">
-
                                     <div className="create-vehicle-grid">
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Available From
                                             </label>
-
                                             <input
                                                 type="date"
                                                 name="available_from"
@@ -959,15 +766,11 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         <div className="create-vehicle-group">
-
                                             <label>
                                                 Available To
                                             </label>
-
                                             <input
                                                 type="date"
                                                 name="available_to"
@@ -985,45 +788,30 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {/* ================================================= */}
                             {/* IMAGES */}
                             {/* ================================================= */}
-
                             <div className="create-vehicle-card">
-
                                 <div className="create-vehicle-card-header">
-
                                     <h2>
                                         Vehicle Images
                                     </h2>
-
                                     <p>
                                         Upload images of
                                         the vehicle. This
                                         is optional.
                                     </p>
-
                                 </div>
-
                                 <div className="create-vehicle-card-body">
-
                                     <div className="create-vehicle-image-section">
-
                                         <div className="create-vehicle-image-upload">
-
                                             <label>
                                                 Vehicle Images
                                             </label>
-
                                             <input
                                                 type="file"
                                                 multiple
@@ -1035,33 +823,26 @@ const CreateVehicle = () => {
                                                     saving
                                                 }
                                             />
-
                                             <span>
                                                 JPG, JPEG,
                                                 PNG or WEBP.
                                                 Maximum 5 MB
                                                 per image.
                                             </span>
-
                                         </div>
-
                                         {imagePreviews.length > 0 && (
-
                                             <div className="create-vehicle-images-preview-grid">
-
                                                 {imagePreviews.map(
                                                     (
                                                         preview,
                                                         index
                                                     ) => (
-
                                                         <div
                                                             className="create-vehicle-image-preview"
                                                             key={
                                                                 preview
                                                             }
                                                         >
-
                                                             <img
                                                                 src={
                                                                     preview
@@ -1071,13 +852,11 @@ const CreateVehicle = () => {
                                                                     1
                                                                 }`}
                                                             />
-
                                                             <p>
                                                                 Image{" "}
                                                                 {index +
                                                                     1}
                                                             </p>
-
                                                             <button
                                                                 type="button"
                                                                 className="create-vehicle-remove-image"
@@ -1092,48 +871,33 @@ const CreateVehicle = () => {
                                                             >
                                                                 Remove
                                                             </button>
-
                                                         </div>
                                                     )
                                                 )}
-
                                             </div>
                                         )}
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {/* ================================================= */}
                             {/* DESCRIPTION */}
                             {/* ================================================= */}
-
                             <div className="create-vehicle-card">
-
                                 <div className="create-vehicle-card-header">
-
                                     <h2>
                                         Description
                                     </h2>
-
                                     <p>
                                         Add additional
                                         information about
                                         the vehicle.
                                     </p>
-
                                 </div>
-
                                 <div className="create-vehicle-card-body">
-
                                     <div className="create-vehicle-group">
-
                                         <label>
                                             Description
                                         </label>
-
                                         <textarea
                                             name="description"
                                             value={
@@ -1148,19 +912,13 @@ const CreateVehicle = () => {
                                                 saving
                                             }
                                         />
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                             {/* ================================================= */}
                             {/* ACTIONS */}
                             {/* ================================================= */}
-
                             <div className="create-vehicle-actions">
-
                                 <button
                                     type="button"
                                     className="create-vehicle-cancel"
@@ -1173,7 +931,6 @@ const CreateVehicle = () => {
                                 >
                                     Cancel
                                 </button>
-
                                 <button
                                     type="submit"
                                     className="create-vehicle-submit"
@@ -1183,19 +940,12 @@ const CreateVehicle = () => {
                                         ? "Creating..."
                                         : "Create Vehicle"}
                                 </button>
-
                             </div>
-
                         </form>
-
                     </div>
-
                 </main>
-
             </div>
-
         </div>
     );
 };
-
 export default CreateVehicle;
