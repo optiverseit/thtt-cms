@@ -56,6 +56,10 @@ import HotelFaq from './pages/Admin/Hotel/HotelFaq';
 import Hotel from './pages/Admin/Hotel/Hotel';
 import Document from './pages/Admin/Document/Document';
 import TravelGuide from './pages/Admin/TravelGuide/TravelGuide';
+import PackageTestimonial from './pages/Admin/PackageTestimonial/PackageTestimonial';
+import PackageGallery from './pages/Admin/PackageGallery/PackageGallery';
+import PackagePolicy from './pages/Admin/PackagePolicy/PackagePolicy';
+import WorkPermitHighlights from './pages/Admin/WorkPermitHighlights/WorkPermitHighlights';
 
 function App() {
 
@@ -251,6 +255,36 @@ function App() {
           }
         />
 
+        {/* TESTIMONIAL */}
+        <Route
+          path="/packages/testimonials"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PackageTestimonial />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* GALLERY */}
+        <Route
+          path="/packages/gallery"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PackageGallery />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* POLICIES */}
+        <Route
+          path="/packages/policy"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <PackagePolicy />
+            </ProtectedRoute>
+          }
+        />
+
         {/* HIGHLIGHT */}
 
         <Route
@@ -305,6 +339,17 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <PermitDocumentRequirement />
+            </ProtectedRoute>
+          }
+        />
+        
+
+
+        <Route
+          path="/work-permits/highlights"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <WorkPermitHighlights />
             </ProtectedRoute>
           }
         />
