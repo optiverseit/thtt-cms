@@ -173,7 +173,7 @@ const CreateUser = () => {
                     confirmButtonColor: "#351255",
                 });
 
-                navigate("/admin/users");
+                navigate("/users");
             }
         } catch (error) {
             let message =
@@ -226,7 +226,7 @@ const CreateUser = () => {
                                 type="button"
                                 className="create-user-back-btn"
                                 onClick={() =>
-                                    navigate("/admin/users")
+                                    navigate("/users")
                                 }
                             >
                                 <FaArrowLeft />
@@ -512,7 +512,7 @@ const CreateUser = () => {
                                         type="button"
                                         className="create-user-cancel-btn"
                                         onClick={() =>
-                                            navigate("/admin/users")
+                                            navigate("/users")
                                         }
                                     >
                                         Cancel
