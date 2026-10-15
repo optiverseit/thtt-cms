@@ -175,6 +175,60 @@ export const deleteRole = (id) => {
 };
 
 
+// ==================== PERMISSION CRUD ====================
+
+export const getAllPermissionsCms = (page = 1) => {
+    return axiosInstance.get(`/permissions/cms?page=${page}`);
+};
+
+export const getAllPermissions = () => {
+    return axiosInstance.get("/permissions");
+};
+
+export const getPermissionById = (id) => {
+    return axiosInstance.get(`/permissions/${id}`);
+};
+
+export const createPermission = (data) => {
+    return axiosInstance.post("/permissions/store", data);
+};
+
+export const updatePermission = (id, data) => {
+    return axiosInstance.put(`/permissions/${id}`, data);
+};
+
+export const changePermissionStatus = (id) => {
+    return axiosInstance.put(`/permissions/${id}/status`);
+};
+
+export const deletePermission = (id) => {
+    return axiosInstance.delete(`/permissions/${id}`);
+};
+
+// ==================== ROLE PERMISSIONS ====================
+
+export const getRolePermissions = (roleId) => {
+    return axiosInstance.get(`/role-permissions/${roleId}`);
+};
+
+export const assignRolePermissions = (roleId, permissionIds) => {
+    return axiosInstance.post(`/role-permissions/${roleId}/assign`, {
+        permission_ids: permissionIds
+    });
+};
+
+export const syncRolePermissions = (roleId, permissionIds) => {
+    return axiosInstance.put(`/role-permissions/${roleId}/sync`, {
+        permission_ids: permissionIds
+    });
+};
+
+export const removeRolePermission = (roleId, permissionId) => {
+    return axiosInstance.delete(`/role-permissions/${roleId}/${permissionId}`);
+};
+
+
+
 // USERS
 
 export const getAllUsersCms = (page = 1) => {

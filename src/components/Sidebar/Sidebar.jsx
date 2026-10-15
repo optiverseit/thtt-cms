@@ -1,10 +1,18 @@
 import { useState } from "react";
+import { FaThLarge, FaLayerGroup, FaBoxOpen, FaCar, FaHelicopter, FaCalendarCheck, FaGlobeAsia, FaBriefcase, FaPassport, FaShieldAlt, FaHotel, FaFileAlt, FaBookOpen, FaUsers, FaUserShield, FaCog } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  // Role-based sidebar visibility
+  const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+  const isAdmin = role === "admin";
+  const canViewCMS = isAdmin || role === "cms-admin";
+  const canViewBooking = isAdmin || role === "booking-admin";
+  const canViewServices = canViewCMS || canViewBooking;
+
   const [workPermitOpen, setWorkPermitOpen] = useState(
     location.pathname.startsWith("/work-permits") ||
     location.pathname.startsWith("/work-permits/country") ||
@@ -137,28 +145,31 @@ const Sidebar = () => {
             }`}
           onClick={() => navigate("/dashboard")}
         >
-          <span className="menu-icon">▦</span>
+          <span className="menu-icon"><FaThLarge /></span>
           <span>Dashboard</span>
         </button>
 
+        {canViewCMS && (
         <button
           className={`menu-item ${isActive("/categories") ? "active" : ""
             }`}
           onClick={() => navigate("/categories")}
         >
-          <span className="menu-icon">◫</span>
+          <span className="menu-icon"><FaLayerGroup /></span>
           <span>Categories</span>
         </button>
+        )}
 
         {/* PACKAGES DROPDOWN */}
 
+        {canViewCMS && (
         <div className="sidebar-dropdown">
           <button
             className={`menu-item ${isPackageActive() ? "active" : ""
               }`}
             onClick={() => setPackageOpen(!packageOpen)}
           >
-            <span className="menu-icon">◆</span>
+            <span className="menu-icon"><FaBoxOpen /></span>
             <span className="menu-label">Packages</span>
 
             <span
@@ -269,52 +280,62 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+        )}
 
+        {canViewCMS && (
         <button
           className={`menu-item ${isActive("/vehicles") ? "active" : ""
             }`}
           onClick={() => navigate("/vehicles")}
         >
-          <span className="menu-icon">▤</span>
+          <span className="menu-icon"><FaCar /></span>
           <span>Vehicles</span>
         </button>
+        )}
 
+        {canViewCMS && (
         <button
           className={`menu-item ${isActive("/helis") ? "active" : ""
             }`}
           onClick={() => navigate("/helis")}
         >
-          <span className="menu-icon">✈</span>
+          <span className="menu-icon"><FaHelicopter /></span>
           <span>Helis</span>
         </button>
+        )}
 
+        {canViewBooking && (
         <button
           className={`menu-item ${isActive("/bookings") ? "active" : ""
             }`}
           onClick={() => navigate("/bookings")}
         >
-          <span className="menu-icon">▣</span>
+          <span className="menu-icon"><FaCalendarCheck /></span>
           <span>Bookings</span>
         </button>
+        )}
 
+        {canViewCMS && (
         <button
           className={`menu-item ${isActive("/country") ? "active" : ""
             }`}
           onClick={() => navigate("/country")}
         >
-          <span className="menu-icon">♙</span>
+          <span className="menu-icon"><FaGlobeAsia /></span>
           <span>Country</span>
         </button>
+        )}
 
         {/* WORK PERMIT DROPDOWN */}
 
+        {canViewServices && (
         <div className="sidebar-dropdown">
           <button
             className={`menu-item ${isWorkPermitActive() ? "active" : ""
               }`}
             onClick={() => setWorkPermitOpen(!workPermitOpen)}
           >
-            <span className="menu-icon">◆</span>
+            <span className="menu-icon"><FaBriefcase /></span>
             <span className="menu-label">Work Permit</span>
 
             <span
@@ -327,13 +348,15 @@ const Sidebar = () => {
 
           {workPermitOpen && (
             <div className="submenu">
-              <button
+              {canViewBooking && (
+        <button
                 className={`submenu-item ${location.pathname === "/work-permits" ? "active" : ""
                   }`}
                 onClick={() => navigate("/work-permits")}
               >
                 All Work Permits
               </button>
+        )}
 
               <button
                 className={`submenu-item ${isActive("/work-permits/highlights") ? "active" : ""
@@ -377,15 +400,17 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+        )}
 
         {/* VISA SERVICE */}
+        {canViewServices && (
         <div className="sidebar-dropdown">
           <button
             className={`menu-item ${isVisaActive() ? "active" : ""
               }`}
             onClick={() => setVisaOpen(!visaOpen)}
           >
-            <span className="menu-icon">◆</span>
+            <span className="menu-icon"><FaPassport /></span>
             <span className="menu-label">Visa Service</span>
 
             <span
@@ -398,13 +423,15 @@ const Sidebar = () => {
 
           {visaOpen && (
             <div className="submenu">
-              <button
+              {canViewBooking && (
+        <button
                 className={`submenu-item ${location.pathname === "/visa-applications" ? "active" : ""
                   }`}
                 onClick={() => navigate("/visa-applications")}
               >
                 All Visa Appliaction
               </button>
+        )}
 
               <button
                 className={`submenu-item ${isActive("/visa/category") ? "active" : ""
@@ -448,15 +475,17 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+        )}
 
         {/* INSURANCE */}
+        {canViewServices && (
         <div className="sidebar-dropdown">
           <button
             className={`menu-item ${isInsuranceActive() ? "active" : ""
               }`}
             onClick={() => setInsuranceOpen(!insuranceOpen)}
           >
-            <span className="menu-icon">◆</span>
+            <span className="menu-icon"><FaShieldAlt /></span>
             <span className="menu-label">Insurance Service</span>
 
             <span
@@ -469,13 +498,15 @@ const Sidebar = () => {
 
           {insuranceOpen && (
             <div className="submenu">
-              <button
+              {canViewBooking && (
+        <button
                 className={`submenu-item ${location.pathname === "/insurance-applications" ? "active" : ""
                   }`}
                 onClick={() => navigate("/insurance-applications")}
               >
                 All Insurance Appliaction
               </button>
+        )}
 
               <button
                 className={`submenu-item ${isActive("/insurance/plan") ? "active" : ""
@@ -519,15 +550,17 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+        )}
 
 
         {/* HOTEL SERVICE */}
+        {canViewServices && (
         <div className="sidebar-dropdown">
           <button
             className={`menu-item ${isHotelActive() ? "active" : ""}`}
             onClick={() => setHotelOpen(!hotelOpen)}
           >
-            <span className="menu-icon">◆</span>
+            <span className="menu-icon"><FaHotel /></span>
             <span className="menu-label">Hotel Service</span>
             <span className={`dropdown-arrow ${hotelOpen ? "open" : ""}`}>
               ▼
@@ -536,12 +569,14 @@ const Sidebar = () => {
 
           {hotelOpen && (
             <div className="submenu">
-              <button
+              {canViewBooking && (
+        <button
                 className={`submenu-item ${location.pathname === "/hotel-bookings" ? "active" : ""}`}
                 onClick={() => navigate("/hotel-bookings")}
               >
                 All Hotel Bookings
               </button>
+        )}
 
               <button
                 className={`submenu-item ${location.pathname === "/hotels" ? "active" : ""}`}
@@ -587,45 +622,80 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+        )}
 
+        {canViewCMS && (
         <button
           className={`menu-item ${isActive("/documents") ? "active" : ""
             }`}
           onClick={() => navigate("/documents")}
         >
-          <span className="menu-icon">♙</span>
+          <span className="menu-icon"><FaFileAlt /></span>
           <span>Documents</span>
         </button>
+        )}
 
 
+        {canViewCMS && (
         <button
           className={`menu-item ${isActive("/travel-guide") ? "active" : ""
             }`}
           onClick={() => navigate("/travel-guide")}
         >
-          <span className="menu-icon">♙</span>
+          <span className="menu-icon"><FaBookOpen /></span>
           <span>Travel Guide</span>
         </button>
+        )}
 
+        {isAdmin && (
         <button
           className={`menu-item ${isActive("/users") ? "active" : ""
             }`}
           onClick={() => navigate("/users")}
         >
-          <span className="menu-icon">♙</span>
+          <span className="menu-icon"><FaUsers /></span>
           <span>Users</span>
         </button>
+        )}
+
+        {isAdmin && (
+        <button
+          className={`menu-item ${isActive("/roles") ? "active" : ""
+            }`}
+          onClick={() => navigate("/roles")}
+        >
+          <span className="menu-icon"><FaUserShield /></span>
+          <span>Roles</span>
+        </button>
+        )}
+
+  
+          {isAdmin && (
+        <button
+            className={`menu-item ${isActive("/permissions") ? "active" : ""}`}
+            onClick={() => navigate("/permissions")}
+          >
+            <span className="menu-icon">
+              <FaShieldAlt />
+            </span>
+            <span>Permissions</span>
+          </button>
+        )}
+
+
       </nav>
 
       <div className="sidebar-bottom">
+        {isAdmin && (
         <button
           className={`menu-item ${isActive("/settings") ? "active" : ""
             }`}
           onClick={() => navigate("/settings")}
         >
-          <span className="menu-icon">⚙</span>
+          <span className="menu-icon"><FaCog /></span>
           <span>Settings</span>
         </button>
+        )}
       </div>
     </aside>
   );

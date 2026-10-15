@@ -346,13 +346,13 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div className="divider">
+                    {/* <div className="divider">
                         <span></span>
                         <p>OR</p>
                         <span></span>
-                    </div>
+                    </div> */}
 
-                    <GoogleLogin
+                    {/* <GoogleLogin
                         onSuccess={(credentialResponse) => {
                             handleGoogleLogin(credentialResponse.credential);
                         }}
@@ -364,7 +364,7 @@ const Login = () => {
                                 confirmButtonColor: "#351255",
                             });
                         }}
-                    />
+                    /> */}
 
                     <p className="cms-label">
                         THTT Content Management System

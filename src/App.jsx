@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import heroImg from './assets/hero.png'
@@ -60,6 +61,13 @@ import PackageTestimonial from './pages/Admin/PackageTestimonial/PackageTestimon
 import PackageGallery from './pages/Admin/PackageGallery/PackageGallery';
 import PackagePolicy from './pages/Admin/PackagePolicy/PackagePolicy';
 import WorkPermitHighlights from './pages/Admin/WorkPermitHighlights/WorkPermitHighlights';
+import Role from './pages/Admin/Role/Role';
+import Permission from './pages/Admin/Permission/Permission';
+
+const ALL_ROLES = ["admin", "cms-admin", "booking-admin"];
+const CMS_ROLES = ["admin", "cms-admin"];
+const BOOKING_ROLES = ["admin", "booking-admin"];
+const ADMIN_ONLY = ["admin"];
 
 function App() {
 
@@ -71,20 +79,20 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/dashboard" element={
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={ALL_ROLES}>
             <Dashboard />
           </ProtectedRoute>} />
 
         {/* CATEGORIES */}
         <Route path="/categories" element={
-          <ProtectedRoute allowedRoles={["admin"]}>
+          <ProtectedRoute allowedRoles={CMS_ROLES}>
             <Category />
           </ProtectedRoute>} />
 
         <Route
           path="/categories/create"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <CreateCategory />
             </ProtectedRoute>
           }
@@ -93,7 +101,7 @@ function App() {
         <Route
           path="/categories/edit/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <EditCategory />
             </ProtectedRoute>
           }
@@ -103,7 +111,7 @@ function App() {
         <Route
           path="/packages"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Package />
             </ProtectedRoute>
           }
@@ -112,7 +120,7 @@ function App() {
         <Route
           path="/packages/create"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <CreatePackage />
             </ProtectedRoute>
           }
@@ -121,7 +129,7 @@ function App() {
         <Route
           path="/packages/edit/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <EditPackage />
             </ProtectedRoute>
           }
@@ -131,7 +139,7 @@ function App() {
         <Route
           path="/vehicles"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Vehicle />
             </ProtectedRoute>
           }
@@ -140,7 +148,7 @@ function App() {
         <Route
           path="/vehicles/create"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <CreateVehicle />
             </ProtectedRoute>
           }
@@ -149,7 +157,7 @@ function App() {
         <Route
           path="/vehicles/edit/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <EditVehicle />
             </ProtectedRoute>
           }
@@ -159,7 +167,7 @@ function App() {
         <Route
           path="/helis"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Heli />
             </ProtectedRoute>
           }
@@ -168,7 +176,7 @@ function App() {
         <Route
           path="/helis/create"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <CreateHeli />
             </ProtectedRoute>
           }
@@ -177,7 +185,7 @@ function App() {
         <Route
           path="/helis/edit/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <EditHeli />
             </ProtectedRoute>
           }
@@ -187,7 +195,7 @@ function App() {
         <Route
           path="/packages/inclusions"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Inclusion />
             </ProtectedRoute>
           }
@@ -197,7 +205,7 @@ function App() {
         <Route
           path="/packages/exclusions"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Exclusion />
             </ProtectedRoute>
           }
@@ -207,7 +215,7 @@ function App() {
         <Route
           path="/packages/restrictions"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Restriction />
             </ProtectedRoute>
           }
@@ -217,7 +225,7 @@ function App() {
         <Route
           path="/packages/what-to-bring"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <WhatToBring />
             </ProtectedRoute>
           }
@@ -227,7 +235,7 @@ function App() {
         <Route
           path="/packages/faqs"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Faq />
             </ProtectedRoute>
           }
@@ -238,7 +246,7 @@ function App() {
         <Route
           path="/packages/pricing-tiers"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <PricingTier />
             </ProtectedRoute>
           }
@@ -249,7 +257,7 @@ function App() {
         <Route
           path="/packages/itineraries"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Itinerary />
             </ProtectedRoute>
           }
@@ -259,7 +267,7 @@ function App() {
         <Route
           path="/packages/testimonials"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <PackageTestimonial />
             </ProtectedRoute>
           }
@@ -269,7 +277,7 @@ function App() {
         <Route
           path="/packages/gallery"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <PackageGallery />
             </ProtectedRoute>
           }
@@ -279,7 +287,7 @@ function App() {
         <Route
           path="/packages/policy"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <PackagePolicy />
             </ProtectedRoute>
           }
@@ -290,7 +298,7 @@ function App() {
         <Route
           path="/packages/highlights"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Highlight />
             </ProtectedRoute>
           }
@@ -300,7 +308,7 @@ function App() {
         <Route
           path="/bookings"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={BOOKING_ROLES}>
               <Booking />
             </ProtectedRoute>
           }
@@ -310,7 +318,7 @@ function App() {
         <Route
           path="/work-permits"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={BOOKING_ROLES}>
               <WorkPermit />
             </ProtectedRoute>
           }
@@ -319,7 +327,7 @@ function App() {
         <Route
           path="/country"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Country />
             </ProtectedRoute>
           }
@@ -328,7 +336,7 @@ function App() {
         <Route
           path="/work-permits/feetiers"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <FeeTier />
             </ProtectedRoute>
           }
@@ -337,18 +345,18 @@ function App() {
         <Route
           path="/work-permits/documents"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <PermitDocumentRequirement />
             </ProtectedRoute>
           }
         />
-        
+
 
 
         <Route
           path="/work-permits/highlights"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <WorkPermitHighlights />
             </ProtectedRoute>
           }
@@ -357,7 +365,7 @@ function App() {
         <Route
           path="/work-permits/informations"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <WorkPermitInformation />
             </ProtectedRoute>
           }
@@ -368,7 +376,7 @@ function App() {
         <Route
           path="/visa-applications"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={BOOKING_ROLES}>
               <VisaApplicationIndex />
             </ProtectedRoute>
           }
@@ -377,7 +385,7 @@ function App() {
         <Route
           path="/visa/category"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <VisaCategory />
             </ProtectedRoute>
           }
@@ -386,7 +394,7 @@ function App() {
         <Route
           path="/visa/pricing-tiers"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <VisaPricingTier />
             </ProtectedRoute>
           }
@@ -395,7 +403,7 @@ function App() {
         <Route
           path="/visa/documents"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <VisaDocumentRequirement />
             </ProtectedRoute>
           }
@@ -404,7 +412,7 @@ function App() {
         <Route
           path="/visa/informations"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <VisaInformation />
             </ProtectedRoute>
           }
@@ -416,7 +424,7 @@ function App() {
         <Route
           path="/insurance-applications"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={BOOKING_ROLES}>
               <InsuranceApplication />
             </ProtectedRoute>
           }
@@ -425,7 +433,7 @@ function App() {
         <Route
           path="/insurance/plan"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <InsurancePlan />
             </ProtectedRoute>
           }
@@ -434,7 +442,7 @@ function App() {
         <Route
           path="/insurance/pricing-tiers"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <InsurancePricingTier />
             </ProtectedRoute>
           }
@@ -443,7 +451,7 @@ function App() {
         <Route
           path="/insurance/documents"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <InsuranceDocumentRequirement />
             </ProtectedRoute>
           }
@@ -452,7 +460,7 @@ function App() {
         <Route
           path="/insurance/informations"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <InsuranceInformation />
             </ProtectedRoute>
           }
@@ -461,7 +469,7 @@ function App() {
         <Route
           path="/insurance/dynamic-fields"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <InsuranceDynamicFields />
             </ProtectedRoute>
           }
@@ -472,7 +480,7 @@ function App() {
         <Route
           path="/hotel-bookings"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={BOOKING_ROLES}>
               <HotelBooking />
             </ProtectedRoute>
           }
@@ -481,7 +489,7 @@ function App() {
         <Route
           path="/hotels"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <Hotel />
             </ProtectedRoute>
           }
@@ -490,7 +498,7 @@ function App() {
         <Route
           path="/hotel/pricing-tiers"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <HotelPricingTier />
             </ProtectedRoute>
           }
@@ -499,7 +507,7 @@ function App() {
         <Route
           path="/hotel/informations"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <HotelInformation />
             </ProtectedRoute>
           }
@@ -508,7 +516,7 @@ function App() {
         <Route
           path="/hotel/policies"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <HotelPolicy />
             </ProtectedRoute>
           }
@@ -517,7 +525,7 @@ function App() {
         <Route
           path="/hotel/testimonials"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <HotelTestimonial />
             </ProtectedRoute>
           }
@@ -526,7 +534,7 @@ function App() {
         <Route
           path="/hotel/faqs"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ALL_ROLES}>
               <HotelFaq />
             </ProtectedRoute>
           }
@@ -538,7 +546,7 @@ function App() {
         <Route
           path="/documents"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <Document />
             </ProtectedRoute>
           }
@@ -548,7 +556,7 @@ function App() {
         <Route
           path="/travel-guide"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
               <TravelGuide />
             </ProtectedRoute>
           }
@@ -558,7 +566,7 @@ function App() {
         <Route
           path="/users"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ADMIN_ONLY}>
               <User />
             </ProtectedRoute>
           }
@@ -567,7 +575,7 @@ function App() {
         <Route
           path="/users/create"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ADMIN_ONLY}>
               <CreateUser />
             </ProtectedRoute>
           }
@@ -576,8 +584,27 @@ function App() {
         <Route
           path="/users/edit/:id"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={ADMIN_ONLY}>
               <EditUser />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ROLES */}
+        <Route
+          path="/roles"
+          element={
+            <ProtectedRoute allowedRoles={ADMIN_ONLY}>
+              <Role />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/permissions"
+          element={
+            <ProtectedRoute allowedRoles={ADMIN_ONLY}>
+              <Permission />
             </ProtectedRoute>
           }
         />
