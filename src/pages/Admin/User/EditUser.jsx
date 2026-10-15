@@ -152,7 +152,7 @@ const EditUser = () => {
                 confirmButtonColor: "#351255",
             });
 
-            navigate("/admin/users");
+            navigate("/users");
         } finally {
             setLoading(false);
         }
@@ -255,7 +255,7 @@ const EditUser = () => {
                     confirmButtonColor: "#351255",
                 });
 
-                navigate("/admin/users");
+                navigate("/users");
             }
         } catch (error) {
             let message =
@@ -326,7 +326,7 @@ const EditUser = () => {
                                 type="button"
                                 className="edit-user-back-btn"
                                 onClick={() =>
-                                    navigate("/admin/users")
+                                    navigate("/users")
                                 }
                             >
                                 <FaArrowLeft />
@@ -577,7 +577,7 @@ const EditUser = () => {
                                         type="button"
                                         className="edit-user-cancel-btn"
                                         onClick={() =>
-                                            navigate("/admin/users")
+                                            navigate("/users")
                                         }
                                     >
                                         Cancel
