@@ -600,14 +600,14 @@ function App() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/permissions"
           element={
             <ProtectedRoute allowedRoles={ADMIN_ONLY}>
               <Permission />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
       </Routes>
     </BrowserRouter>

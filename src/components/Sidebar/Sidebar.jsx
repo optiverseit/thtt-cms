@@ -670,7 +670,7 @@ const Sidebar = () => {
         )}
 
   
-          {isAdmin && (
+          {/* {isAdmin && (
         <button
             className={`menu-item ${isActive("/permissions") ? "active" : ""}`}
             onClick={() => navigate("/permissions")}
@@ -680,7 +680,7 @@ const Sidebar = () => {
             </span>
             <span>Permissions</span>
           </button>
-        )}
+        )} */}
 
 
       </nav>
