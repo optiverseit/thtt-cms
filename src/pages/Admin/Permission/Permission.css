@@ -1,0 +1,624 @@
+.permission-page {
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+    color: #25203a
+}
+
+.permission-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px
+}
+
+.permission-header h1 {
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 750;
+    margin: 7px 0 8px;
+    color: #231a33
+}
+
+.permission-header p,
+.permission-card-top p {
+    font-size: 14px;
+    color: #77718a;
+    margin: 0
+}
+
+.permission-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    font-weight: 750;
+    color: #6e3b94
+}
+
+.permission-primary {
+    border: 0;
+    background: #45216b;
+    color: #fff;
+    border-radius: 9px;
+    padding: 12px 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .2s
+}
+
+.permission-primary:hover {
+    background: #31154f
+}
+
+.permission-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed
+}
+
+.permission-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #e8e4ed;
+    margin-bottom: 22px
+}
+
+.permission-tabs button {
+    border: 0;
+    background: transparent;
+    padding: 13px 19px;
+    color: #716b80;
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+    border-bottom: 3px solid transparent
+}
+
+.permission-tabs button.active {
+    color: #45216b;
+    border-bottom-color: #45216b
+}
+
+.permission-card {
+    background: #fff;
+    border: 1px solid #e9e6ee;
+    border-radius: 14px;
+    box-shadow: 0 3px 14px rgba(38, 19, 59, .035);
+    overflow: hidden
+}
+
+.permission-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 24px 26px
+}
+
+.permission-card-top h2 {
+    font-size: 18px;
+    margin: 0 0 7px;
+    color: #292038
+}
+
+.permission-icon-button {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #e7e2eb;
+    border-radius: 8px;
+    background: white;
+    color: #6e3b94;
+    cursor: pointer
+}
+
+.permission-toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 0 26px 20px
+}
+
+.permission-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #e4dfea;
+    border-radius: 9px;
+    padding: 0 13px;
+    min-height: 41px;
+    flex: 1;
+    color: #8c829a
+}
+
+.permission-search input {
+    border: 0;
+    outline: none;
+    min-width: 0;
+    width: 100%;
+    font-size: 13px;
+    color: #2b223a;
+    background: transparent
+}
+
+.permission-toolbar select,
+.permission-role-bar select {
+    min-height: 41px;
+    border: 1px solid #e4dfea;
+    border-radius: 9px;
+    padding: 0 12px;
+    background: #fff;
+    color: #30263d;
+    font-size: 13px;
+    outline: none
+}
+
+.permission-table-wrap {
+    overflow-x: auto
+}
+
+.permission-table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+    min-width: 750px
+}
+
+.permission-table th {
+    background: #faf8fc;
+    color: #756d82;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: .6px;
+    font-weight: 750;
+    padding: 15px 26px;
+    border-top: 1px solid #f0edf3;
+    border-bottom: 1px solid #f0edf3
+}
+
+.permission-table td {
+    padding: 17px 26px;
+    border-bottom: 1px solid #f1eef4;
+    font-size: 13px;
+    vertical-align: middle
+}
+
+.permission-table td strong {
+    display: block;
+    font-weight: 700;
+    color: #30283e
+}
+
+.permission-table td small {
+    display: block;
+    color: #938b9e;
+    margin-top: 5px;
+    font-size: 12px;
+    max-width: 280px
+}
+
+.permission-table td code {
+    font-size: 12px;
+    color: #633a86;
+    background: #f5f0f8;
+    border-radius: 5px;
+    padding: 6px 8px;
+    white-space: nowrap
+}
+
+.permission-module {
+    display: inline-block;
+    border: 1px solid #e9e0f0;
+    color: #64487a;
+    background: #faf7fc;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap
+}
+
+.permission-status {
+    border: 0;
+    border-radius: 20px;
+    padding: 7px 12px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .4px;
+    cursor: pointer
+}
+
+.permission-status.is-active {
+    color: #187a55;
+    background: #e7f7ee
+}
+
+.permission-status.is-inactive {
+    color: #9c5c19;
+    background: #fff1db
+}
+
+.permission-actions {
+    display: flex;
+    gap: 8px
+}
+
+.permission-actions button {
+    border: 1px solid #e7e1ed;
+    background: white;
+    color: #59347a;
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    cursor: pointer
+}
+
+.permission-actions button.danger {
+    color: #d04450
+}
+
+.permission-actions button:hover {
+    background: #f8f4fb
+}
+
+.permission-actions button:disabled {
+    opacity: .5;
+    cursor: not-allowed
+}
+
+.permission-empty {
+    text-align: center !important;
+    padding: 45px 20px !important;
+    color: #91899c !important
+}
+
+.permission-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 26px;
+    font-size: 12px;
+    color: #77718a
+}
+
+.permission-role-bar {
+    padding: 0 26px 24px;
+    display: flex;
+    align-items: end;
+    gap: 16px
+}
+
+.permission-role-bar>label:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 250px;
+    font-size: 12px;
+    font-weight: 650;
+    color: #655c73
+}
+
+.permission-role-bar .permission-search {
+    max-width: 420px
+}
+
+.permission-selection-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #f8f5fb;
+    border-top: 1px solid #eee8f3;
+    border-bottom: 1px solid #eee8f3;
+    padding: 14px 26px;
+    font-size: 13px;
+    color: #64546f
+}
+
+.permission-selection-summary strong {
+    color: #45216b
+}
+
+.permission-selection-summary>div {
+    display: flex;
+    gap: 12px
+}
+
+.permission-selection-summary button {
+    border: 0;
+    background: transparent;
+    color: #603785;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer
+}
+
+.permission-groups {
+    padding: 20px 26px;
+    display: grid;
+    gap: 16px
+}
+
+.permission-group {
+    border: 1px solid #ebe5f0;
+    border-radius: 10px;
+    overflow: hidden
+}
+
+.permission-group-heading {
+    background: #faf8fc;
+    padding: 15px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px
+}
+
+.permission-group-heading label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px
+}
+
+.permission-group-heading span {
+    font-size: 12px;
+    color: #898092
+}
+
+.permission-check-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 16px
+}
+
+.permission-check {
+    border: 1px solid #eee9f2;
+    border-radius: 9px;
+    padding: 13px;
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    cursor: pointer
+}
+
+.permission-check:hover {
+    background: #fcfaff
+}
+
+.permission-check input,
+.permission-group-heading input {
+    accent-color: #572782;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    cursor: pointer
+}
+
+.permission-check strong {
+    font-size: 13px;
+    font-weight: 650;
+    display: block;
+    color: #32293f
+}
+
+.permission-check small {
+    font-size: 11px;
+    color: #8a7e98;
+    display: block;
+    margin-top: 4px;
+    overflow-wrap: anywhere
+}
+
+.permission-save-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-top: 1px solid #eee9f2;
+    padding: 20px 26px
+}
+
+.permission-save-bar p {
+    font-size: 12px;
+    color: #83798f;
+    margin: 0
+}
+
+.permission-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    background: rgba(25, 15, 37, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px
+}
+
+.permission-modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 22px 80px rgba(0, 0, 0, .2)
+}
+
+.permission-modal-heading {
+    padding: 23px 26px;
+    border-bottom: 1px solid #eee9f2;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px
+}
+
+.permission-modal-heading h2 {
+    font-size: 20px;
+    margin: 0 0 6px
+}
+
+.permission-modal-heading p {
+    font-size: 13px;
+    color: #888093;
+    margin: 0
+}
+
+.permission-modal-heading>button {
+    border: 0;
+    background: transparent;
+    color: #786d84;
+    cursor: pointer;
+    font-size: 16px;
+    align-self: flex-start
+}
+
+.permission-form-grid {
+    padding: 24px 26px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px
+}
+
+.permission-form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #574d64
+}
+
+.permission-form-grid input,
+.permission-form-grid select,
+.permission-form-grid textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #e2dce9;
+    border-radius: 8px;
+    padding: 11px 12px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    color: #2c233a;
+    outline: none
+}
+
+.permission-form-grid input:focus,
+.permission-form-grid select:focus,
+.permission-form-grid textarea:focus {
+    border-color: #8b5ca8;
+    box-shadow: 0 0 0 3px rgba(111, 63, 151, .1)
+}
+
+.permission-form-grid textarea {
+    resize: vertical
+}
+
+.permission-full {
+    grid-column: 1/-1
+}
+
+.permission-error {
+    color: #ce3644;
+    font-size: 11px;
+    font-weight: 500
+}
+
+.permission-modal-footer {
+    padding: 17px 26px;
+    border-top: 1px solid #eee9f2;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px
+}
+
+.permission-secondary {
+    border: 1px solid #e3dce9;
+    border-radius: 9px;
+    background: white;
+    color: #554963;
+    padding: 11px 17px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 650
+}
+
+@media(max-width:780px) {
+    .permission-header {
+        align-items: flex-start;
+        flex-direction: column
+    }
+
+    .permission-card-top,
+    .permission-toolbar,
+    .permission-role-bar,
+    .permission-save-bar {
+        padding-left: 16px;
+        padding-right: 16px
+    }
+
+    .permission-toolbar,
+    .permission-role-bar {
+        flex-direction: column;
+        align-items: stretch
+    }
+
+    .permission-role-bar>label:first-child,
+    .permission-role-bar .permission-search {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+        box-sizing: border-box
+    }
+
+    .permission-check-grid {
+        grid-template-columns: 1fr
+    }
+
+    .permission-groups {
+        padding: 16px
+    }
+
+    .permission-selection-summary {
+        padding: 14px 16px
+    }
+
+    .permission-save-bar {
+        flex-direction: column;
+        align-items: stretch
+    }
+
+    .permission-footer {
+        padding: 16px
+    }
+
+    .permission-form-grid {
+        grid-template-columns: 1fr;
+        padding: 18px
+    }
+
+    .permission-full {
+        grid-column: auto
+    }
+
+    .permission-modal-heading,
+    .permission-modal-footer {
+        padding: 18px
+    }
+}
