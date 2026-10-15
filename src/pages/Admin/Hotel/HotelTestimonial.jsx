@@ -24,7 +24,6 @@ const createEmptyTestimonial = () => ({
 });
 const TestimonialImagePreview = ({ file, imageUrl }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
-
   useEffect(() => {
     if (!file) {
       setPreviewUrl(null);
@@ -34,10 +33,8 @@ const TestimonialImagePreview = ({ file, imageUrl }) => {
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [file]);
-
   const src = file ? previewUrl : imageUrl;
   if (!src) return null;
-
   return (
     <div style={{ marginTop: "10px" }}>
       <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "6px" }}>
@@ -51,8 +48,9 @@ const TestimonialImagePreview = ({ file, imageUrl }) => {
     </div>
   );
 };
-
 const HotelTestimonial = () => {
+  const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+  const canManage = ["admin", "cms-admin"].includes(role);
   const [testimonials, setTestimonials] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -127,6 +125,7 @@ const HotelTestimonial = () => {
     setEditingId(null);
   };
   const openCreateModal = () => {
+    if (!canManage) return;
     resetForm();
     setShowModal(true);
   };
@@ -167,6 +166,7 @@ const HotelTestimonial = () => {
   // =========================================================
   const handleCreate = async (event) => {
     event.preventDefault();
+    if (!canManage) return;
     if (!hotelId) {
       Swal.fire({
         icon: "warning",
@@ -238,6 +238,7 @@ const HotelTestimonial = () => {
   // OPEN EDIT
   // =========================================================
   const openEditModal = (testimonial) => {
+    if (!canManage) return;
     setIsEditing(true);
     setEditingId(testimonial.id);
     setHotelId(String(testimonial.hotel_id));
@@ -260,6 +261,7 @@ const HotelTestimonial = () => {
   // =========================================================
   const handleUpdate = async (event) => {
     event.preventDefault();
+    if (!canManage) return;
     if (!editingId) return;
     const item = testimonialRows[0];
     try {
@@ -317,6 +319,7 @@ const HotelTestimonial = () => {
   // STATUS
   // =========================================================
   const handleStatusChange = async (testimonial) => {
+    if (!canManage) return;
     const nextStatus =
       testimonial.status === "ACTIVE"
         ? "INACTIVE"
@@ -357,6 +360,7 @@ const HotelTestimonial = () => {
   // DELETE
   // =========================================================
   const handleDelete = async (testimonial) => {
+    if (!canManage) return;
     const result = await Swal.fire({
       icon: "warning",
       title: "Delete testimonial?",
@@ -419,13 +423,13 @@ const HotelTestimonial = () => {
                   Manage guest reviews and ratings for hotels.
                 </p>
               </div>
-              <button
+              {canManage && <button
                 type="button"
                 className="hotel-testimonial-add-button"
                 onClick={openCreateModal}
               >
                 + Add Testimonials
-              </button>
+              </button>}
             </div>
             <div className="hotel-testimonial-card">
               <div className="hotel-testimonial-card-header">
@@ -452,14 +456,14 @@ const HotelTestimonial = () => {
                       <th>Review</th>
                       <th>Order</th>
                       <th>Status</th>
-                      <th>Actions</th>
+                      {canManage && <th>Actions</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {loading ? (
                       <tr>
                         <td
-                          colSpan="10"
+                          colSpan={canManage ? 10 : 9}
                           className="hotel-testimonial-empty"
                         >
                           Loading hotel testimonials...
@@ -468,7 +472,7 @@ const HotelTestimonial = () => {
                     ) : testimonials.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="10"
+                          colSpan={canManage ? 10 : 9}
                           className="hotel-testimonial-empty"
                         >
                           No hotel testimonials found.
@@ -514,14 +518,14 @@ const HotelTestimonial = () => {
                                   ? "active"
                                   : "inactive"
                               }`}
-                              onClick={() =>
-                                handleStatusChange(testimonial)
-                              }
+                              onClick={() => canManage && handleStatusChange(testimonial)}
+                              disabled={!canManage}
+                              style={!canManage ? { cursor: "default", opacity: 1 } : undefined}
                             >
                               {testimonial.status}
                             </button>
                           </td>
-                          <td>
+                          {canManage && <td>
                             <div className="hotel-testimonial-actions">
                               <button
                                 type="button"
@@ -542,7 +546,7 @@ const HotelTestimonial = () => {
                                 Delete
                               </button>
                             </div>
-                          </td>
+                          </td>}
                         </tr>
                       ))
                     )}
@@ -562,7 +566,7 @@ const HotelTestimonial = () => {
           </div>
         </main>
       </div>
-      {showModal && (
+      {canManage && showModal && (
         <div
           className="hotel-testimonial-modal-overlay"
           onClick={closeModal}
@@ -588,6 +592,7 @@ const HotelTestimonial = () => {
                 type="button"
                 className="hotel-testimonial-modal-close"
                 onClick={closeModal}
+                style={{ color: "#0f172a", backgroundColor: "#f1f5f9", border: "1px solid #cbd5e1", opacity: 1, fontSize: "24px", fontWeight: 700 }}
               >
                 ×
               </button>
@@ -787,6 +792,7 @@ const HotelTestimonial = () => {
                   type="button"
                   className="hotel-testimonial-cancel"
                   onClick={closeModal}
+                  style={{ color: "#0f172a", backgroundColor: "#f8fafc", border: "1px solid #94a3b8", opacity: 1, fontWeight: 600 }}
                   disabled={saving}
                 >
                   Cancel

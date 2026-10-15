@@ -6,11 +6,9 @@ import {
     FaTimes,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
-
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
     getAllVisaCategoriesCms,
     getCountries,
@@ -19,13 +17,10 @@ import {
     changeVisaCategoryStatus,
     deleteVisaCategory,
 } from "../../../api/BackendApi";
-
 import "./VisaCategory.css";
-
 /* =========================================================
    EMPTY CATEGORY
 ========================================================= */
-
 const createEmptyCategory = (order = 0) => ({
     name: "",
     short_description: "",
@@ -36,38 +31,29 @@ const createEmptyCategory = (order = 0) => ({
     image: null,
     imagePreview: null,
 });
-
 /* =========================================================
    COMPONENT
 ========================================================= */
-
 const VisaCategory = () => {
-
+    const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+    const canManage = ["admin", "cms-admin"].includes(role);
     /* =====================================================
        DATA
     ===================================================== */
-
     const [categories, setCategories] = useState([]);
     const [countries, setCountries] = useState([]);
-
     /* =====================================================
        CREATE FORM
     ===================================================== */
-
     const [countryId, setCountryId] = useState("");
-
     const [categoryItems, setCategoryItems] = useState([
         createEmptyCategory(0),
     ]);
-
     /* =====================================================
        EDIT FORM
     ===================================================== */
-
     const [editingId, setEditingId] = useState(null);
-
     const [editCountryId, setEditCountryId] = useState("");
-
     const [editForm, setEditForm] = useState({
         name: "",
         short_description: "",
@@ -79,54 +65,40 @@ const VisaCategory = () => {
         existingImage: null,
         imagePreview: null,
     });
-
     /* =====================================================
        LOADING
     ===================================================== */
-
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [changingStatusId, setChangingStatusId] =
         useState(null);
-
     /* =====================================================
        PAGINATION
     ===================================================== */
-
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalCategories, setTotalCategories] = useState(0);
-
     /* =====================================================
        INITIAL LOAD
     ===================================================== */
-
     useEffect(() => {
         fetchCountries();
     }, []);
-
     useEffect(() => {
         fetchCategories();
     }, [page]);
-
     /* =====================================================
        FETCH COUNTRIES
     ===================================================== */
-
     const fetchCountries = async () => {
-
         try {
-
             const response =
                 await getCountries();
-
             console.log(
                 "COUNTRIES RESPONSE:",
                 response.data
             );
-
             if (response.data?.status) {
-
                 /*
                  * Supports:
                  *
@@ -138,22 +110,17 @@ const VisaCategory = () => {
                  *     data: [...]
                  * }
                  */
-
                 const countryData =
                     Array.isArray(response.data.data)
                         ? response.data.data
                         : response.data.data?.data || [];
-
                 setCountries(countryData);
             }
-
         } catch (error) {
-
             console.error(
                 "Error fetching countries:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -164,79 +131,57 @@ const VisaCategory = () => {
             });
         }
     };
-
     /* =====================================================
        FETCH VISA CATEGORIES
     ===================================================== */
-
     const fetchCategories = async () => {
-
         try {
-
             setLoading(true);
-
             const response =
                 await getAllVisaCategoriesCms(page);
-
             console.log(
                 "VISA CATEGORY CMS RESPONSE:",
                 response.data
             );
-
             if (response.data?.status) {
-
                 const responseData =
                     response.data.data;
-
                 /*
                  * Pagination response
                  */
-
                 if (
                     responseData &&
                     Array.isArray(responseData.data)
                 ) {
-
                     setCategories(
                         responseData.data
                     );
-
                     setTotalPages(
                         responseData.last_page || 1
                     );
-
                     setTotalCategories(
                         responseData.total || 0
                     );
-
                 } else {
-
                     /*
                      * Non-paginated fallback
                      */
-
                     const categoryData =
                         Array.isArray(responseData)
                             ? responseData
                             : [];
-
                     setCategories(categoryData);
-
                     setTotalPages(1);
-
                     setTotalCategories(
                         categoryData.length
                     );
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Error fetching visa categories:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -245,35 +190,26 @@ const VisaCategory = () => {
                     "Unable to load visa categories.",
                 confirmButtonColor: "#351255",
             });
-
         } finally {
-
             setLoading(false);
         }
     };
-
     /* =====================================================
        CREATE - ADD ROW
     ===================================================== */
-
     const addCategoryRow = () => {
-
         setCategoryItems((previous) => [
             ...previous,
             createEmptyCategory(previous.length),
         ]);
     };
-
     /* =====================================================
        CREATE - REMOVE ROW
     ===================================================== */
-
     const removeCategoryRow = (index) => {
-
         if (categoryItems.length === 1) {
             return;
         }
-
         setCategoryItems((previous) =>
             previous
                 .filter((_, i) => i !== index)
@@ -283,17 +219,14 @@ const VisaCategory = () => {
                 }))
         );
     };
-
     /* =====================================================
        CREATE - FIELD CHANGE
     ===================================================== */
-
     const handleCategoryChange = (
         index,
         field,
         value
     ) => {
-
         setCategoryItems((previous) =>
             previous.map((category, i) =>
                 i === index
@@ -305,31 +238,24 @@ const VisaCategory = () => {
             )
         );
     };
-
     /* =====================================================
        CREATE - IMAGE
     ===================================================== */
-
     const handleCategoryImageChange = (
         index,
         event
     ) => {
-
         const file =
             event.target.files?.[0];
-
         if (!file) {
             return;
         }
-
         const allowedTypes = [
             "image/jpeg",
             "image/png",
             "image/webp",
         ];
-
         if (!allowedTypes.includes(file.type)) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Invalid Image",
@@ -337,18 +263,13 @@ const VisaCategory = () => {
                     "Only JPG, JPEG, PNG and WEBP images are allowed.",
                 confirmButtonColor: "#351255",
             });
-
             event.target.value = "";
-
             return;
         }
-
         /*
          * Backend max: 5120 KB = 5 MB
          */
-
         if (file.size > 5 * 1024 * 1024) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Image Too Large",
@@ -356,15 +277,11 @@ const VisaCategory = () => {
                     "Image must not exceed 5 MB.",
                 confirmButtonColor: "#351255",
             });
-
             event.target.value = "";
-
             return;
         }
-
         const preview =
             URL.createObjectURL(file);
-
         setCategoryItems((previous) =>
             previous.map((category, i) =>
                 i === index
@@ -377,32 +294,23 @@ const VisaCategory = () => {
             )
         );
     };
-
     /* =====================================================
        RESET CREATE
     ===================================================== */
-
     const resetCreateForm = () => {
-
         setCountryId("");
-
         setCategoryItems([
             createEmptyCategory(0),
         ]);
     };
-
     /* =====================================================
        CREATE
     ===================================================== */
-
     const handleCreate = async (event) => {
-
+        if (!canManage) return;
         event.preventDefault();
-
         /* ---------------- COUNTRY ---------------- */
-
         if (!countryId) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Country Required",
@@ -410,20 +318,15 @@ const VisaCategory = () => {
                     "Please select a country.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
         /* ---------------- CATEGORY VALIDATION ---------------- */
-
         for (
             let i = 0;
             i < categoryItems.length;
             i++
         ) {
-
             if (!categoryItems[i].name.trim()) {
-
                 Swal.fire({
                     icon: "warning",
                     title: "Category Name Required",
@@ -434,18 +337,13 @@ const VisaCategory = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 return;
             }
         }
-
         /* =================================================
            FORM DATA
-
            Laravel expects:
-
            country_id
-
            categories[0][name]
            categories[0][short_description]
            categories[0][description]
@@ -454,43 +352,34 @@ const VisaCategory = () => {
            categories[0][status]
            categories[0][display_order]
         ================================================= */
-
         const formData =
             new FormData();
-
         formData.append(
             "country_id",
             countryId
         );
-
         categoryItems.forEach(
             (category, index) => {
-
                 formData.append(
                     `categories[${index}][name]`,
                     category.name.trim()
                 );
-
                 formData.append(
                     `categories[${index}][short_description]`,
                     category.short_description || ""
                 );
-
                 formData.append(
                     `categories[${index}][description]`,
                     category.description || ""
                 );
-
                 formData.append(
                     `categories[${index}][processing_time]`,
                     category.processing_time || ""
                 );
-
                 formData.append(
                     `categories[${index}][status]`,
                     category.status || "ACTIVE"
                 );
-
                 formData.append(
                     `categories[${index}][display_order]`,
                     category.display_order === ""
@@ -499,13 +388,10 @@ const VisaCategory = () => {
                               category.display_order
                           )
                 );
-
                 /*
                  * Each category has its own image
                  */
-
                 if (category.image) {
-
                     formData.append(
                         `categories[${index}][image]`,
                         category.image
@@ -513,18 +399,13 @@ const VisaCategory = () => {
                 }
             }
         );
-
         try {
-
             setSaving(true);
-
             const response =
                 await createVisaCategories(
                     formData
                 );
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title:
@@ -535,42 +416,32 @@ const VisaCategory = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 resetCreateForm();
-
                 if (page !== 1) {
                     setPage(1);
                 } else {
                     fetchCategories();
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Error creating visa categories:",
                 error
             );
-
             showValidationError(
                 error,
                 "Unable to create visa categories."
             );
-
         } finally {
-
             setSaving(false);
         }
     };
-
     /* =====================================================
        EDIT
     ===================================================== */
-
     const handleEdit = (category) => {
-
+        if (!canManage) return;
         setEditingId(category.id);
-
         setEditCountryId(
             (
                 category.country_id ||
@@ -578,79 +449,59 @@ const VisaCategory = () => {
                 ""
             ).toString()
         );
-
         setEditForm({
             name:
                 category.name || "",
-
             short_description:
                 category.short_description || "",
-
             description:
                 category.description || "",
-
             processing_time:
                 category.processing_time || "",
-
             status:
                 category.status || "ACTIVE",
-
             display_order:
                 category.display_order ?? 0,
-
             image: null,
-
             existingImage:
                 category.visa_image || null,
-
             imagePreview:
                 category.visa_image || null,
         });
-
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     };
-
     /* =====================================================
        EDIT FIELD
     ===================================================== */
-
     const handleEditChange = (
         field,
         value
     ) => {
-
         setEditForm((previous) => ({
             ...previous,
             [field]: value,
         }));
     };
-
     /* =====================================================
        EDIT IMAGE
     ===================================================== */
-
     const handleEditImageChange = (
         event
     ) => {
-
         const file =
             event.target.files?.[0];
-
         if (!file) {
             return;
         }
-
         const allowedTypes = [
             "image/jpeg",
             "image/png",
             "image/webp",
         ];
-
         if (!allowedTypes.includes(file.type)) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Invalid Image",
@@ -659,14 +510,10 @@ const VisaCategory = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             event.target.value = "";
-
             return;
         }
-
         if (file.size > 5 * 1024 * 1024) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Image Too Large",
@@ -675,12 +522,9 @@ const VisaCategory = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             event.target.value = "";
-
             return;
         }
-
         setEditForm((previous) => ({
             ...previous,
             image: file,
@@ -688,17 +532,12 @@ const VisaCategory = () => {
                 URL.createObjectURL(file),
         }));
     };
-
     /* =====================================================
        CANCEL EDIT
     ===================================================== */
-
     const cancelEdit = () => {
-
         setEditingId(null);
-
         setEditCountryId("");
-
         setEditForm({
             name: "",
             short_description: "",
@@ -711,17 +550,13 @@ const VisaCategory = () => {
             imagePreview: null,
         });
     };
-
     /* =====================================================
        UPDATE
     ===================================================== */
-
     const handleUpdate = async (event) => {
-
+        if (!canManage) return;
         event.preventDefault();
-
         if (!editCountryId) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Country Required",
@@ -730,12 +565,9 @@ const VisaCategory = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             return;
         }
-
         if (!editForm.name.trim()) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Category Name Required",
@@ -744,47 +576,37 @@ const VisaCategory = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             return;
         }
-
         /*
          * Image means update should also use FormData.
          */
-
         const formData =
             new FormData();
-
         formData.append(
             "country_id",
             editCountryId
         );
-
         formData.append(
             "name",
             editForm.name.trim()
         );
-
         formData.append(
             "short_description",
             editForm.short_description || ""
         );
-
         formData.append(
             "description",
             editForm.description || ""
         );
-
         formData.append(
             "processing_time",
             editForm.processing_time || ""
         );
-
         formData.append(
             "status",
             editForm.status
         );
-
         formData.append(
             "display_order",
             editForm.display_order === ""
@@ -793,27 +615,20 @@ const VisaCategory = () => {
                       editForm.display_order
                   )
         );
-
         if (editForm.image) {
-
             formData.append(
                 "image",
                 editForm.image
             );
         }
-
         try {
-
             setSaving(true);
-
             const response =
                 await updateVisaCategory(
                     editingId,
                     formData
                 );
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title:
@@ -824,90 +639,67 @@ const VisaCategory = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 cancelEdit();
-
                 fetchCategories();
             }
-
         } catch (error) {
-
             console.error(
                 "Error updating visa category:",
                 error
             );
-
             showValidationError(
                 error,
                 "Unable to update visa category."
             );
-
         } finally {
-
             setSaving(false);
         }
     };
-
     /* =====================================================
        CHANGE STATUS
     ===================================================== */
-
     const handleStatusChange = async (
         category
     ) => {
-
+        if (!canManage) return;
         const newStatus =
             category.status === "ACTIVE"
                 ? "INACTIVE"
                 : "ACTIVE";
-
         const result =
             await Swal.fire({
-
                 icon: "question",
-
                 title:
                     newStatus === "ACTIVE"
                         ? "Activate Category?"
                         : "Deactivate Category?",
-
                 text:
                     newStatus === "ACTIVE"
                         ? "This visa category will become active."
                         : "This visa category will become inactive.",
-
                 showCancelButton: true,
-
                 confirmButtonText:
                     newStatus === "ACTIVE"
                         ? "Activate"
                         : "Deactivate",
-
                 cancelButtonText:
                     "Cancel",
-
                 confirmButtonColor:
                     "#351255",
             });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
-
             setChangingStatusId(
                 category.id
             );
-
             const response =
                 await changeVisaCategoryStatus(
                     category.id,
                     newStatus
                 );
-
             if (response.data?.status) {
-
                 setCategories(
                     (previous) =>
                         previous.map(
@@ -926,7 +718,6 @@ const VisaCategory = () => {
                                     : item
                         )
                 );
-
                 Swal.fire({
                     icon: "success",
                     title:
@@ -938,14 +729,11 @@ const VisaCategory = () => {
                         "#351255",
                 });
             }
-
         } catch (error) {
-
             console.error(
                 "Status update error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -955,56 +743,39 @@ const VisaCategory = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
         } finally {
-
             setChangingStatusId(null);
         }
     };
-
     /* =====================================================
        DELETE
     ===================================================== */
-
     const handleDelete = async (id) => {
-
+        if (!canManage) return;
         const result =
             await Swal.fire({
-
                 icon: "warning",
-
                 title:
                     "Delete Visa Category?",
-
                 text:
                     "This visa category will be permanently deleted.",
-
                 showCancelButton: true,
-
                 confirmButtonText:
                     "Delete",
-
                 cancelButtonText:
                     "Cancel",
-
                 confirmButtonColor:
                     "#f52d91",
-
                 cancelButtonColor:
                     "#77717d",
             });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
-
             const response =
                 await deleteVisaCategory(id);
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title: "Deleted",
@@ -1014,39 +785,30 @@ const VisaCategory = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 if (editingId === id) {
                     cancelEdit();
                 }
-
                 /*
                  * If last row on page was deleted,
                  * move to previous page.
                  */
-
                 if (
                     categories.length === 1 &&
                     page > 1
                 ) {
-
                     setPage(
                         (previous) =>
                             previous - 1
                     );
-
                 } else {
-
                     fetchCategories();
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Delete visa category error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -1058,30 +820,23 @@ const VisaCategory = () => {
             });
         }
     };
-
     /* =====================================================
        VALIDATION ERROR
     ===================================================== */
-
     const showValidationError = (
         error,
         fallback
     ) => {
-
         let errorMessage =
             error.response?.data?.message ||
             fallback;
-
         const validationErrors =
             error.response?.data?.errors;
-
         if (validationErrors) {
-
             const firstError =
                 Object.values(
                     validationErrors
                 )[0];
-
             if (
                 Array.isArray(firstError)
             ) {
@@ -1089,7 +844,6 @@ const VisaCategory = () => {
                     firstError[0];
             }
         }
-
         Swal.fire({
             icon: "error",
             title: "Failed",
@@ -1098,15 +852,12 @@ const VisaCategory = () => {
                 "#351255",
         });
     };
-
     /* =====================================================
        COUNTRY NAME
     ===================================================== */
-
     const getCountryName = (
         category
     ) => {
-
         return (
             category.country?.country_name ||
             category.country?.name ||
@@ -1123,97 +874,64 @@ const VisaCategory = () => {
             "-"
         );
     };
-
     /* =====================================================
        JSX
     ===================================================== */
-
     return (
-
         <div className="dashboard-layout">
-
             <Sidebar />
-
             <div className="dashboard-main">
-
                 <Navbar />
-
                 <main className="dashboard-content">
-
                     <div className="visa-category-page">
-
                         {/* ============================
                             PAGE HEADER
                         ============================ */}
-
                         <div className="visa-category-header">
-
                             <div>
-
                                 <h1>
                                     Visa Categories
                                 </h1>
-
                                 <p>
                                     Manage visa categories available for each country.
                                 </p>
-
                             </div>
-
                         </div>
-
                         {/* ============================
                             CREATE / EDIT CARD
                         ============================ */}
-
-                        <div className="visa-category-form-card">
-
+                        {canManage && <div className="visa-category-form-card">
                             <div className="visa-category-card-header">
-
                                 <h2>
-
                                     {editingId
                                         ? "Edit Visa Category"
                                         : "Add Visa Categories"}
-
                                 </h2>
-
                                 <p>
-
                                     {editingId
                                         ? "Update the selected visa category."
                                         : "Select a country and add one or more visa categories."}
-
                                 </p>
-
                             </div>
-
                             {/* ============================
                                 EDIT
                             ============================ */}
-
                             {editingId ? (
-
                                 <form
                                     className="visa-category-form"
                                     onSubmit={
                                         handleUpdate
                                     }
                                 >
-
                                     <div className="visa-category-form-grid">
-
                                         {/* COUNTRY */}
-
                                         <div className="visa-category-form-group">
-
                                             <label>
                                                 Country
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <select
                                                 value={
                                                     editCountryId
@@ -1228,16 +946,13 @@ const VisaCategory = () => {
                                                 }
                                                 required
                                             >
-
                                                 <option value="">
                                                     Select Country
                                                 </option>
-
                                                 {countries.map(
                                                     (
                                                         country
                                                     ) => (
-
                                                         <option
                                                             key={
                                                                 country.id
@@ -1246,30 +961,21 @@ const VisaCategory = () => {
                                                                 country.id
                                                             }
                                                         >
-
                                                             {country.country_name ||
                                                                 country.name}
-
                                                         </option>
-
                                                     )
                                                 )}
-
                                             </select>
-
                                         </div>
-
                                         {/* NAME */}
-
                                         <div className="visa-category-form-group">
-
                                             <label>
                                                 Category Name
                                                 <span className="required">
                                                     *
                                                 </span>
                                             </label>
-
                                             <input
                                                 type="text"
                                                 value={
@@ -1287,17 +993,12 @@ const VisaCategory = () => {
                                                 }
                                                 required
                                             />
-
                                         </div>
-
                                         {/* PROCESSING */}
-
                                         <div className="visa-category-form-group">
-
                                             <label>
                                                 Processing Time
                                             </label>
-
                                             <input
                                                 type="text"
                                                 value={
@@ -1314,17 +1015,12 @@ const VisaCategory = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* ORDER */}
-
                                         <div className="visa-category-form-group">
-
                                             <label>
                                                 Display Order
                                             </label>
-
                                             <input
                                                 type="number"
                                                 min="0"
@@ -1341,17 +1037,12 @@ const VisaCategory = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* STATUS */}
-
                                         <div className="visa-category-form-group">
-
                                             <label>
                                                 Status
                                             </label>
-
                                             <select
                                                 value={
                                                     editForm.status
@@ -1366,27 +1057,19 @@ const VisaCategory = () => {
                                                     saving
                                                 }
                                             >
-
                                                 <option value="ACTIVE">
                                                     Active
                                                 </option>
-
                                                 <option value="INACTIVE">
                                                     Inactive
                                                 </option>
-
                                             </select>
-
                                         </div>
-
                                         {/* IMAGE */}
-
                                         <div className="visa-category-form-group">
-
                                             <label>
                                                 Visa Image
                                             </label>
-
                                             <input
                                                 type="file"
                                                 accept=".jpg,.jpeg,.png,.webp"
@@ -1397,21 +1080,15 @@ const VisaCategory = () => {
                                                     saving
                                                 }
                                             />
-
                                             <span className="visa-category-file-help">
                                                 JPG, JPEG, PNG or WEBP. Maximum 5 MB.
                                             </span>
-
                                         </div>
-
                                         {/* SHORT DESCRIPTION */}
-
                                         <div className="visa-category-form-group visa-category-full-width">
-
                                             <label>
                                                 Short Description
                                             </label>
-
                                             <textarea
                                                 rows="3"
                                                 maxLength="500"
@@ -1429,17 +1106,12 @@ const VisaCategory = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                         {/* DESCRIPTION */}
-
                                         <div className="visa-category-form-group visa-category-full-width">
-
                                             <label>
                                                 Description
                                             </label>
-
                                             <textarea
                                                 rows="5"
                                                 value={
@@ -1456,21 +1128,14 @@ const VisaCategory = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                     </div>
-
                                     {/* IMAGE PREVIEW */}
-
                                     {editForm.imagePreview && (
-
                                         <div className="visa-category-image-preview">
-
                                             <span>
                                                 Image Preview
                                             </span>
-
                                             <img
                                                 src={
                                                     editForm.imagePreview
@@ -1480,13 +1145,9 @@ const VisaCategory = () => {
                                                     "Visa category"
                                                 }
                                             />
-
                                         </div>
-
                                     )}
-
                                     <div className="visa-category-form-actions">
-
                                         <button
                                             type="button"
                                             className="visa-category-cancel-btn"
@@ -1497,13 +1158,9 @@ const VisaCategory = () => {
                                                 saving
                                             }
                                         >
-
                                             <FaTimes />
-
                                             Cancel
-
                                         </button>
-
                                         <button
                                             type="submit"
                                             className="visa-category-submit-btn"
@@ -1511,46 +1168,31 @@ const VisaCategory = () => {
                                                 saving
                                             }
                                         >
-
                                             {saving
                                                 ? "Updating..."
                                                 : "Update Category"}
-
                                         </button>
-
                                     </div>
-
                                 </form>
-
                             ) : (
-
                                 /* ============================
                                     CREATE MULTIPLE
                                 ============================ */
-
                                 <form
                                     className="visa-category-form"
                                     onSubmit={
                                         handleCreate
                                     }
                                 >
-
                                     {/* COUNTRY */}
-
                                     <div className="visa-category-country-select">
-
                                         <div className="visa-category-form-group">
-
                                             <label>
-
                                                 Country
-
                                                 <span className="required">
                                                     *
                                                 </span>
-
                                             </label>
-
                                             <select
                                                 value={
                                                     countryId
@@ -1565,16 +1207,13 @@ const VisaCategory = () => {
                                                 }
                                                 required
                                             >
-
                                                 <option value="">
                                                     Select Country
                                                 </option>
-
                                                 {countries.map(
                                                     (
                                                         country
                                                     ) => (
-
                                                         <option
                                                             key={
                                                                 country.id
@@ -1583,46 +1222,33 @@ const VisaCategory = () => {
                                                                 country.id
                                                             }
                                                         >
-
                                                             {country.country_name ||
                                                                 country.name}
-
                                                         </option>
-
                                                     )
                                                 )}
-
                                             </select>
-
                                         </div>
-
                                     </div>
-
                                     {/* CATEGORY ROWS */}
-
                                     <div className="visa-category-create-list">
-
                                         {categoryItems.map(
                                             (
                                                 category,
                                                 index
                                             ) => (
-
                                                 <div
                                                     className="visa-category-create-item"
                                                     key={
                                                         index
                                                     }
                                                 >
-
                                                     <div className="visa-category-create-item-header">
-
                                                         <h3>
                                                             Visa Category{" "}
                                                             {index +
                                                                 1}
                                                         </h3>
-
                                                         <button
                                                             type="button"
                                                             className="visa-category-remove-btn"
@@ -1638,29 +1264,18 @@ const VisaCategory = () => {
                                                             }
                                                             title="Remove Category"
                                                         >
-
                                                             <FaTimes />
-
                                                         </button>
-
                                                     </div>
-
                                                     <div className="visa-category-form-grid">
-
                                                         {/* NAME */}
-
                                                         <div className="visa-category-form-group">
-
                                                             <label>
-
                                                                 Category Name
-
                                                                 <span className="required">
                                                                     *
                                                                 </span>
-
                                                             </label>
-
                                                             <input
                                                                 type="text"
                                                                 value={
@@ -1681,17 +1296,12 @@ const VisaCategory = () => {
                                                                 }
                                                                 required
                                                             />
-
                                                         </div>
-
                                                         {/* PROCESSING TIME */}
-
                                                         <div className="visa-category-form-group">
-
                                                             <label>
                                                                 Processing Time
                                                             </label>
-
                                                             <input
                                                                 type="text"
                                                                 value={
@@ -1711,17 +1321,12 @@ const VisaCategory = () => {
                                                                     saving
                                                                 }
                                                             />
-
                                                         </div>
-
                                                         {/* STATUS */}
-
                                                         <div className="visa-category-form-group">
-
                                                             <label>
                                                                 Status
                                                             </label>
-
                                                             <select
                                                                 value={
                                                                     category.status
@@ -1739,27 +1344,19 @@ const VisaCategory = () => {
                                                                     saving
                                                                 }
                                                             >
-
                                                                 <option value="ACTIVE">
                                                                     Active
                                                                 </option>
-
                                                                 <option value="INACTIVE">
                                                                     Inactive
                                                                 </option>
-
                                                             </select>
-
                                                         </div>
-
                                                         {/* DISPLAY ORDER */}
-
                                                         <div className="visa-category-form-group">
-
                                                             <label>
                                                                 Display Order
                                                             </label>
-
                                                             <input
                                                                 type="number"
                                                                 min="0"
@@ -1779,17 +1376,12 @@ const VisaCategory = () => {
                                                                     saving
                                                                 }
                                                             />
-
                                                         </div>
-
                                                         {/* IMAGE */}
-
                                                         <div className="visa-category-form-group visa-category-full-width">
-
                                                             <label>
                                                                 Visa Image
                                                             </label>
-
                                                             <input
                                                                 type="file"
                                                                 accept=".jpg,.jpeg,.png,.webp"
@@ -1803,21 +1395,15 @@ const VisaCategory = () => {
                                                                     saving
                                                                 }
                                                             />
-
                                                             <span className="visa-category-file-help">
                                                                 JPG, JPEG, PNG or WEBP. Maximum 5 MB.
                                                             </span>
-
                                                         </div>
-
                                                         {/* SHORT DESCRIPTION */}
-
                                                         <div className="visa-category-form-group visa-category-full-width">
-
                                                             <label>
                                                                 Short Description
                                                             </label>
-
                                                             <textarea
                                                                 rows="3"
                                                                 maxLength="500"
@@ -1838,17 +1424,12 @@ const VisaCategory = () => {
                                                                     saving
                                                                 }
                                                             />
-
                                                         </div>
-
                                                         {/* DESCRIPTION */}
-
                                                         <div className="visa-category-form-group visa-category-full-width">
-
                                                             <label>
                                                                 Description
                                                             </label>
-
                                                             <textarea
                                                                 rows="5"
                                                                 value={
@@ -1868,21 +1449,14 @@ const VisaCategory = () => {
                                                                     saving
                                                                 }
                                                             />
-
                                                         </div>
-
                                                     </div>
-
                                                     {/* PREVIEW */}
-
                                                     {category.imagePreview && (
-
                                                         <div className="visa-category-image-preview">
-
                                                             <span>
                                                                 Image Preview
                                                             </span>
-
                                                             <img
                                                                 src={
                                                                     category.imagePreview
@@ -1892,22 +1466,14 @@ const VisaCategory = () => {
                                                                     "Visa category"
                                                                 }
                                                             />
-
                                                         </div>
-
                                                     )}
-
                                                 </div>
-
                                             )
                                         )}
-
                                     </div>
-
                                     {/* CREATE ACTIONS */}
-
                                     <div className="visa-category-create-actions">
-
                                         <button
                                             type="button"
                                             className="visa-category-add-more-btn"
@@ -1918,13 +1484,9 @@ const VisaCategory = () => {
                                                 saving
                                             }
                                         >
-
                                             <FaPlus />
-
                                             Add Another Category
-
                                         </button>
-
                                         <button
                                             type="submit"
                                             className="visa-category-submit-btn"
@@ -1932,158 +1494,104 @@ const VisaCategory = () => {
                                                 saving
                                             }
                                         >
-
                                             {saving
                                                 ? "Saving..."
                                                 : "Save Categories"}
-
                                         </button>
-
                                     </div>
-
                                 </form>
-
                             )}
-
-                        </div>
-
+                        </div>}
                         {/* ============================
                             TABLE CARD
                         ============================ */}
-
                         <div className="visa-category-table-card">
-
                             <div className="visa-category-table-header">
-
                                 <div>
-
                                     <h2>
                                         Visa Category List
                                     </h2>
-
                                     <p>
-
                                         {totalCategories}{" "}
-
                                         {totalCategories === 1
                                             ? "category"
                                             : "categories"}
-
                                     </p>
-
                                 </div>
-
                             </div>
-
                             <div className="visa-category-table-responsive">
-
                                 <table className="visa-category-table">
-
                                     <thead>
-
                                         <tr>
-
                                             <th>
                                                 S.N.
                                             </th>
-
                                             <th>
                                                 Image
                                             </th>
-
                                             <th>
                                                 Category
                                             </th>
-
                                             <th>
                                                 Country
                                             </th>
-
                                             <th>
                                                 Processing Time
                                             </th>
-
                                             <th>
                                                 Display Order
                                             </th>
-
                                             <th>
                                                 Status
                                             </th>
-
-                                            <th>
+                                            {canManage && <th>
                                                 Actions
-                                            </th>
-
+                                            </th>}
                                         </tr>
-
                                     </thead>
-
                                     <tbody>
-
                                         {loading ? (
-
                                             <tr>
-
                                                 <td
-                                                    colSpan="8"
+                                                    colSpan={canManage ? 8 : 7}
                                                     className="visa-category-table-message"
                                                 >
-
                                                     <div className="visa-category-loader"></div>
-
                                                     Loading visa categories...
-
                                                 </td>
-
                                             </tr>
-
                                         ) : categories.length ===
                                           0 ? (
-
                                             <tr>
-
                                                 <td
-                                                    colSpan="8"
+                                                    colSpan={canManage ? 8 : 7}
                                                     className="visa-category-table-message"
                                                 >
                                                     No visa categories found.
                                                 </td>
-
                                             </tr>
-
                                         ) : (
-
                                             categories.map(
                                                 (
                                                     category,
                                                     index
                                                 ) => (
-
                                                     <tr
                                                         key={
                                                             category.id
                                                         }
                                                     >
-
                                                         {/* SN */}
-
                                                         <td>
-
                                                             {(page -
                                                                 1) *
                                                                 10 +
                                                                 index +
                                                                 1}
-
                                                         </td>
-
                                                         {/* IMAGE */}
-
                                                         <td>
-
                                                             {category.visa_image ? (
-
                                                                 <img
                                                                     className="visa-category-table-image"
                                                                     src={
@@ -2093,73 +1601,47 @@ const VisaCategory = () => {
                                                                         category.name
                                                                     }
                                                                 />
-
                                                             ) : (
-
                                                                 <div className="visa-category-no-image">
                                                                     No Image
                                                                 </div>
-
                                                             )}
-
                                                         </td>
-
                                                         {/* CATEGORY */}
-
                                                         <td>
-
                                                             <div className="visa-category-name-cell">
-
                                                                 <strong>
                                                                     {
                                                                         category.name
                                                                     }
                                                                 </strong>
-
                                                                 {category.short_description && (
-
                                                                     <span>
                                                                         {
                                                                             category.short_description
                                                                         }
                                                                     </span>
-
                                                                 )}
-
                                                             </div>
-
                                                         </td>
-
                                                         {/* COUNTRY */}
-
                                                         <td>
                                                             {getCountryName(
                                                                 category
                                                             )}
                                                         </td>
-
                                                         {/* PROCESSING */}
-
                                                         <td>
-
                                                             {category.processing_time ||
                                                                 "-"}
-
                                                         </td>
-
                                                         {/* ORDER */}
-
                                                         <td>
-
                                                             {category.display_order ??
                                                                 0}
-
                                                         </td>
-
                                                         {/* STATUS */}
-
                                                         <td>
-
                                                             <button
                                                                 type="button"
                                                                 className={`visa-category-status ${
@@ -2169,31 +1651,24 @@ const VisaCategory = () => {
                                                                         : "inactive"
                                                                 }`}
                                                                 disabled={
-                                                                    changingStatusId ===
+                                                                    !canManage || changingStatusId ===
                                                                     category.id
                                                                 }
                                                                 onClick={() =>
-                                                                    handleStatusChange(
+                                                                    canManage && handleStatusChange(
                                                                         category
                                                                     )
                                                                 }
                                                             >
-
                                                                 {changingStatusId ===
                                                                 category.id
                                                                     ? "Updating..."
                                                                     : category.status}
-
                                                             </button>
-
                                                         </td>
-
                                                         {/* ACTIONS */}
-
-                                                        <td>
-
+                                                        {canManage && <td>
                                                             <div className="visa-category-actions">
-
                                                                 <button
                                                                     type="button"
                                                                     className="visa-category-edit-btn"
@@ -2204,11 +1679,8 @@ const VisaCategory = () => {
                                                                     }
                                                                     title="Edit"
                                                                 >
-
                                                                     <FaPen />
-
                                                                 </button>
-
                                                                 <button
                                                                     type="button"
                                                                     className="visa-category-delete-btn"
@@ -2219,27 +1691,17 @@ const VisaCategory = () => {
                                                                     }
                                                                     title="Delete"
                                                                 >
-
                                                                     <FaTrash />
-
                                                                 </button>
-
                                                             </div>
-
-                                                        </td>
-
+                                                        </td>}
                                                     </tr>
-
                                                 )
                                             )
                                         )}
-
                                     </tbody>
-
                                 </table>
-
                             </div>
-
                             <Pagination
                                 page={page}
                                 totalPages={
@@ -2249,17 +1711,11 @@ const VisaCategory = () => {
                                     setPage
                                 }
                             />
-
                         </div>
-
                     </div>
-
                 </main>
-
             </div>
-
         </div>
     );
 };
-
 export default VisaCategory;

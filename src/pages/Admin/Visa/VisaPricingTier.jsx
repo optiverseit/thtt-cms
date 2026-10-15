@@ -6,11 +6,9 @@ import {
     FaTimes,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
-
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
     getAllVisaPricingTiersCms,
     getVisaCategories,
@@ -19,14 +17,10 @@ import {
     changeVisaPricingTierStatus,
     deleteVisaPricingTier,
 } from "../../../api/BackendApi";
-
 import "./VisaPricingTier.css";
-
-
 /* =========================================================
    EMPTY PRICING TIER
 ========================================================= */
-
 const createEmptyPricingTier = (order = 0) => ({
     title: "",
     validity: "",
@@ -34,38 +28,27 @@ const createEmptyPricingTier = (order = 0) => ({
     status: "ACTIVE",
     display_order: order,
 });
-
-
 const VisaPricingTier = () => {
-
+    const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+    const canManage = ["admin", "cms-admin"].includes(role);
     /* =====================================================
        DATA
     ===================================================== */
-
     const [pricingTiers, setPricingTiers] = useState([]);
     const [visaCategories, setVisaCategories] = useState([]);
-
-
     /* =====================================================
        CREATE
     ===================================================== */
-
     const [visaCategoryId, setVisaCategoryId] = useState("");
-
     const [pricingTierItems, setPricingTierItems] = useState([
         createEmptyPricingTier(0),
     ]);
-
-
     /* =====================================================
        EDIT
     ===================================================== */
-
     const [editingId, setEditingId] = useState(null);
-
     const [editVisaCategoryId, setEditVisaCategoryId] =
         useState("");
-
     const [editForm, setEditForm] = useState({
         title: "",
         validity: "",
@@ -73,75 +56,52 @@ const VisaPricingTier = () => {
         status: "ACTIVE",
         display_order: 0,
     });
-
-
     /* =====================================================
        LOADING
     ===================================================== */
-
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-
     const [changingStatusId, setChangingStatusId] =
         useState(null);
-
-
     /* =====================================================
        PAGINATION
     ===================================================== */
-
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalPricingTiers, setTotalPricingTiers] =
         useState(0);
-
-
     /* =====================================================
        INITIAL LOAD
     ===================================================== */
-
     useEffect(() => {
         fetchVisaCategories();
     }, []);
-
     useEffect(() => {
         fetchPricingTiers();
     }, [page]);
-
-
     /* =====================================================
        FETCH ACTIVE VISA CATEGORIES
     ===================================================== */
-
     const fetchVisaCategories = async () => {
-
         try {
-
             const response =
                 await getVisaCategories();
-
             console.log(
                 "VISA CATEGORIES RESPONSE:",
                 response.data
             );
-
             if (response.data?.status) {
-
                 const categoryData =
                     Array.isArray(response.data.data)
                         ? response.data.data
                         : response.data.data?.data || [];
-
                 setVisaCategories(categoryData);
             }
-
         } catch (error) {
-
             console.error(
                 "Error fetching visa categories:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -152,31 +112,21 @@ const VisaPricingTier = () => {
             });
         }
     };
-
-
     /* =====================================================
        FETCH CMS PRICING TIERS
     ===================================================== */
-
     const fetchPricingTiers = async () => {
-
         try {
-
             setLoading(true);
-
             const response =
                 await getAllVisaPricingTiersCms(page);
-
             console.log(
                 "VISA PRICING TIERS CMS RESPONSE:",
                 response.data
             );
-
             if (response.data?.status) {
-
                 const responseData =
                     response.data.data;
-
                 /*
                  * Paginated response
                  */
@@ -184,21 +134,16 @@ const VisaPricingTier = () => {
                     responseData &&
                     Array.isArray(responseData.data)
                 ) {
-
                     setPricingTiers(
                         responseData.data
                     );
-
                     setTotalPages(
                         responseData.last_page || 1
                     );
-
                     setTotalPricingTiers(
                         responseData.total || 0
                     );
-
                 } else {
-
                     /*
                      * Non-paginated fallback
                      */
@@ -206,24 +151,18 @@ const VisaPricingTier = () => {
                         Array.isArray(responseData)
                             ? responseData
                             : [];
-
                     setPricingTiers(tierData);
-
                     setTotalPages(1);
-
                     setTotalPricingTiers(
                         tierData.length
                     );
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Error fetching pricing tiers:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -232,37 +171,26 @@ const VisaPricingTier = () => {
                     "Unable to load visa pricing tiers.",
                 confirmButtonColor: "#351255",
             });
-
         } finally {
-
             setLoading(false);
         }
     };
-
-
     /* =====================================================
        CREATE - ADD ROW
     ===================================================== */
-
     const addPricingTierRow = () => {
-
         setPricingTierItems((previous) => [
             ...previous,
             createEmptyPricingTier(previous.length),
         ]);
     };
-
-
     /* =====================================================
        CREATE - REMOVE ROW
     ===================================================== */
-
     const removePricingTierRow = (index) => {
-
         if (pricingTierItems.length === 1) {
             return;
         }
-
         const updatedItems =
             pricingTierItems
                 .filter((_, i) => i !== index)
@@ -270,60 +198,41 @@ const VisaPricingTier = () => {
                     ...tier,
                     display_order: i,
                 }));
-
         setPricingTierItems(updatedItems);
     };
-
-
     /* =====================================================
        CREATE - FIELD CHANGE
     ===================================================== */
-
     const handlePricingTierChange = (
         index,
         field,
         value
     ) => {
-
         const updatedItems =
             [...pricingTierItems];
-
         updatedItems[index] = {
             ...updatedItems[index],
             [field]: value,
         };
-
         setPricingTierItems(updatedItems);
     };
-
-
     /* =====================================================
        RESET CREATE
     ===================================================== */
-
     const resetCreateForm = () => {
-
         setVisaCategoryId("");
-
         setPricingTierItems([
             createEmptyPricingTier(0),
         ]);
     };
-
-
     /* =====================================================
        CREATE
     ===================================================== */
-
     const handleCreate = async (e) => {
-
+        if (!canManage) { e.preventDefault(); return; }
         e.preventDefault();
-
-
         /* ---------------- CATEGORY ---------------- */
-
         if (!visaCategoryId) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Visa Category Required",
@@ -331,24 +240,17 @@ const VisaPricingTier = () => {
                     "Please select a visa category.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
-
         /* ---------------- VALIDATION ---------------- */
-
         for (
             let i = 0;
             i < pricingTierItems.length;
             i++
         ) {
-
             const tier =
                 pricingTierItems[i];
-
             if (!tier.title.trim()) {
-
                 Swal.fire({
                     icon: "warning",
                     title: "Title Required",
@@ -357,12 +259,9 @@ const VisaPricingTier = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 return;
             }
-
             if (!tier.validity.trim()) {
-
                 Swal.fire({
                     icon: "warning",
                     title: "Validity Required",
@@ -371,15 +270,12 @@ const VisaPricingTier = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 return;
             }
-
             if (
                 tier.price_npr === "" ||
                 Number(tier.price_npr) < 0
             ) {
-
                 Swal.fire({
                     icon: "warning",
                     title: "Price Required",
@@ -388,15 +284,11 @@ const VisaPricingTier = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 return;
             }
         }
-
-
         /* =================================================
            EXACT PAYLOAD EXPECTED BY BACKEND
-
            {
                visa_category_id: 1,
                pricing_tiers: [
@@ -410,29 +302,21 @@ const VisaPricingTier = () => {
                ]
            }
         ================================================= */
-
         const data = {
-
             visa_category_id:
                 Number(visaCategoryId),
-
             pricing_tiers:
                 pricingTierItems.map(
                     (tier, index) => ({
-
                         title:
                             tier.title.trim(),
-
                         validity:
                             tier.validity.trim(),
-
                         price_npr:
                             Number(tier.price_npr),
-
                         status:
                             tier.status ||
                             "ACTIVE",
-
                         display_order:
                             tier.display_order === ""
                                 ? index
@@ -442,19 +326,13 @@ const VisaPricingTier = () => {
                     })
                 ),
         };
-
-
         try {
-
             setSaving(true);
-
             const response =
                 await createVisaPricingTiers(
                     data
                 );
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title:
@@ -465,43 +343,32 @@ const VisaPricingTier = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 resetCreateForm();
-
                 if (page !== 1) {
                     setPage(1);
                 } else {
                     fetchPricingTiers();
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Error creating pricing tiers:",
                 error
             );
-
             showValidationError(
                 error,
                 "Unable to create visa pricing tiers."
             );
-
         } finally {
-
             setSaving(false);
         }
     };
-
-
     /* =====================================================
        EDIT
     ===================================================== */
-
     const handleEdit = (tier) => {
-
+        if (!canManage) return;
         setEditingId(tier.id);
-
         setEditVisaCategoryId(
             (
                 tier.visa_category_id ||
@@ -509,58 +376,41 @@ const VisaPricingTier = () => {
                 ""
             ).toString()
         );
-
         setEditForm({
-
             title:
                 tier.title || "",
-
             validity:
                 tier.validity || "",
-
             price_npr:
                 tier.price_npr ?? "",
-
             status:
                 tier.status || "ACTIVE",
-
             display_order:
                 tier.display_order ?? 0,
         });
-
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     };
-
-
     /* =====================================================
        EDIT FIELD CHANGE
     ===================================================== */
-
     const handleEditChange = (
         field,
         value
     ) => {
-
         setEditForm((previous) => ({
             ...previous,
             [field]: value,
         }));
     };
-
-
     /* =====================================================
        CANCEL EDIT
     ===================================================== */
-
     const cancelEdit = () => {
-
         setEditingId(null);
-
         setEditVisaCategoryId("");
-
         setEditForm({
             title: "",
             validity: "",
@@ -569,18 +419,13 @@ const VisaPricingTier = () => {
             display_order: 0,
         });
     };
-
-
     /* =====================================================
        UPDATE
     ===================================================== */
-
     const handleUpdate = async (e) => {
-
+        if (!canManage) { e.preventDefault(); return; }
         e.preventDefault();
-
         if (!editVisaCategoryId) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Visa Category Required",
@@ -588,13 +433,9 @@ const VisaPricingTier = () => {
                     "Please select a visa category.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
-
         if (!editForm.title.trim()) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Title Required",
@@ -602,13 +443,9 @@ const VisaPricingTier = () => {
                     "Please enter pricing tier title.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
-
         if (!editForm.validity.trim()) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Validity Required",
@@ -616,16 +453,12 @@ const VisaPricingTier = () => {
                     "Please enter pricing tier validity.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
-
         if (
             editForm.price_npr === "" ||
             Number(editForm.price_npr) < 0
         ) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Price Required",
@@ -633,28 +466,19 @@ const VisaPricingTier = () => {
                     "Please enter a valid price.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
-
         const data = {
-
             visa_category_id:
                 Number(editVisaCategoryId),
-
             title:
                 editForm.title.trim(),
-
             validity:
                 editForm.validity.trim(),
-
             price_npr:
                 Number(editForm.price_npr),
-
             status:
                 editForm.status,
-
             display_order:
                 editForm.display_order === ""
                     ? 0
@@ -662,20 +486,14 @@ const VisaPricingTier = () => {
                         editForm.display_order
                     ),
         };
-
-
         try {
-
             setSaving(true);
-
             const response =
                 await updateVisaPricingTier(
                     editingId,
                     data
                 );
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title:
@@ -686,90 +504,63 @@ const VisaPricingTier = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 cancelEdit();
-
                 fetchPricingTiers();
             }
-
         } catch (error) {
-
             console.error(
                 "Error updating pricing tier:",
                 error
             );
-
             showValidationError(
                 error,
                 "Unable to update visa pricing tier."
             );
-
         } finally {
-
             setSaving(false);
         }
     };
-
-
     /* =====================================================
        CHANGE STATUS
     ===================================================== */
-
     const handleStatusChange = async (tier) => {
-
+        if (!canManage) return;
         const newStatus =
             tier.status === "ACTIVE"
                 ? "INACTIVE"
                 : "ACTIVE";
-
-
         const result =
             await Swal.fire({
-
                 icon: "question",
-
                 title:
                     newStatus === "ACTIVE"
                         ? "Activate Pricing Tier?"
                         : "Deactivate Pricing Tier?",
-
                 text:
                     newStatus === "ACTIVE"
                         ? "This pricing tier will become active."
                         : "This pricing tier will become inactive.",
-
                 showCancelButton: true,
-
                 confirmButtonText:
                     newStatus === "ACTIVE"
                         ? "Activate"
                         : "Deactivate",
-
                 cancelButtonText:
                     "Cancel",
-
                 confirmButtonColor:
                     "#351255",
             });
-
-
         if (!result.isConfirmed) {
             return;
         }
-
-
         try {
-
             setChangingStatusId(tier.id);
-
             const response =
                 await changeVisaPricingTierStatus(
                     tier.id,
                     newStatus
                 );
-
             if (response.data?.status) {
-
                 setPricingTiers(
                     (previous) =>
                         previous.map(
@@ -787,7 +578,6 @@ const VisaPricingTier = () => {
                                     : item
                         )
                 );
-
                 Swal.fire({
                     icon: "success",
                     title: "Status Updated",
@@ -798,14 +588,11 @@ const VisaPricingTier = () => {
                         "#351255",
                 });
             }
-
         } catch (error) {
-
             console.error(
                 "Error changing pricing tier status:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -815,59 +602,39 @@ const VisaPricingTier = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
         } finally {
-
             setChangingStatusId(null);
         }
     };
-
-
     /* =====================================================
        DELETE
     ===================================================== */
-
     const handleDelete = async (id) => {
-
+        if (!canManage) return;
         const result =
             await Swal.fire({
-
                 icon: "warning",
-
                 title:
                     "Delete Pricing Tier?",
-
                 text:
                     "This pricing tier will be permanently deleted.",
-
                 showCancelButton: true,
-
                 confirmButtonText:
                     "Delete",
-
                 cancelButtonText:
                     "Cancel",
-
                 confirmButtonColor:
                     "#f52d91",
-
                 cancelButtonColor:
                     "#77717d",
             });
-
-
         if (!result.isConfirmed) {
             return;
         }
-
-
         try {
-
             const response =
                 await deleteVisaPricingTier(id);
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title: "Deleted",
@@ -877,36 +644,26 @@ const VisaPricingTier = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
-
                 if (editingId === id) {
                     cancelEdit();
                 }
-
-
                 if (
                     pricingTiers.length === 1 &&
                     page > 1
                 ) {
-
                     setPage(
                         (previous) =>
                             previous - 1
                     );
-
                 } else {
-
                     fetchPricingTiers();
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Error deleting pricing tier:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -918,39 +675,28 @@ const VisaPricingTier = () => {
             });
         }
     };
-
-
     /* =====================================================
        VALIDATION ERROR
     ===================================================== */
-
     const showValidationError = (
         error,
         fallback
     ) => {
-
         let errorMessage =
             error.response?.data?.message ||
             fallback;
-
         const validationErrors =
             error.response?.data?.errors;
-
         if (validationErrors) {
-
             const firstError =
                 Object.values(
                     validationErrors
                 )[0];
-
             if (Array.isArray(firstError)) {
-
                 errorMessage =
                     firstError[0];
             }
         }
-
-
         Swal.fire({
             icon: "error",
             title: "Failed",
@@ -959,131 +705,84 @@ const VisaPricingTier = () => {
                 "#351255",
         });
     };
-
-
     /* =====================================================
        GET CATEGORY NAME
     ===================================================== */
-
     const getCategoryName = (tier) => {
         const category = visaCategories.find(
             (item) => String(item.id) === String(tier.visa_category_id)
         );
-
         const countryName =
             tier.visa_category?.country?.country_name ||
             category?.country?.country_name ||
             "";
-
         const categoryName =
             tier.visa_category?.name ||
             tier.category?.name ||
             category?.name ||
             "-";
-
         return countryName
             ? `${countryName} - ${categoryName}`
             : categoryName;
     };
-
-
     /* =====================================================
        JSX
     ===================================================== */
-
     return (
-
         <div className="dashboard-layout">
-
             <Sidebar />
-
             <div className="dashboard-main">
-
                 <Navbar />
-
                 <main className="dashboard-content">
-
                     <div className="visa-pricing-tier-page">
-
-
                         {/* ============================
                             HEADER
                         ============================ */}
-
                         <div className="visa-pricing-tier-header">
-
                             <div>
-
                                 <h1>
                                     Visa Pricing Tiers
                                 </h1>
-
                                 <p>
                                     Manage pricing and validity options for visa categories.
                                 </p>
-
                             </div>
-
                         </div>
-
-
                         {/* ============================
                             FORM CARD
                         ============================ */}
-
-                        <div className="visa-pricing-tier-form-card">
-
+                        {canManage && <div className="visa-pricing-tier-form-card">
                             <div className="visa-pricing-tier-card-header">
-
                                 <h2>
-
                                     {editingId
                                         ? "Edit Pricing Tier"
                                         : "Add Pricing Tiers"}
-
                                 </h2>
-
                                 <p>
-
                                     {editingId
                                         ? "Update the selected visa pricing tier."
                                         : "Select a visa category and add one or more pricing tiers."}
-
                                 </p>
-
                             </div>
-
-
                             {/* ========================
                                 EDIT
                             ======================== */}
-
                             {editingId ? (
-
                                 <form
                                     className="visa-pricing-tier-form"
                                     onSubmit={
                                         handleUpdate
                                     }
                                 >
-
                                     <div className="visa-pricing-tier-form-grid">
-
-
                                         {/* CATEGORY */}
-
                                         <div className="visa-pricing-tier-form-group">
-
                                             <label>
-
                                                 Visa Category
-
                                                 <span className="required">
                                                     *
                                                 </span>
-
                                             </label>
-
                                             <select
                                                 value={
                                                     editVisaCategoryId
@@ -1098,36 +797,24 @@ const VisaPricingTier = () => {
                                                 }
                                                 required
                                             >
-
                                                 <option value="">
                                                     Select Visa Category
                                                 </option>
-
                                                 {visaCategories.map((category) => (
                                                     <option key={category.id} value={category.id}>
                                                         {`${category.country?.country_name || "Unknown Country"} - ${category.name}`}
                                                     </option>
                                                 ))}
-
                                             </select>
-
                                         </div>
-
-
                                         {/* TITLE */}
-
                                         <div className="visa-pricing-tier-form-group">
-
                                             <label>
-
                                                 Title
-
                                                 <span className="required">
                                                     *
                                                 </span>
-
                                             </label>
-
                                             <input
                                                 type="text"
                                                 value={
@@ -1145,24 +832,15 @@ const VisaPricingTier = () => {
                                                 }
                                                 required
                                             />
-
                                         </div>
-
-
                                         {/* VALIDITY */}
-
                                         <div className="visa-pricing-tier-form-group">
-
                                             <label>
-
                                                 Validity
-
                                                 <span className="required">
                                                     *
                                                 </span>
-
                                             </label>
-
                                             <input
                                                 type="text"
                                                 value={
@@ -1180,24 +858,15 @@ const VisaPricingTier = () => {
                                                 }
                                                 required
                                             />
-
                                         </div>
-
-
                                         {/* PRICE */}
-
                                         <div className="visa-pricing-tier-form-group">
-
                                             <label>
-
                                                 Price (NPR)
-
                                                 <span className="required">
                                                     *
                                                 </span>
-
                                             </label>
-
                                             <input
                                                 type="number"
                                                 min="0"
@@ -1217,18 +886,12 @@ const VisaPricingTier = () => {
                                                 }
                                                 required
                                             />
-
                                         </div>
-
-
                                         {/* STATUS */}
-
                                         <div className="visa-pricing-tier-form-group">
-
                                             <label>
                                                 Status
                                             </label>
-
                                             <select
                                                 value={
                                                     editForm.status
@@ -1243,28 +906,19 @@ const VisaPricingTier = () => {
                                                     saving
                                                 }
                                             >
-
                                                 <option value="ACTIVE">
                                                     Active
                                                 </option>
-
                                                 <option value="INACTIVE">
                                                     Inactive
                                                 </option>
-
                                             </select>
-
                                         </div>
-
-
                                         {/* DISPLAY ORDER */}
-
                                         <div className="visa-pricing-tier-form-group">
-
                                             <label>
                                                 Display Order
                                             </label>
-
                                             <input
                                                 type="number"
                                                 min="0"
@@ -1281,14 +935,9 @@ const VisaPricingTier = () => {
                                                     saving
                                                 }
                                             />
-
                                         </div>
-
                                     </div>
-
-
                                     <div className="visa-pricing-tier-form-actions">
-
                                         <button
                                             type="button"
                                             className="visa-pricing-tier-cancel-btn"
@@ -1299,14 +948,9 @@ const VisaPricingTier = () => {
                                                 saving
                                             }
                                         >
-
                                             <FaTimes />
-
                                             Cancel
-
                                         </button>
-
-
                                         <button
                                             type="submit"
                                             className="visa-pricing-tier-submit-btn"
@@ -1314,47 +958,31 @@ const VisaPricingTier = () => {
                                                 saving
                                             }
                                         >
-
                                             {saving
                                                 ? "Updating..."
                                                 : "Update Pricing Tier"}
-
                                         </button>
-
                                     </div>
-
                                 </form>
-
                             ) : (
-
                                 /* ========================
                                    CREATE
                                 ======================== */
-
                                 <form
                                     className="visa-pricing-tier-form"
                                     onSubmit={
                                         handleCreate
                                     }
                                 >
-
-
                                     {/* CATEGORY */}
-
                                     <div className="visa-pricing-tier-category-select">
-
                                         <div className="visa-pricing-tier-form-group">
-
                                             <label>
-
                                                 Visa Category
-
                                                 <span className="required">
                                                     *
                                                 </span>
-
                                             </label>
-
                                             <select
                                                 value={
                                                     visaCategoryId
@@ -1369,50 +997,36 @@ const VisaPricingTier = () => {
                                                 }
                                                 required
                                             >
-
                                                 <option value="">
                                                     Select Visa Category
                                                 </option>
-
                                                 {visaCategories.map((category) => (
                                                     <option key={category.id} value={category.id}>
                                                         {`${category.country?.country_name || "Unknown Country"} - ${category.name}`}
                                                     </option>
                                                 ))}
-
                                             </select>
-
                                         </div>
-
                                     </div>
-
-
                                     {/* PRICING TIER LIST */}
-
                                     <div className="visa-pricing-tier-create-list">
-
                                         {pricingTierItems.map(
                                             (
                                                 tier,
                                                 index
                                             ) => (
-
                                                 <div
                                                     className="visa-pricing-tier-create-item"
                                                     key={
                                                         index
                                                     }
                                                 >
-
                                                     <div className="visa-pricing-tier-create-item-header">
-
                                                         <h3>
                                                             Pricing Tier{" "}
                                                             {index +
                                                                 1}
                                                         </h3>
-
-
                                                         <button
                                                             type="button"
                                                             className="visa-pricing-tier-remove-btn"
@@ -1428,31 +1042,18 @@ const VisaPricingTier = () => {
                                                             }
                                                             title="Remove Pricing Tier"
                                                         >
-
                                                             <FaTimes />
-
                                                         </button>
-
                                                     </div>
-
-
                                                     <div className="visa-pricing-tier-form-grid">
-
-
                                                         {/* TITLE */}
-
                                                         <div className="visa-pricing-tier-form-group">
-
                                                             <label>
-
                                                                 Title
-
                                                                 <span className="required">
                                                                     *
                                                                 </span>
-
                                                             </label>
-
                                                             <input
                                                                 type="text"
                                                                 value={
@@ -1471,24 +1072,15 @@ const VisaPricingTier = () => {
                                                                 }
                                                                 required
                                                             />
-
                                                         </div>
-
-
                                                         {/* VALIDITY */}
-
                                                         <div className="visa-pricing-tier-form-group">
-
                                                             <label>
-
                                                                 Validity
-
                                                                 <span className="required">
                                                                     *
                                                                 </span>
-
                                                             </label>
-
                                                             <input
                                                                 type="text"
                                                                 value={
@@ -1507,24 +1099,15 @@ const VisaPricingTier = () => {
                                                                 }
                                                                 required
                                                             />
-
                                                         </div>
-
-
                                                         {/* PRICE */}
-
                                                         <div className="visa-pricing-tier-form-group">
-
                                                             <label>
-
                                                                 Price (NPR)
-
                                                                 <span className="required">
                                                                     *
                                                                 </span>
-
                                                             </label>
-
                                                             <input
                                                                 type="number"
                                                                 min="0"
@@ -1545,18 +1128,12 @@ const VisaPricingTier = () => {
                                                                 }
                                                                 required
                                                             />
-
                                                         </div>
-
-
                                                         {/* STATUS */}
-
                                                         <div className="visa-pricing-tier-form-group">
-
                                                             <label>
                                                                 Status
                                                             </label>
-
                                                             <select
                                                                 value={
                                                                     tier.status
@@ -1572,28 +1149,19 @@ const VisaPricingTier = () => {
                                                                     saving
                                                                 }
                                                             >
-
                                                                 <option value="ACTIVE">
                                                                     Active
                                                                 </option>
-
                                                                 <option value="INACTIVE">
                                                                     Inactive
                                                                 </option>
-
                                                             </select>
-
                                                         </div>
-
-
                                                         {/* DISPLAY ORDER */}
-
                                                         <div className="visa-pricing-tier-form-group">
-
                                                             <label>
                                                                 Display Order
                                                             </label>
-
                                                             <input
                                                                 type="number"
                                                                 min="0"
@@ -1611,23 +1179,14 @@ const VisaPricingTier = () => {
                                                                     saving
                                                                 }
                                                             />
-
                                                         </div>
-
                                                     </div>
-
                                                 </div>
-
                                             )
                                         )}
-
                                     </div>
-
-
                                     {/* CREATE ACTIONS */}
-
                                     <div className="visa-pricing-tier-create-actions">
-
                                         <button
                                             type="button"
                                             className="visa-pricing-tier-add-more-btn"
@@ -1638,14 +1197,9 @@ const VisaPricingTier = () => {
                                                 saving
                                             }
                                         >
-
                                             <FaPlus />
-
                                             Add Another Tier
-
                                         </button>
-
-
                                         <button
                                             type="submit"
                                             className="visa-pricing-tier-submit-btn"
@@ -1653,140 +1207,89 @@ const VisaPricingTier = () => {
                                                 saving
                                             }
                                         >
-
                                             {saving
                                                 ? "Saving..."
                                                 : "Save Pricing Tiers"}
-
                                         </button>
-
                                     </div>
-
                                 </form>
                             )}
-
-                        </div>
-
-
+                        </div>}
                         {/* ============================
                             TABLE
                         ============================ */}
-
                         <div className="visa-pricing-tier-table-card">
-
                             <div className="visa-pricing-tier-table-header">
-
                                 <div>
-
                                     <h2>
                                         Pricing Tier List
                                     </h2>
-
                                     <p>
-
                                         {totalPricingTiers}{" "}
-
                                         {totalPricingTiers === 1
                                             ? "pricing tier"
                                             : "pricing tiers"}
-
                                     </p>
-
                                 </div>
-
                             </div>
-
-
                             <div className="visa-pricing-tier-table-responsive">
-
                                 <table className="visa-pricing-tier-table">
-
                                     <thead>
-
                                         <tr>
-
                                             <th>S.N.</th>
-
                                             <th>
                                                 Title
                                             </th>
-
                                             <th>
                                                 Visa Category
                                             </th>
-
                                             <th>
                                                 Validity
                                             </th>
-
                                             <th>
                                                 Price (NPR)
                                             </th>
-
                                             <th>
                                                 Display Order
                                             </th>
-
                                             <th>
                                                 Status
                                             </th>
-
-                                            <th>
-                                                Actions
-                                            </th>
-
+                                            {canManage && <th>Actions</th>}
                                         </tr>
-
                                     </thead>
-
-
                                     <tbody>
-
                                         {loading ? (
-
                                             <tr>
-
                                                 <td
-                                                    colSpan="8"
+                                                    colSpan={canManage ? 8 : 7}
                                                     className="visa-pricing-tier-table-message"
                                                 >
-
                                                     <div className="visa-pricing-tier-loader"></div>
-
                                                     Loading pricing tiers...
-
                                                 </td>
-
                                             </tr>
-
                                         ) : pricingTiers.length ===
                                             0 ? (
-
                                             <tr>
-
                                                 <td
-                                                    colSpan="8"
+                                                    colSpan={canManage ? 8 : 7}
                                                     className="visa-pricing-tier-table-message"
                                                 >
                                                     No visa pricing tiers found.
                                                 </td>
-
                                             </tr>
-
                                         ) : (
-
                                             pricingTiers.map(
                                                 (
                                                     tier,
                                                     index
                                                 ) => (
-
                                                     <tr
                                                         key={
                                                             tier.id
                                                         }
                                                     >
-
                                                         <td>
                                                             {(page -
                                                                 1) *
@@ -1794,62 +1297,36 @@ const VisaPricingTier = () => {
                                                                 index +
                                                                 1}
                                                         </td>
-
-
                                                         <td>
-
                                                             <strong className="visa-pricing-tier-title">
                                                                 {
                                                                     tier.title
                                                                 }
                                                             </strong>
-
                                                         </td>
-
-
                                                         <td>
-
                                                             {getCategoryName(
                                                                 tier
                                                             )}
-
                                                         </td>
-
-
                                                         <td>
-
                                                             {tier.validity ||
                                                                 "-"}
-
                                                         </td>
-
-
                                                         <td>
-
                                                             <span className="visa-pricing-tier-price">
-
                                                                 NPR{" "}
-
                                                                 {Number(
                                                                     tier.price_npr ||
                                                                     0
                                                                 ).toLocaleString()}
-
                                                             </span>
-
                                                         </td>
-
-
                                                         <td>
-
                                                             {tier.display_order ??
                                                                 0}
-
                                                         </td>
-
-
                                                         <td>
-
                                                             <button
                                                                 type="button"
                                                                 className={`visa-pricing-tier-status ${tier.status ===
@@ -1858,7 +1335,7 @@ const VisaPricingTier = () => {
                                                                     : "inactive"
                                                                     }`}
                                                                 disabled={
-                                                                    changingStatusId ===
+                                                                    !canManage || changingStatusId ===
                                                                     tier.id
                                                                 }
                                                                 onClick={() =>
@@ -1867,21 +1344,14 @@ const VisaPricingTier = () => {
                                                                     )
                                                                 }
                                                             >
-
                                                                 {changingStatusId ===
                                                                     tier.id
                                                                     ? "Updating..."
                                                                     : tier.status}
-
                                                             </button>
-
                                                         </td>
-
-
-                                                        <td>
-
+                                                        {canManage && <td>
                                                             <div className="visa-pricing-tier-actions">
-
                                                                 <button
                                                                     type="button"
                                                                     className="visa-pricing-tier-edit-btn"
@@ -1892,12 +1362,8 @@ const VisaPricingTier = () => {
                                                                     }
                                                                     title="Edit"
                                                                 >
-
                                                                     <FaPen />
-
                                                                 </button>
-
-
                                                                 <button
                                                                     type="button"
                                                                     className="visa-pricing-tier-delete-btn"
@@ -1908,28 +1374,17 @@ const VisaPricingTier = () => {
                                                                     }
                                                                     title="Delete"
                                                                 >
-
                                                                     <FaTrash />
-
                                                                 </button>
-
                                                             </div>
-
-                                                        </td>
-
+                                                        </td>}
                                                     </tr>
-
                                                 )
                                             )
                                         )}
-
                                     </tbody>
-
                                 </table>
-
                             </div>
-
-
                             <Pagination
                                 page={page}
                                 totalPages={
@@ -1939,18 +1394,11 @@ const VisaPricingTier = () => {
                                     setPage
                                 }
                             />
-
                         </div>
-
                     </div>
-
                 </main>
-
             </div>
-
         </div>
     );
 };
-
-
 export default VisaPricingTier;

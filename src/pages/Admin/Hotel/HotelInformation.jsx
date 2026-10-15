@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
   getHotels,
   getHotelInformationCms,
@@ -13,9 +11,7 @@ import {
   changeHotelInformationStatus,
   deleteHotelInformation,
 } from "../../../api/BackendApi";
-
 import "./HotelInformation.css";
-
 const INFORMATION_TYPES = [
   {
     value: "HIGHLIGHT",
@@ -38,56 +34,43 @@ const INFORMATION_TYPES = [
     label: "What To Bring",
   },
 ];
-
 const createEmptyInformation = () => ({
   content: "",
   display_order: 0,
   status: "ACTIVE",
 });
-
 const HotelInformation = () => {
+  const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+  const canManage = ["admin", "cms-admin"].includes(role);
   const [information, setInformation] = useState([]);
   const [hotels, setHotels] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
-
   const [showModal, setShowModal] = useState(false);
-
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
   const [hotelId, setHotelId] = useState("");
   const [type, setType] = useState("");
-
   const [informationRows, setInformationRows] = useState([
     createEmptyInformation(),
   ]);
-
   // =========================================================
   // LOAD CMS INFORMATION
   // =========================================================
-
   useEffect(() => {
     fetchInformation(currentPage);
   }, [currentPage]);
-
   useEffect(() => {
     fetchHotels();
   }, []);
-
   const fetchInformation = async (page = 1) => {
     try {
       setLoading(true);
-
       const response = await getHotelInformationCms(page);
-
       const paginationData = response.data?.data;
-
       setInformation(paginationData?.data || []);
       setCurrentPage(paginationData?.current_page || 1);
       setLastPage(paginationData?.last_page || 1);
@@ -97,7 +80,6 @@ const HotelInformation = () => {
         "Failed to fetch hotel information:",
         error
       );
-
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -109,17 +91,13 @@ const HotelInformation = () => {
       setLoading(false);
     }
   };
-
   // =========================================================
   // LOAD HOTELS
   // =========================================================
-
   const fetchHotels = async () => {
     try {
       const response = await getHotels();
-
       const data = response.data?.data;
-
       if (Array.isArray(data)) {
         setHotels(data);
       } else if (Array.isArray(data?.data)) {
@@ -132,41 +110,33 @@ const HotelInformation = () => {
       setHotels([]);
     }
   };
-
   // =========================================================
   // RESET FORM
   // =========================================================
-
   const resetForm = () => {
     setHotelId("");
     setType("");
-
     setInformationRows([
       createEmptyInformation(),
     ]);
-
     setIsEditing(false);
     setEditingId(null);
   };
-
   const openCreateModal = () => {
+    if (!canManage) return;
     resetForm();
     setShowModal(true);
   };
-
   const closeModal = () => {
     if (saving) {
       return;
     }
-
     setShowModal(false);
     resetForm();
   };
-
   // =========================================================
   // MULTIPLE INFORMATION ROWS
   // =========================================================
-
   const handleInformationChange = (
     index,
     field,
@@ -183,78 +153,62 @@ const HotelInformation = () => {
       )
     );
   };
-
   const addInformationRow = () => {
     setInformationRows((previous) => [
       ...previous,
       createEmptyInformation(),
     ]);
   };
-
   const removeInformationRow = (index) => {
     if (informationRows.length === 1) {
       return;
     }
-
     setInformationRows((previous) =>
       previous.filter(
         (_, itemIndex) => itemIndex !== index
       )
     );
   };
-
   // =========================================================
   // CREATE
   // =========================================================
-
   const handleCreate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!hotelId) {
       Swal.fire({
         icon: "warning",
         title: "Hotel Required",
         text: "Please select a hotel.",
       });
-
       return;
     }
-
     if (!type) {
       Swal.fire({
         icon: "warning",
         title: "Type Required",
         text: "Please select an information type.",
       });
-
       return;
     }
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         type,
-
         information: informationRows.map(
           (item) => ({
             content: item.content,
-
             display_order:
               item.display_order === ""
                 ? 0
                 : Number(item.display_order),
-
             status: item.status || "ACTIVE",
           })
         ),
       };
-
       const response =
         await createHotelInformation(payload);
-
       await Swal.fire({
         icon: "success",
         title: "Created",
@@ -262,10 +216,8 @@ const HotelInformation = () => {
           response.data?.message ||
           "Hotel information created successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       if (currentPage === 1) {
         await fetchInformation(1);
       } else {
@@ -276,14 +228,11 @@ const HotelInformation = () => {
         "Failed to create hotel information:",
         error
       );
-
       const validationErrors =
         error.response?.data?.errors;
-
       const firstError = validationErrors
         ? Object.values(validationErrors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -296,70 +245,53 @@ const HotelInformation = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // OPEN EDIT
   // =========================================================
-
   const openEditModal = (item) => {
+    if (!canManage) return;
     setIsEditing(true);
     setEditingId(item.id);
-
     setHotelId(String(item.hotel_id));
     setType(item.type || "");
-
     setInformationRows([
       {
         content: item.content || "",
-
         display_order:
           item.display_order ?? 0,
-
         status:
           item.status || "ACTIVE",
       },
     ]);
-
     setShowModal(true);
   };
-
   // =========================================================
   // UPDATE SINGLE INFORMATION
   // =========================================================
-
   const handleUpdate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!editingId) {
       return;
     }
-
     const item = informationRows[0];
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         type,
-
         content: item.content,
-
         display_order:
           item.display_order === ""
             ? 0
             : Number(item.display_order),
-
         status: item.status,
       };
-
       const response =
         await updateHotelInformation(
           editingId,
           payload
         );
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -367,24 +299,19 @@ const HotelInformation = () => {
           response.data?.message ||
           "Hotel information updated successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       await fetchInformation(currentPage);
     } catch (error) {
       console.error(
         "Failed to update hotel information:",
         error
       );
-
       const validationErrors =
         error.response?.data?.errors;
-
       const firstError = validationErrors
         ? Object.values(validationErrors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -397,17 +324,15 @@ const HotelInformation = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // CHANGE STATUS
   // =========================================================
-
   const handleStatusChange = async (item) => {
+    if (!canManage) return;
     const nextStatus =
       item.status === "ACTIVE"
         ? "INACTIVE"
         : "ACTIVE";
-
     const result = await Swal.fire({
       icon: "question",
       title: "Change status?",
@@ -415,17 +340,14 @@ const HotelInformation = () => {
       showCancelButton: true,
       confirmButtonText: "Yes, change it",
     });
-
     if (!result.isConfirmed) {
       return;
     }
-
     try {
       const response =
         await changeHotelInformationStatus(
           item.id
         );
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -435,7 +357,6 @@ const HotelInformation = () => {
         timer: 1300,
         showConfirmButton: false,
       });
-
       await fetchInformation(currentPage);
     } catch (error) {
       Swal.fire({
@@ -447,12 +368,11 @@ const HotelInformation = () => {
       });
     }
   };
-
   // =========================================================
   // DELETE
   // =========================================================
-
   const handleDelete = async (item) => {
+    if (!canManage) return;
     const result = await Swal.fire({
       icon: "warning",
       title: "Delete information?",
@@ -462,15 +382,12 @@ const HotelInformation = () => {
       confirmButtonText: "Delete",
       confirmButtonColor: "#d33",
     });
-
     if (!result.isConfirmed) {
       return;
     }
-
     try {
       const response =
         await deleteHotelInformation(item.id);
-
       await Swal.fire({
         icon: "success",
         title: "Deleted",
@@ -478,7 +395,6 @@ const HotelInformation = () => {
           response.data?.message ||
           "Hotel information deleted successfully.",
       });
-
       await fetchInformation(currentPage);
     } catch (error) {
       Swal.fire({
@@ -490,11 +406,9 @@ const HotelInformation = () => {
       });
     }
   };
-
   // =========================================================
   // HELPERS
   // =========================================================
-
   const getTypeLabel = (value) => {
     return (
       INFORMATION_TYPES.find(
@@ -502,7 +416,6 @@ const HotelInformation = () => {
       )?.label || value
     );
   };
-
   const getHotelName = (item) => {
     return (
       item.hotel?.hotel_name ||
@@ -510,45 +423,37 @@ const HotelInformation = () => {
       "-"
     );
   };
-
   // =========================================================
   // UI
   // =========================================================
-
   return (
     <div className="dashboard-layout">
       <Sidebar />
-
       <div className="dashboard-main">
         <Navbar />
-
         <main className="dashboard-content">
           <div className="hotel-information-page">
             <div className="hotel-information-page-header">
               <div>
                 <h1>Hotel Information</h1>
-
                 <p>
                   Manage highlights, amenities,
                   inclusions, exclusions and what to
                   bring.
                 </p>
               </div>
-
-              <button
+              {canManage && <button
                 type="button"
                 className="hotel-information-add-button"
                 onClick={openCreateModal}
               >
                 + Add Information
-              </button>
+              </button>}
             </div>
-
             <div className="hotel-information-card">
               <div className="hotel-information-card-header">
                 <div>
                   <h2>Information List</h2>
-
                   <p>
                     {total}{" "}
                     {total === 1
@@ -557,7 +462,6 @@ const HotelInformation = () => {
                   </p>
                 </div>
               </div>
-
               <div className="hotel-information-table-wrapper">
                 <table className="hotel-information-table">
                   <thead>
@@ -568,15 +472,14 @@ const HotelInformation = () => {
                       <th>Content</th>
                       <th>Display Order</th>
                       <th>Status</th>
-                      <th>Actions</th>
+                      {canManage && <th>Actions</th>}
                     </tr>
                   </thead>
-
                   <tbody>
                     {loading ? (
                       <tr>
                         <td
-                          colSpan="7"
+                          colSpan={canManage ? 7 : 6}
                           className="hotel-information-empty"
                         >
                           Loading hotel information...
@@ -585,7 +488,7 @@ const HotelInformation = () => {
                     ) : information.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="7"
+                          colSpan={canManage ? 7 : 6}
                           className="hotel-information-empty"
                         >
                           No hotel information found.
@@ -601,13 +504,11 @@ const HotelInformation = () => {
                                 index +
                                 1}
                             </td>
-
                             <td>
                               <strong>
                                 {getHotelName(item)}
                               </strong>
                             </td>
-
                             <td>
                               <span className="hotel-information-type">
                                 {getTypeLabel(
@@ -615,18 +516,15 @@ const HotelInformation = () => {
                                 )}
                               </span>
                             </td>
-
                             <td>
                               <div className="hotel-information-content">
                                 {item.content}
                               </div>
                             </td>
-
                             <td>
                               {item.display_order ??
                                 0}
                             </td>
-
                             <td>
                               <button
                                 type="button"
@@ -636,17 +534,13 @@ const HotelInformation = () => {
                                     ? "active"
                                     : "inactive"
                                 }`}
-                                onClick={() =>
-                                  handleStatusChange(
-                                    item
-                                  )
-                                }
+                                disabled={!canManage}
+                                onClick={() => canManage && handleStatusChange(item)}
                               >
                                 {item.status}
                               </button>
                             </td>
-
-                            <td>
+                            {canManage && <td>
                               <div className="hotel-information-actions">
                                 <button
                                   type="button"
@@ -659,7 +553,6 @@ const HotelInformation = () => {
                                 >
                                   Edit
                                 </button>
-
                                 <button
                                   type="button"
                                   className="hotel-information-delete"
@@ -672,7 +565,7 @@ const HotelInformation = () => {
                                   Delete
                                 </button>
                               </div>
-                            </td>
+                            </td>}
                           </tr>
                         )
                       )
@@ -680,7 +573,6 @@ const HotelInformation = () => {
                   </tbody>
                 </table>
               </div>
-
               {!loading && lastPage > 1 && (
                 <div className="hotel-information-pagination">
                   <Pagination
@@ -694,8 +586,7 @@ const HotelInformation = () => {
           </div>
         </main>
       </div>
-
-      {showModal && (
+      {canManage && showModal && (
         <div
           className="hotel-information-modal-overlay"
           onClick={closeModal}
@@ -713,23 +604,22 @@ const HotelInformation = () => {
                     ? "Edit Hotel Information"
                     : "Add Hotel Information"}
                 </h2>
-
                 <p>
                   {isEditing
                     ? "Update this hotel information item."
                     : "Choose a hotel and type, then add one or more items."}
                 </p>
               </div>
-
               <button
                 type="button"
                 className="hotel-information-modal-close"
                 onClick={closeModal}
+                aria-label="Close"
+                style={{ color: "#1f2937", backgroundColor: "#f1f5f9", border: "1px solid #cbd5e1", opacity: 1, fontSize: "24px", lineHeight: 1, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
               >
                 ×
               </button>
             </div>
-
             <form
               onSubmit={
                 isEditing
@@ -741,7 +631,6 @@ const HotelInformation = () => {
                 <div className="hotel-information-main-grid">
                   <div className="hotel-information-form-group">
                     <label>Hotel *</label>
-
                     <select
                       value={hotelId}
                       onChange={(event) =>
@@ -754,7 +643,6 @@ const HotelInformation = () => {
                       <option value="">
                         Select Hotel
                       </option>
-
                       {hotels.map((hotel) => (
                         <option
                           key={hotel.id}
@@ -767,12 +655,10 @@ const HotelInformation = () => {
                       ))}
                     </select>
                   </div>
-
                   <div className="hotel-information-form-group">
                     <label>
                       Information Type *
                     </label>
-
                     <select
                       value={type}
                       onChange={(event) =>
@@ -785,7 +671,6 @@ const HotelInformation = () => {
                       <option value="">
                         Select Type
                       </option>
-
                       {INFORMATION_TYPES.map(
                         (item) => (
                           <option
@@ -799,7 +684,6 @@ const HotelInformation = () => {
                     </select>
                   </div>
                 </div>
-
                 {informationRows.map(
                   (item, index) => (
                     <div
@@ -814,7 +698,6 @@ const HotelInformation = () => {
                                 index + 1
                               }`}
                         </h3>
-
                         {!isEditing &&
                           informationRows.length >
                             1 && (
@@ -831,10 +714,8 @@ const HotelInformation = () => {
                             </button>
                           )}
                       </div>
-
                       <div className="hotel-information-form-group">
                         <label>Content *</label>
-
                         <textarea
                           rows="4"
                           value={item.content}
@@ -849,13 +730,11 @@ const HotelInformation = () => {
                           required
                         />
                       </div>
-
                       <div className="hotel-information-row-fields">
                         <div className="hotel-information-form-group">
                           <label>
                             Display Order
                           </label>
-
                           <input
                             type="number"
                             min="0"
@@ -871,10 +750,8 @@ const HotelInformation = () => {
                             }
                           />
                         </div>
-
                         <div className="hotel-information-form-group">
                           <label>Status</label>
-
                           <select
                             value={item.status}
                             onChange={(event) =>
@@ -888,7 +765,6 @@ const HotelInformation = () => {
                             <option value="ACTIVE">
                               Active
                             </option>
-
                             <option value="INACTIVE">
                               Inactive
                             </option>
@@ -898,7 +774,6 @@ const HotelInformation = () => {
                     </div>
                   )
                 )}
-
                 {!isEditing && (
                   <button
                     type="button"
@@ -909,17 +784,16 @@ const HotelInformation = () => {
                   </button>
                 )}
               </div>
-
               <div className="hotel-information-modal-footer">
                 <button
                   type="button"
                   className="hotel-information-cancel"
                   onClick={closeModal}
+                  style={{ color: "#1f2937", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", opacity: 1, fontWeight: 600, cursor: "pointer" }}
                   disabled={saving}
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   className="hotel-information-save"
@@ -946,5 +820,4 @@ const HotelInformation = () => {
     </div>
   );
 };
-
 export default HotelInformation;

@@ -6,11 +6,9 @@ import {
     FaTimes,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
-
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
     getAllPermitDocumentRequirementsCms,
     createPermitDocumentRequirements,
@@ -19,9 +17,7 @@ import {
     deletePermitDocumentRequirement,
     getAllCountries,
 } from "../../../api/BackendApi";
-
 import "./PermitDocumentRequirement.css";
-
 const PERMIT_TYPES = [
     {
         value: "NEW_LABOUR_PERMIT",
@@ -40,7 +36,6 @@ const PERMIT_TYPES = [
         label: "Legalization / Attestation",
     },
 ];
-
 const emptyDocument = (order = 0) => ({
     document_type: "",
     title: "",
@@ -48,63 +43,49 @@ const emptyDocument = (order = 0) => ({
     is_required: true,
     display_order: order,
 });
-
 const PermitDocumentRequirement = () => {
+    const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+    const canManage = ["admin", "cms-admin"].includes(role);
     const [documents, setDocuments] = useState([]);
     const [countries, setCountries] = useState([]);
-
     const [countryId, setCountryId] = useState("");
     const [permitType, setPermitType] = useState("");
-
     const [documentItems, setDocumentItems] = useState([
         emptyDocument(0),
     ]);
-
     const [editingId, setEditingId] = useState(null);
-
     const [editDocumentType, setEditDocumentType] = useState("");
     const [editTitle, setEditTitle] = useState("");
     const [editDescription, setEditDescription] = useState("");
     const [editRequired, setEditRequired] = useState(true);
     const [editDisplayOrder, setEditDisplayOrder] = useState(0);
-
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-
     // Keeps track of which status badge is currently updating
     const [statusUpdatingId, setStatusUpdatingId] = useState(null);
-
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-
     // ==========================================
     // INITIAL DATA
     // ==========================================
-
     useEffect(() => {
         fetchCountries();
     }, []);
-
     useEffect(() => {
         fetchDocuments();
     }, [page]);
-
     // ==========================================
     // FETCH DOCUMENTS - CMS
     // ==========================================
-
     const fetchDocuments = async () => {
         try {
             setLoading(true);
-
             const response =
                 await getAllPermitDocumentRequirementsCms(page);
-
             if (response.data.status) {
                 setDocuments(
                     response.data.data?.data || []
                 );
-
                 setTotalPages(
                     response.data.data?.last_page || 1
                 );
@@ -114,7 +95,6 @@ const PermitDocumentRequirement = () => {
                 "Error fetching permit document requirements:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -127,22 +107,17 @@ const PermitDocumentRequirement = () => {
             setLoading(false);
         }
     };
-
     // ==========================================
     // FETCH COUNTRIES
     // ==========================================
-
     const fetchCountries = async () => {
         try {
             const response = await getAllCountries();
-
             if (response.data.status) {
                 const responseData = response.data.data;
-
                 const countryList = Array.isArray(responseData)
                     ? responseData
                     : responseData?.data || [];
-
                 setCountries(countryList);
             }
         } catch (error) {
@@ -150,45 +125,36 @@ const PermitDocumentRequirement = () => {
                 "Error fetching countries:",
                 error
             );
-
             setCountries([]);
         }
     };
-
     // ==========================================
     // ADD DOCUMENT ROW
     // ==========================================
-
     const addDocumentRow = () => {
         setDocumentItems((previous) => [
             ...previous,
             emptyDocument(previous.length),
         ]);
     };
-
     // ==========================================
     // REMOVE DOCUMENT ROW
     // ==========================================
-
     const removeDocumentRow = (index) => {
         if (documentItems.length === 1) {
             return;
         }
-
         const updated = documentItems
             .filter((_, i) => i !== index)
             .map((item, i) => ({
                 ...item,
                 display_order: i,
             }));
-
         setDocumentItems(updated);
     };
-
     // ==========================================
     // DOCUMENT FIELD CHANGE
     // ==========================================
-
     const handleDocumentChange = (
         index,
         field,
@@ -205,27 +171,22 @@ const PermitDocumentRequirement = () => {
             )
         );
     };
-
     // ==========================================
     // RESET CREATE FORM
     // ==========================================
-
     const resetCreateForm = () => {
         setCountryId("");
         setPermitType("");
-
         setDocumentItems([
             emptyDocument(0),
         ]);
     };
-
     // ==========================================
     // CREATE
     // ==========================================
-
     const handleCreate = async (e) => {
         e.preventDefault();
-
+        if (!canManage) return;
         if (!countryId) {
             Swal.fire({
                 icon: "warning",
@@ -233,10 +194,8 @@ const PermitDocumentRequirement = () => {
                 text: "Please select a country.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
         if (!permitType) {
             Swal.fire({
                 icon: "warning",
@@ -244,10 +203,8 @@ const PermitDocumentRequirement = () => {
                 text: "Please select a permit type.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
         for (let i = 0; i < documentItems.length; i++) {
             if (!documentItems[i].document_type.trim()) {
                 Swal.fire({
@@ -256,10 +213,8 @@ const PermitDocumentRequirement = () => {
                     text: `Enter document type for document ${i + 1}.`,
                     confirmButtonColor: "#351255",
                 });
-
                 return;
             }
-
             if (!documentItems[i].title.trim()) {
                 Swal.fire({
                     icon: "warning",
@@ -267,16 +222,12 @@ const PermitDocumentRequirement = () => {
                     text: `Enter title for document ${i + 1}.`,
                     confirmButtonColor: "#351255",
                 });
-
                 return;
             }
         }
-
         const payload = {
             country_id: Number(countryId),
-
             permit_type: permitType,
-
             documents: documentItems.map(
                 (item, index) => ({
                     document_type:
@@ -284,16 +235,12 @@ const PermitDocumentRequirement = () => {
                             .trim()
                             .toUpperCase()
                             .replace(/\s+/g, "_"),
-
                     title:
                         item.title.trim(),
-
                     description:
                         item.description?.trim() || null,
-
                     is_required:
                         Boolean(item.is_required),
-
                     display_order:
                         item.display_order === ""
                             ? index
@@ -301,15 +248,12 @@ const PermitDocumentRequirement = () => {
                 })
             ),
         };
-
         try {
             setSaving(true);
-
             const response =
                 await createPermitDocumentRequirements(
                     payload
                 );
-
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
@@ -319,9 +263,7 @@ const PermitDocumentRequirement = () => {
                         "Permit document requirements created successfully.",
                     confirmButtonColor: "#351255",
                 });
-
                 resetCreateForm();
-
                 if (page !== 1) {
                     setPage(1);
                 } else {
@@ -333,23 +275,18 @@ const PermitDocumentRequirement = () => {
                 "Create document error:",
                 error
             );
-
             let message =
                 error.response?.data?.message ||
                 "Unable to create permit document requirements.";
-
             const errors =
                 error.response?.data?.errors;
-
             if (errors) {
                 const first =
                     Object.values(errors)[0];
-
                 if (Array.isArray(first)) {
                     message = first[0];
                 }
             }
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -360,72 +297,57 @@ const PermitDocumentRequirement = () => {
             setSaving(false);
         }
     };
-
     // ==========================================
     // START EDIT
     // ==========================================
-
     const handleEdit = (document) => {
+        if (!canManage) return;
         setEditingId(document.id);
-
         setCountryId(
             String(document.country_id || "")
         );
-
         setPermitType(
             document.permit_type || ""
         );
-
         setEditDocumentType(
             document.document_type || ""
         );
-
         setEditTitle(
             document.title || ""
         );
-
         setEditDescription(
             document.description || ""
         );
-
         setEditRequired(
             Boolean(document.is_required)
         );
-
         setEditDisplayOrder(
             document.display_order ?? 0
         );
-
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     };
-
     // ==========================================
     // CANCEL EDIT
     // ==========================================
-
     const cancelEdit = () => {
         setEditingId(null);
-
         setCountryId("");
         setPermitType("");
-
         setEditDocumentType("");
         setEditTitle("");
         setEditDescription("");
         setEditRequired(true);
         setEditDisplayOrder(0);
     };
-
     // ==========================================
     // UPDATE
     // ==========================================
-
     const handleUpdate = async (e) => {
         e.preventDefault();
-
+        if (!canManage) return;
         if (
             !countryId ||
             !permitType ||
@@ -438,45 +360,34 @@ const PermitDocumentRequirement = () => {
                 text: "Please complete all required fields.",
                 confirmButtonColor: "#351255",
             });
-
             return;
         }
-
         const payload = {
             country_id:
                 Number(countryId),
-
             permit_type:
                 permitType,
-
             document_type:
                 editDocumentType
                     .trim()
                     .toUpperCase()
                     .replace(/\s+/g, "_"),
-
             title:
                 editTitle.trim(),
-
             description:
                 editDescription.trim() || null,
-
             is_required:
                 editRequired,
-
             display_order:
                 Number(editDisplayOrder) || 0,
         };
-
         try {
             setSaving(true);
-
             const response =
                 await updatePermitDocumentRequirement(
                     editingId,
                     payload
                 );
-
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
@@ -486,28 +397,22 @@ const PermitDocumentRequirement = () => {
                         "Document requirement updated successfully.",
                     confirmButtonColor: "#351255",
                 });
-
                 cancelEdit();
-
                 await fetchDocuments();
             }
         } catch (error) {
             let message =
                 error.response?.data?.message ||
                 "Unable to update document requirement.";
-
             const errors =
                 error.response?.data?.errors;
-
             if (errors) {
                 const first =
                     Object.values(errors)[0];
-
                 if (Array.isArray(first)) {
                     message = first[0];
                 }
             }
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -518,22 +423,19 @@ const PermitDocumentRequirement = () => {
             setSaving(false);
         }
     };
-
     // ==========================================
     // CHANGE STATUS
     // ==========================================
-
     const handleStatusChange = async (document) => {
+        if (!canManage) return;
         // Prevent multiple clicks while this document is updating
         if (statusUpdatingId === document.id) {
             return;
         }
-
         const newStatus =
             document.status === "ACTIVE"
                 ? "INACTIVE"
                 : "ACTIVE";
-
         const result = await Swal.fire({
             icon: "warning",
             title: "Change Status?",
@@ -544,20 +446,16 @@ const PermitDocumentRequirement = () => {
             confirmButtonColor: "#351255",
             cancelButtonColor: "#77717d",
         });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
             // Disable only this status badge
             setStatusUpdatingId(document.id);
-
             const response =
                 await changePermitDocumentRequirementStatus(
                     document.id
                 );
-
             if (response.data?.status) {
                 await Swal.fire({
                     icon: "success",
@@ -567,7 +465,6 @@ const PermitDocumentRequirement = () => {
                         `Document requirement status changed to ${newStatus}.`,
                     confirmButtonColor: "#351255",
                 });
-
                 await fetchDocuments();
             }
         } catch (error) {
@@ -575,7 +472,6 @@ const PermitDocumentRequirement = () => {
                 "Document requirement status change error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -589,12 +485,11 @@ const PermitDocumentRequirement = () => {
             setStatusUpdatingId(null);
         }
     };
-
     // ==========================================
     // DELETE
     // ==========================================
-
     const handleDelete = async (id) => {
+        if (!canManage) return;
         const result = await Swal.fire({
             icon: "warning",
             title: "Delete Requirement?",
@@ -605,17 +500,14 @@ const PermitDocumentRequirement = () => {
             confirmButtonColor: "#f52d91",
             cancelButtonColor: "#77717d",
         });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
             const response =
                 await deletePermitDocumentRequirement(
                     id
                 );
-
             if (response.data.status) {
                 await Swal.fire({
                     icon: "success",
@@ -625,11 +517,9 @@ const PermitDocumentRequirement = () => {
                         "Document requirement deleted successfully.",
                     confirmButtonColor: "#351255",
                 });
-
                 if (editingId === id) {
                     cancelEdit();
                 }
-
                 await fetchDocuments();
             }
         } catch (error) {
@@ -643,11 +533,9 @@ const PermitDocumentRequirement = () => {
             });
         }
     };
-
     // ==========================================
     // PERMIT LABEL
     // ==========================================
-
     const getPermitTypeLabel = (value) => {
         return (
             PERMIT_TYPES.find(
@@ -655,62 +543,47 @@ const PermitDocumentRequirement = () => {
             )?.label || value
         );
     };
-
     return (
         <div className="dashboard-layout">
             <Sidebar />
-
             <div className="dashboard-main">
                 <Navbar />
-
                 <main className="dashboard-content">
                     <div className="permit-document-page">
-
                         {/* HEADER */}
-
                         <div className="permit-document-header">
                             <h1>
                                 Permit Document Requirements
                             </h1>
-
                             <p>
                                 Manage required documents by country and permit type.
                             </p>
                         </div>
-
                         {/* FORM CARD */}
-
-                        <div className="permit-document-form-card">
-
+                        {canManage && <div className="permit-document-form-card">
                             <div className="permit-document-card-header">
                                 <h2>
                                     {editingId
                                         ? "Edit Document Requirement"
                                         : "Add Document Requirements"}
                                 </h2>
-
                                 <p>
                                     {editingId
                                         ? "Update the selected document requirement."
                                         : "Add one or multiple documents for a country and permit type."}
                                 </p>
                             </div>
-
                             {editingId ? (
-
                                 /* EDIT FORM */
-
                                 <form
                                     className="permit-document-form"
                                     onSubmit={handleUpdate}
                                 >
-
                                     <div className="permit-document-form-group">
                                         <label>
                                             Country
                                             <span className="required">*</span>
                                         </label>
-
                                         <select
                                             value={countryId}
                                             onChange={(e) =>
@@ -720,7 +593,6 @@ const PermitDocumentRequirement = () => {
                                             <option value="">
                                                 Select Country
                                             </option>
-
                                             {countries.map((country) => (
                                                 <option
                                                     key={country.id}
@@ -731,13 +603,11 @@ const PermitDocumentRequirement = () => {
                                             ))}
                                         </select>
                                     </div>
-
                                     <div className="permit-document-form-group">
                                         <label>
                                             Permit Type
                                             <span className="required">*</span>
                                         </label>
-
                                         <select
                                             value={permitType}
                                             onChange={(e) =>
@@ -747,7 +617,6 @@ const PermitDocumentRequirement = () => {
                                             <option value="">
                                                 Select Permit Type
                                             </option>
-
                                             {PERMIT_TYPES.map((type) => (
                                                 <option
                                                     key={type.value}
@@ -758,13 +627,11 @@ const PermitDocumentRequirement = () => {
                                             ))}
                                         </select>
                                     </div>
-
                                     <div className="permit-document-form-group permit-document-type-field">
                                         <label>
                                             Document Type
                                             <span className="required">*</span>
                                         </label>
-
                                         <input
                                             value={editDocumentType}
                                             onChange={(e) =>
@@ -775,13 +642,11 @@ const PermitDocumentRequirement = () => {
                                             placeholder="PASSPORT"
                                         />
                                     </div>
-
                                     <div className="permit-document-form-group permit-document-title-field">
                                         <label>
                                             Title
                                             <span className="required">*</span>
                                         </label>
-
                                         <input
                                             value={editTitle}
                                             onChange={(e) =>
@@ -792,12 +657,10 @@ const PermitDocumentRequirement = () => {
                                             placeholder="Original Passport"
                                         />
                                     </div>
-
                                     <div className="permit-document-form-group permit-document-description-field">
                                         <label>
                                             Description
                                         </label>
-
                                         <input
                                             value={editDescription}
                                             onChange={(e) =>
@@ -808,12 +671,10 @@ const PermitDocumentRequirement = () => {
                                             placeholder="Optional description"
                                         />
                                     </div>
-
                                     <div className="permit-document-form-group permit-document-order-field">
                                         <label>
                                             Order
                                         </label>
-
                                         <input
                                             type="number"
                                             min="0"
@@ -825,7 +686,6 @@ const PermitDocumentRequirement = () => {
                                             }
                                         />
                                     </div>
-
                                     <label className="permit-document-checkbox">
                                         <input
                                             type="checkbox"
@@ -836,10 +696,8 @@ const PermitDocumentRequirement = () => {
                                                 )
                                             }
                                         />
-
                                         Required
                                     </label>
-
                                     <div className="permit-document-form-buttons">
                                         <button
                                             type="button"
@@ -848,36 +706,27 @@ const PermitDocumentRequirement = () => {
                                         >
                                             Cancel
                                         </button>
-
                                         <button
                                             type="submit"
                                             className="permit-document-save-btn"
                                             disabled={saving}
                                         >
                                             <FaPen />
-
                                             {saving
                                                 ? "Saving..."
                                                 : "Update"}
                                         </button>
                                     </div>
-
                                 </form>
-
                             ) : (
-
                                 /* CREATE FORM */
-
                                 <form onSubmit={handleCreate}>
-
                                     <div className="permit-document-country-section">
-
                                         <div className="permit-document-form-group">
                                             <label>
                                                 Country
                                                 <span className="required">*</span>
                                             </label>
-
                                             <select
                                                 value={countryId}
                                                 onChange={(e) =>
@@ -889,7 +738,6 @@ const PermitDocumentRequirement = () => {
                                                 <option value="">
                                                     Select Country
                                                 </option>
-
                                                 {countries.map((country) => (
                                                     <option
                                                         key={country.id}
@@ -900,13 +748,11 @@ const PermitDocumentRequirement = () => {
                                                 ))}
                                             </select>
                                         </div>
-
                                         <div className="permit-document-form-group">
                                             <label>
                                                 Permit Type
                                                 <span className="required">*</span>
                                             </label>
-
                                             <select
                                                 value={permitType}
                                                 onChange={(e) =>
@@ -918,7 +764,6 @@ const PermitDocumentRequirement = () => {
                                                 <option value="">
                                                     Select Permit Type
                                                 </option>
-
                                                 {PERMIT_TYPES.map((type) => (
                                                     <option
                                                         key={type.value}
@@ -929,29 +774,22 @@ const PermitDocumentRequirement = () => {
                                                 ))}
                                             </select>
                                         </div>
-
                                     </div>
-
                                     <div className="permit-document-items-list">
-
                                         {documentItems.map(
                                             (document, index) => (
-
                                                 <div
                                                     className="permit-document-item-row"
                                                     key={index}
                                                 >
-
                                                     <div className="permit-document-number">
                                                         {index + 1}
                                                     </div>
-
                                                     <div className="permit-document-form-group permit-document-type-field">
                                                         <label>
                                                             Document Type
                                                             <span className="required">*</span>
                                                         </label>
-
                                                         <input
                                                             value={
                                                                 document.document_type
@@ -966,13 +804,11 @@ const PermitDocumentRequirement = () => {
                                                             placeholder="PASSPORT"
                                                         />
                                                     </div>
-
                                                     <div className="permit-document-form-group permit-document-title-field">
                                                         <label>
                                                             Title
                                                             <span className="required">*</span>
                                                         </label>
-
                                                         <input
                                                             value={
                                                                 document.title
@@ -987,12 +823,10 @@ const PermitDocumentRequirement = () => {
                                                             placeholder="Original Passport"
                                                         />
                                                     </div>
-
                                                     <div className="permit-document-form-group permit-document-description-field">
                                                         <label>
                                                             Description
                                                         </label>
-
                                                         <input
                                                             value={
                                                                 document.description
@@ -1007,12 +841,10 @@ const PermitDocumentRequirement = () => {
                                                             placeholder="Optional"
                                                         />
                                                     </div>
-
                                                     <div className="permit-document-form-group permit-document-order-field">
                                                         <label>
                                                             Order
                                                         </label>
-
                                                         <input
                                                             type="number"
                                                             min="0"
@@ -1028,7 +860,6 @@ const PermitDocumentRequirement = () => {
                                                             }
                                                         />
                                                     </div>
-
                                                     <label className="permit-document-checkbox">
                                                         <input
                                                             type="checkbox"
@@ -1043,10 +874,8 @@ const PermitDocumentRequirement = () => {
                                                                 )
                                                             }
                                                         />
-
                                                         Required
                                                     </label>
-
                                                     <button
                                                         type="button"
                                                         className="permit-document-remove-btn"
@@ -1061,15 +890,11 @@ const PermitDocumentRequirement = () => {
                                                     >
                                                         <FaTimes />
                                                     </button>
-
                                                 </div>
                                             )
                                         )}
-
                                     </div>
-
                                     <div className="permit-document-create-actions">
-
                                         <button
                                             type="button"
                                             className="permit-document-add-more-btn"
@@ -1078,58 +903,42 @@ const PermitDocumentRequirement = () => {
                                             <FaPlus />
                                             Add Document
                                         </button>
-
                                         <button
                                             type="submit"
                                             className="permit-document-save-btn"
                                             disabled={saving}
                                         >
                                             <FaPlus />
-
                                             {saving
                                                 ? "Saving..."
                                                 : "Save Documents"}
                                         </button>
-
                                     </div>
-
                                 </form>
                             )}
-
-                        </div>
-
+                        </div>}
                         {/* TABLE */}
-
                         <div className="permit-document-table-card">
-
                             <div className="permit-document-card-header">
                                 <h2>
                                     Permit Document Requirements
                                 </h2>
-
                                 <p>
                                     View and manage all document requirements.
                                 </p>
                             </div>
-
                             {loading ? (
-
                                 <div className="permit-document-empty">
                                     Loading...
                                 </div>
-
                             ) : documents.length === 0 ? (
-
                                 <div className="permit-document-empty">
                                     No document requirements found.
                                 </div>
-
                             ) : (
                                 <>
                                     <div className="permit-document-table-wrapper">
-
                                         <table className="permit-document-table">
-
                                             <thead>
                                                 <tr>
                                                     <th>S.N.</th>
@@ -1139,56 +948,44 @@ const PermitDocumentRequirement = () => {
                                                     <th>Required</th>
                                                     <th>Order</th>
                                                     <th>Status</th>
-                                                    <th>Actions</th>
+                                                    {canManage && <th>Actions</th>}
                                                 </tr>
                                             </thead>
-
                                             <tbody>
-
                                                 {documents.map(
                                                     (document, index) => (
-
                                                         <tr key={document.id}>
-
                                                             <td>
                                                                 {(page - 1) * 10 +
                                                                     index +
                                                                     1}
                                                             </td>
-
                                                             <td>
                                                                 <span className="permit-document-country-name">
                                                                     {document.country?.country_name ||
                                                                         "N/A"}
                                                                 </span>
                                                             </td>
-
                                                             <td>
                                                                 {getPermitTypeLabel(
                                                                     document.permit_type
                                                                 )}
                                                             </td>
-
                                                             <td>
                                                                 <div className="permit-document-info">
-
                                                                     <strong>
                                                                         {document.title}
                                                                     </strong>
-
                                                                     <span>
                                                                         {document.document_type}
                                                                     </span>
-
                                                                     {document.description && (
                                                                         <small>
                                                                             {document.description}
                                                                         </small>
                                                                     )}
-
                                                                 </div>
                                                             </td>
-
                                                             <td>
                                                                 <span
                                                                     className={
@@ -1202,13 +999,11 @@ const PermitDocumentRequirement = () => {
                                                                         : "Optional"}
                                                                 </span>
                                                             </td>
-
                                                             <td>
                                                                 <span className="permit-document-order">
                                                                     {document.display_order ?? 0}
                                                                 </span>
                                                             </td>
-
                                                             {/* CLICKABLE STATUS BADGE */}
                                                             <td>
                                                                 <span
@@ -1223,6 +1018,7 @@ const PermitDocumentRequirement = () => {
                                                                     }`}
                                                                     onClick={() => {
                                                                         if (
+                                                                            canManage &&
                                                                             statusUpdatingId !==
                                                                             document.id
                                                                         ) {
@@ -1231,25 +1027,23 @@ const PermitDocumentRequirement = () => {
                                                                             );
                                                                         }
                                                                     }}
-                                                                    role="button"
+                                                                    role={canManage ? "button" : undefined}
                                                                     tabIndex={
-                                                                        statusUpdatingId ===
+                                                                        !canManage || statusUpdatingId ===
                                                                         document.id
                                                                             ? -1
                                                                             : 0
                                                                     }
-                                                                    title="Click to change status"
+                                                                    title={canManage ? "Click to change status" : undefined}
                                                                 >
                                                                     {statusUpdatingId === document.id
                                                                         ? "UPDATING..."
                                                                         : document.status}
                                                                 </span>
                                                             </td>
-
                                                             {/* ACTIONS - EDIT + DELETE ONLY */}
-                                                            <td>
+                                                            {canManage && <td>
                                                                 <div className="permit-document-actions">
-
                                                                     <button
                                                                         type="button"
                                                                         className="permit-document-edit-btn"
@@ -1262,7 +1056,6 @@ const PermitDocumentRequirement = () => {
                                                                     >
                                                                         <FaPen />
                                                                     </button>
-
                                                                     <button
                                                                         type="button"
                                                                         className="permit-document-delete-btn"
@@ -1275,20 +1068,14 @@ const PermitDocumentRequirement = () => {
                                                                     >
                                                                         <FaTrash />
                                                                     </button>
-
                                                                 </div>
-                                                            </td>
-
+                                                            </td>}
                                                         </tr>
                                                     )
                                                 )}
-
                                             </tbody>
-
                                         </table>
-
                                     </div>
-
                                     {totalPages > 1 && (
                                         <Pagination
                                             page={page}
@@ -1298,14 +1085,11 @@ const PermitDocumentRequirement = () => {
                                     )}
                                 </>
                             )}
-
                         </div>
-
                     </div>
                 </main>
             </div>
         </div>
     );
 };
-
 export default PermitDocumentRequirement;

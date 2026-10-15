@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
   getHotels,
   getHotelPoliciesCms,
@@ -13,9 +11,7 @@ import {
   changeHotelPolicyStatus,
   deleteHotelPolicy,
 } from "../../../api/BackendApi";
-
 import "./HotelPolicy.css";
-
 const POLICY_TYPES = [
   { value: "CHECK_IN", label: "Check In" },
   { value: "CHECK_OUT", label: "Check Out" },
@@ -26,63 +22,49 @@ const POLICY_TYPES = [
   { value: "PAYMENT", label: "Payment" },
   { value: "OTHER", label: "Other" },
 ];
-
 const createEmptyPolicy = () => ({
   content: "",
   display_order: 0,
   status: "ACTIVE",
 });
-
 const HotelPolicy = () => {
+  const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+  const canManage = ["admin", "cms-admin"].includes(role);
   const [policies, setPolicies] = useState([]);
   const [hotels, setHotels] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
-
   const [showModal, setShowModal] = useState(false);
-
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
   const [hotelId, setHotelId] = useState("");
   const [type, setType] = useState("");
-
   const [policyRows, setPolicyRows] = useState([
     createEmptyPolicy(),
   ]);
-
   useEffect(() => {
     fetchPolicies(currentPage);
   }, [currentPage]);
-
   useEffect(() => {
     fetchHotels();
   }, []);
-
   // =========================================================
   // FETCH POLICIES
   // =========================================================
-
   const fetchPolicies = async (page = 1) => {
     try {
       setLoading(true);
-
       const response = await getHotelPoliciesCms(page);
-
       const paginationData = response.data?.data;
-
       setPolicies(paginationData?.data || []);
       setCurrentPage(paginationData?.current_page || 1);
       setLastPage(paginationData?.last_page || 1);
       setTotal(paginationData?.total || 0);
     } catch (error) {
       console.error("Failed to fetch hotel policies:", error);
-
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -94,17 +76,13 @@ const HotelPolicy = () => {
       setLoading(false);
     }
   };
-
   // =========================================================
   // FETCH HOTELS
   // =========================================================
-
   const fetchHotels = async () => {
     try {
       const response = await getHotels();
-
       const data = response.data?.data;
-
       if (Array.isArray(data)) {
         setHotels(data);
       } else if (Array.isArray(data?.data)) {
@@ -117,11 +95,9 @@ const HotelPolicy = () => {
       setHotels([]);
     }
   };
-
   // =========================================================
   // FORM
   // =========================================================
-
   const resetForm = () => {
     setHotelId("");
     setType("");
@@ -129,23 +105,19 @@ const HotelPolicy = () => {
     setIsEditing(false);
     setEditingId(null);
   };
-
   const openCreateModal = () => {
+    if (!canManage) return;
     resetForm();
     setShowModal(true);
   };
-
   const closeModal = () => {
     if (saving) return;
-
     setShowModal(false);
     resetForm();
   };
-
   // =========================================================
   // POLICY ROWS
   // =========================================================
-
   const handlePolicyChange = (index, field, value) => {
     setPolicyRows((previous) =>
       previous.map((policy, policyIndex) =>
@@ -158,73 +130,57 @@ const HotelPolicy = () => {
       )
     );
   };
-
   const addPolicyRow = () => {
     setPolicyRows((previous) => [
       ...previous,
       createEmptyPolicy(),
     ]);
   };
-
   const removePolicyRow = (index) => {
     if (policyRows.length === 1) return;
-
     setPolicyRows((previous) =>
       previous.filter(
         (_, policyIndex) => policyIndex !== index
       )
     );
   };
-
   // =========================================================
   // CREATE
   // =========================================================
-
   const handleCreate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!hotelId) {
       Swal.fire({
         icon: "warning",
         title: "Hotel Required",
         text: "Please select a hotel.",
       });
-
       return;
     }
-
     if (!type) {
       Swal.fire({
         icon: "warning",
         title: "Policy Type Required",
         text: "Please select a policy type.",
       });
-
       return;
     }
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         type,
-
         policies: policyRows.map((policy) => ({
           content: policy.content,
-
           display_order:
             policy.display_order === ""
               ? 0
               : Number(policy.display_order),
-
           status: policy.status || "ACTIVE",
         })),
       };
-
       const response = await createHotelPolicies(payload);
-
       await Swal.fire({
         icon: "success",
         title: "Created",
@@ -232,10 +188,8 @@ const HotelPolicy = () => {
           response.data?.message ||
           "Hotel policies created successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       if (currentPage === 1) {
         await fetchPolicies(1);
       } else {
@@ -243,13 +197,10 @@ const HotelPolicy = () => {
       }
     } catch (error) {
       console.error("Failed to create hotel policies:", error);
-
       const errors = error.response?.data?.errors;
-
       const firstError = errors
         ? Object.values(errors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -262,18 +213,15 @@ const HotelPolicy = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // EDIT
   // =========================================================
-
   const openEditModal = (policy) => {
+    if (!canManage) return;
     setIsEditing(true);
     setEditingId(policy.id);
-
     setHotelId(String(policy.hotel_id));
     setType(policy.type || "");
-
     setPolicyRows([
       {
         content: policy.content || "",
@@ -281,44 +229,32 @@ const HotelPolicy = () => {
         status: policy.status || "ACTIVE",
       },
     ]);
-
     setShowModal(true);
   };
-
   // =========================================================
   // UPDATE
   // =========================================================
-
   const handleUpdate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!editingId) return;
-
     const policy = policyRows[0];
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         type,
-
         content: policy.content,
-
         display_order:
           policy.display_order === ""
             ? 0
             : Number(policy.display_order),
-
         status: policy.status,
       };
-
       const response = await updateHotelPolicy(
         editingId,
         payload
       );
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -326,20 +262,15 @@ const HotelPolicy = () => {
           response.data?.message ||
           "Hotel policy updated successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       await fetchPolicies(currentPage);
     } catch (error) {
       console.error("Failed to update hotel policy:", error);
-
       const errors = error.response?.data?.errors;
-
       const firstError = errors
         ? Object.values(errors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -352,17 +283,15 @@ const HotelPolicy = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // STATUS
   // =========================================================
-
   const handleStatusChange = async (policy) => {
+    if (!canManage) return;
     const nextStatus =
       policy.status === "ACTIVE"
         ? "INACTIVE"
         : "ACTIVE";
-
     const result = await Swal.fire({
       icon: "question",
       title: "Change status?",
@@ -370,13 +299,10 @@ const HotelPolicy = () => {
       showCancelButton: true,
       confirmButtonText: "Yes, change it",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response =
         await changeHotelPolicyStatus(policy.id);
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -386,7 +312,6 @@ const HotelPolicy = () => {
         timer: 1300,
         showConfirmButton: false,
       });
-
       await fetchPolicies(currentPage);
     } catch (error) {
       Swal.fire({
@@ -398,12 +323,11 @@ const HotelPolicy = () => {
       });
     }
   };
-
   // =========================================================
   // DELETE
   // =========================================================
-
   const handleDelete = async (policy) => {
+    if (!canManage) return;
     const result = await Swal.fire({
       icon: "warning",
       title: "Delete policy?",
@@ -412,13 +336,10 @@ const HotelPolicy = () => {
       confirmButtonText: "Delete",
       confirmButtonColor: "#d33",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response =
         await deleteHotelPolicy(policy.id);
-
       await Swal.fire({
         icon: "success",
         title: "Deleted",
@@ -426,7 +347,6 @@ const HotelPolicy = () => {
           response.data?.message ||
           "Hotel policy deleted successfully.",
       });
-
       await fetchPolicies(currentPage);
     } catch (error) {
       Swal.fire({
@@ -438,11 +358,9 @@ const HotelPolicy = () => {
       });
     }
   };
-
   // =========================================================
   // HELPERS
   // =========================================================
-
   const getTypeLabel = (value) => {
     return (
       POLICY_TYPES.find(
@@ -450,7 +368,6 @@ const HotelPolicy = () => {
       )?.label || value
     );
   };
-
   const getHotelName = (policy) => {
     return (
       policy.hotel?.hotel_name ||
@@ -458,40 +375,33 @@ const HotelPolicy = () => {
       "-"
     );
   };
-
   return (
     <div className="dashboard-layout">
       <Sidebar />
-
       <div className="dashboard-main">
         <Navbar />
-
         <main className="dashboard-content">
           <div className="hotel-policy-page">
             <div className="hotel-policy-page-header">
               <div>
                 <h1>Hotel Policies</h1>
-
                 <p>
                   Manage check-in, check-out,
                   cancellation and other hotel policies.
                 </p>
               </div>
-
-              <button
+              {canManage && <button
                 type="button"
                 className="hotel-policy-add-button"
                 onClick={openCreateModal}
               >
                 + Add Policies
-              </button>
+              </button>}
             </div>
-
             <div className="hotel-policy-card">
               <div className="hotel-policy-card-header">
                 <div>
                   <h2>Policy List</h2>
-
                   <p>
                     {total}{" "}
                     {total === 1
@@ -500,7 +410,6 @@ const HotelPolicy = () => {
                   </p>
                 </div>
               </div>
-
               <div className="hotel-policy-table-wrapper">
                 <table className="hotel-policy-table">
                   <thead>
@@ -511,15 +420,14 @@ const HotelPolicy = () => {
                       <th>Content</th>
                       <th>Display Order</th>
                       <th>Status</th>
-                      <th>Actions</th>
+                      {canManage && <th>Actions</th>}
                     </tr>
                   </thead>
-
                   <tbody>
                     {loading ? (
                       <tr>
                         <td
-                          colSpan="7"
+                          colSpan={canManage ? 7 : 6}
                           className="hotel-policy-empty"
                         >
                           Loading hotel policies...
@@ -528,7 +436,7 @@ const HotelPolicy = () => {
                     ) : policies.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="7"
+                          colSpan={canManage ? 7 : 6}
                           className="hotel-policy-empty"
                         >
                           No hotel policies found.
@@ -544,7 +452,6 @@ const HotelPolicy = () => {
                                 index +
                                 1}
                             </td>
-
                             <td>
                               <strong>
                                 {getHotelName(
@@ -552,7 +459,6 @@ const HotelPolicy = () => {
                                 )}
                               </strong>
                             </td>
-
                             <td>
                               <span className="hotel-policy-type">
                                 {getTypeLabel(
@@ -560,18 +466,15 @@ const HotelPolicy = () => {
                                 )}
                               </span>
                             </td>
-
                             <td>
                               <div className="hotel-policy-content">
                                 {policy.content}
                               </div>
                             </td>
-
                             <td>
                               {policy.display_order ??
                                 0}
                             </td>
-
                             <td>
                               <button
                                 type="button"
@@ -581,17 +484,14 @@ const HotelPolicy = () => {
                                     ? "active"
                                     : "inactive"
                                 }`}
-                                onClick={() =>
-                                  handleStatusChange(
-                                    policy
-                                  )
-                                }
+                                onClick={() => canManage && handleStatusChange(policy)}
+                                disabled={!canManage}
+                                style={!canManage ? { cursor: "default", opacity: 1 } : undefined}
                               >
                                 {policy.status}
                               </button>
                             </td>
-
-                            <td>
+                            {canManage && <td>
                               <div className="hotel-policy-actions">
                                 <button
                                   type="button"
@@ -604,7 +504,6 @@ const HotelPolicy = () => {
                                 >
                                   Edit
                                 </button>
-
                                 <button
                                   type="button"
                                   className="hotel-policy-delete"
@@ -617,7 +516,7 @@ const HotelPolicy = () => {
                                   Delete
                                 </button>
                               </div>
-                            </td>
+                            </td>}
                           </tr>
                         )
                       )
@@ -625,7 +524,6 @@ const HotelPolicy = () => {
                   </tbody>
                 </table>
               </div>
-
               {!loading && lastPage > 1 && (
                 <div className="hotel-policy-pagination">
                   <Pagination
@@ -639,8 +537,7 @@ const HotelPolicy = () => {
           </div>
         </main>
       </div>
-
-      {showModal && (
+      {canManage && showModal && (
         <div
           className="hotel-policy-modal-overlay"
           onClick={closeModal}
@@ -658,23 +555,21 @@ const HotelPolicy = () => {
                     ? "Edit Hotel Policy"
                     : "Add Hotel Policies"}
                 </h2>
-
                 <p>
                   {isEditing
                     ? "Update this hotel policy."
                     : "Choose a hotel and policy type, then add one or more policies."}
                 </p>
               </div>
-
               <button
                 type="button"
                 className="hotel-policy-modal-close"
                 onClick={closeModal}
+                style={{ color: "#1f2937", backgroundColor: "#f1f5f9", border: "1px solid #cbd5e1", opacity: 1, fontSize: "24px", lineHeight: 1, cursor: "pointer" }}
               >
                 ×
               </button>
             </div>
-
             <form
               onSubmit={
                 isEditing
@@ -686,7 +581,6 @@ const HotelPolicy = () => {
                 <div className="hotel-policy-main-grid">
                   <div className="hotel-policy-form-group">
                     <label>Hotel *</label>
-
                     <select
                       value={hotelId}
                       onChange={(event) =>
@@ -699,7 +593,6 @@ const HotelPolicy = () => {
                       <option value="">
                         Select Hotel
                       </option>
-
                       {hotels.map((hotel) => (
                         <option
                           key={hotel.id}
@@ -712,10 +605,8 @@ const HotelPolicy = () => {
                       ))}
                     </select>
                   </div>
-
                   <div className="hotel-policy-form-group">
                     <label>Policy Type *</label>
-
                     <select
                       value={type}
                       onChange={(event) =>
@@ -728,7 +619,6 @@ const HotelPolicy = () => {
                       <option value="">
                         Select Policy Type
                       </option>
-
                       {POLICY_TYPES.map(
                         (policyType) => (
                           <option
@@ -748,7 +638,6 @@ const HotelPolicy = () => {
                     </select>
                   </div>
                 </div>
-
                 {policyRows.map(
                   (policy, index) => (
                     <div
@@ -763,7 +652,6 @@ const HotelPolicy = () => {
                                 index + 1
                               }`}
                         </h3>
-
                         {!isEditing &&
                           policyRows.length >
                             1 && (
@@ -780,12 +668,10 @@ const HotelPolicy = () => {
                             </button>
                           )}
                       </div>
-
                       <div className="hotel-policy-form-group">
                         <label>
                           Policy Content *
                         </label>
-
                         <textarea
                           rows="4"
                           value={policy.content}
@@ -800,13 +686,11 @@ const HotelPolicy = () => {
                           required
                         />
                       </div>
-
                       <div className="hotel-policy-row-fields">
                         <div className="hotel-policy-form-group">
                           <label>
                             Display Order
                           </label>
-
                           <input
                             type="number"
                             min="0"
@@ -822,10 +706,8 @@ const HotelPolicy = () => {
                             }
                           />
                         </div>
-
                         <div className="hotel-policy-form-group">
                           <label>Status</label>
-
                           <select
                             value={policy.status}
                             onChange={(event) =>
@@ -839,7 +721,6 @@ const HotelPolicy = () => {
                             <option value="ACTIVE">
                               Active
                             </option>
-
                             <option value="INACTIVE">
                               Inactive
                             </option>
@@ -849,7 +730,6 @@ const HotelPolicy = () => {
                     </div>
                   )
                 )}
-
                 {!isEditing && (
                   <button
                     type="button"
@@ -860,17 +740,16 @@ const HotelPolicy = () => {
                   </button>
                 )}
               </div>
-
               <div className="hotel-policy-modal-footer">
                 <button
                   type="button"
                   className="hotel-policy-cancel"
                   onClick={closeModal}
+                  style={{ color: "#1f2937", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", opacity: 1, cursor: "pointer" }}
                   disabled={saving}
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   className="hotel-policy-save"
@@ -897,5 +776,4 @@ const HotelPolicy = () => {
     </div>
   );
 };
-
 export default HotelPolicy;

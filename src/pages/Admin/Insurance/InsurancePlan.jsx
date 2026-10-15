@@ -5,11 +5,9 @@ import {
     FaTimes,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
-
 import Navbar from "../../../components/Navbar/Navbar";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
     getAllInsurancePlansCms,
     createInsurancePlan,
@@ -17,13 +15,10 @@ import {
     changeInsurancePlanStatus,
     deleteInsurancePlan,
 } from "../../../api/BackendApi";
-
 import "./InsurancePlan.css";
-
 /* =========================================================
    EMPTY FORM
 ========================================================= */
-
 const createEmptyForm = () => ({
     name: "",
     short_description: "",
@@ -36,89 +31,63 @@ const createEmptyForm = () => ({
     imagePreview: null,
     existingImage: null,
 });
-
 /* =========================================================
    COMPONENT
 ========================================================= */
-
 const InsurancePlan = () => {
-
+    const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+    const canManage = ["admin", "cms-admin"].includes(role);
     /* =====================================================
        DATA
     ===================================================== */
-
     const [plans, setPlans] = useState([]);
-
     /* =====================================================
        FORM
     ===================================================== */
-
     const [form, setForm] = useState(
         createEmptyForm()
     );
-
     /* =====================================================
        EDIT
     ===================================================== */
-
     const [editingId, setEditingId] =
         useState(null);
-
     /* =====================================================
        LOADING
     ===================================================== */
-
     const [loading, setLoading] =
         useState(true);
-
     const [saving, setSaving] =
         useState(false);
-
     const [changingStatusId, setChangingStatusId] =
         useState(null);
-
     /* =====================================================
        PAGINATION
     ===================================================== */
-
     const [page, setPage] =
         useState(1);
-
     const [totalPages, setTotalPages] =
         useState(1);
-
     const [totalPlans, setTotalPlans] =
         useState(0);
-
     /* =====================================================
        FETCH
     ===================================================== */
-
     useEffect(() => {
-
         fetchPlans();
-
     }, [page]);
-
     const fetchPlans = async () => {
-
         try {
-
             setLoading(true);
-
             const response =
                 await getAllInsurancePlansCms(page);
-
             console.log(
                 "INSURANCE PLAN CMS RESPONSE:",
                 response.data
             );
-
             if (response.data?.status) {
-
                 const responseData =
                     response.data.data;
-
                 /*
                  * PAGINATED
                  */
@@ -126,54 +95,40 @@ const InsurancePlan = () => {
                     responseData &&
                     Array.isArray(responseData.data)
                 ) {
-
                     setPlans(
                         responseData.data
                     );
-
                     setTotalPages(
                         responseData.last_page || 1
                     );
-
                     setTotalPlans(
                         responseData.total || 0
                     );
-
                 } else {
-
                     /*
                      * NON-PAGINATED FALLBACK
                      */
-
                     const planData =
                         Array.isArray(responseData)
                             ? responseData
                             : [];
-
                     setPlans(planData);
-
                     setTotalPages(1);
-
                     setTotalPlans(
                         planData.length
                     );
                 }
-
             } else {
-
                 throw new Error(
                     response.data?.message ||
                     "Unable to load insurance plans."
                 );
             }
-
         } catch (error) {
-
             console.error(
                 "Insurance plans fetch error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -183,55 +138,44 @@ const InsurancePlan = () => {
                     "Unable to load insurance plans.",
                 confirmButtonColor: "#351255",
             });
-
         } finally {
-
             setLoading(false);
         }
     };
-
     /* =====================================================
        FORM CHANGE
     ===================================================== */
-
     const handleChange = (
         field,
         value
     ) => {
-
         setForm((previous) => ({
             ...previous,
             [field]: value,
         }));
     };
-
     /* =====================================================
        IMAGE CHANGE
     ===================================================== */
-
     const handleImageChange = (
         event
     ) => {
-
+        if (!canManage) return;
         const file =
             event.target.files?.[0];
-
         if (!file) {
             return;
         }
-
         const allowedTypes = [
             "image/jpeg",
             "image/png",
             "image/webp",
         ];
-
         if (
             !allowedTypes.includes(
                 file.type
             )
         ) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Invalid Image",
@@ -240,17 +184,13 @@ const InsurancePlan = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             event.target.value = "";
-
             return;
         }
-
         if (
             file.size >
             5 * 1024 * 1024
         ) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Image Too Large",
@@ -259,16 +199,12 @@ const InsurancePlan = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             event.target.value = "";
-
             return;
         }
-
         /*
          * Revoke old local preview if needed.
          */
-
         if (
             form.imagePreview &&
             form.imagePreview.startsWith(
@@ -279,25 +215,19 @@ const InsurancePlan = () => {
                 form.imagePreview
             );
         }
-
         setForm((previous) => ({
             ...previous,
-
             image: file,
-
             imagePreview:
                 URL.createObjectURL(
                     file
                 ),
         }));
     };
-
     /* =====================================================
        RESET FORM
     ===================================================== */
-
     const resetForm = () => {
-
         if (
             form.imagePreview &&
             form.imagePreview.startsWith(
@@ -308,26 +238,20 @@ const InsurancePlan = () => {
                 form.imagePreview
             );
         }
-
         setForm(
             createEmptyForm()
         );
-
         setEditingId(null);
     };
-
     /* =====================================================
        CREATE
     ===================================================== */
-
     const handleCreate = async (
         event
     ) => {
-
+        if (!canManage) return;
         event.preventDefault();
-
         if (!form.name.trim()) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Plan Name Required",
@@ -336,43 +260,34 @@ const InsurancePlan = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             return;
         }
-
         const formData =
             new FormData();
-
         formData.append(
             "name",
             form.name.trim()
         );
-
         formData.append(
             "short_description",
             form.short_description || ""
         );
-
         formData.append(
             "description",
             form.description || ""
         );
-
         formData.append(
             "processing_time",
             form.processing_time || ""
         );
-
         formData.append(
             "tier",
             form.tier || ""
         );
-
         formData.append(
             "status",
             form.status || "ACTIVE"
         );
-
         formData.append(
             "display_order",
             form.display_order === ""
@@ -381,9 +296,7 @@ const InsurancePlan = () => {
                     form.display_order
                 )
         );
-
         if (form.image) {
-
             /*
              * Use the field expected by the
              * InsurancePlan controller.
@@ -392,24 +305,18 @@ const InsurancePlan = () => {
              * "insurance_image" instead of "image",
              * change this key.
              */
-
             formData.append(
                 "insurance_image",
                 form.image
             );
         }
-
         try {
-
             setSaving(true);
-
             const response =
                 await createInsurancePlan(
                     formData
                 );
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title:
@@ -420,100 +327,72 @@ const InsurancePlan = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 resetForm();
-
                 if (page !== 1) {
-
                     setPage(1);
-
                 } else {
-
                     fetchPlans();
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Insurance plan create error:",
                 error
             );
-
             showValidationError(
                 error,
                 "Unable to create insurance plan."
             );
-
         } finally {
-
             setSaving(false);
         }
     };
-
     /* =====================================================
        EDIT
     ===================================================== */
-
     const handleEdit = (
         plan
     ) => {
-
+        if (!canManage) return;
         setEditingId(
             plan.id
         );
-
         setForm({
-
             name:
                 plan.name || "",
-
             short_description:
                 plan.short_description || "",
-
             description:
                 plan.description || "",
-
             processing_time:
                 plan.processing_time || "",
-
             tier: plan.tier || "",
-
             status:
                 plan.status || "ACTIVE",
-
             display_order:
                 plan.display_order ?? 0,
-
             image: null,
-
             existingImage:
                 plan.insurance_image ||
                 null,
-
             imagePreview:
                 plan.insurance_image ||
                 null,
         });
-
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     };
-
     /* =====================================================
        UPDATE
     ===================================================== */
-
     const handleUpdate = async (
         event
     ) => {
-
+        if (!canManage) return;
         event.preventDefault();
-
         if (!form.name.trim()) {
-
             Swal.fire({
                 icon: "warning",
                 title: "Plan Name Required",
@@ -522,43 +401,34 @@ const InsurancePlan = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
             return;
         }
-
         const formData =
             new FormData();
-
         formData.append(
             "name",
             form.name.trim()
         );
-
         formData.append(
             "short_description",
             form.short_description || ""
         );
-
         formData.append(
             "description",
             form.description || ""
         );
-
         formData.append(
             "processing_time",
             form.processing_time || ""
         );
-
         formData.append(
             "tier",
             form.tier || ""
         );
-
         formData.append(
             "status",
             form.status || "ACTIVE"
         );
-
         formData.append(
             "display_order",
             form.display_order === ""
@@ -567,27 +437,20 @@ const InsurancePlan = () => {
                     form.display_order
                 )
         );
-
         if (form.image) {
-
             formData.append(
                 "insurance_image",
                 form.image
             );
         }
-
         try {
-
             setSaving(true);
-
             const response =
                 await updateInsurancePlan(
                     editingId,
                     formData
                 );
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title:
@@ -598,93 +461,69 @@ const InsurancePlan = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 resetForm();
-
                 fetchPlans();
             }
-
         } catch (error) {
-
             console.error(
                 "Insurance plan update error:",
                 error
             );
-
             showValidationError(
                 error,
                 "Unable to update insurance plan."
             );
-
         } finally {
-
             setSaving(false);
         }
     };
-
     /* =====================================================
        STATUS
     ===================================================== */
-
     const handleStatusChange = async (plan) => {
-
+        if (!canManage) return;
         const newStatus =
             plan.status === "ACTIVE"
                 ? "INACTIVE"
                 : "ACTIVE";
-
         const result =
             await Swal.fire({
-
                 icon: "question",
-
                 title:
                     newStatus === "ACTIVE"
                         ? "Activate Insurance Plan?"
                         : "Deactivate Insurance Plan?",
-
                 text:
                     newStatus === "ACTIVE"
                         ? "This insurance plan will become active."
                         : "This insurance plan will become inactive.",
-
                 showCancelButton: true,
-
                 confirmButtonText:
                     newStatus === "ACTIVE"
                         ? "Activate"
                         : "Deactivate",
-
                 cancelButtonText:
                     "Cancel",
-
                 confirmButtonColor:
                     "#351255",
             });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
-
             setChangingStatusId(
                 plan.id
             );
-
             const response =
                 await changeInsurancePlanStatus(
                     plan.id
                 );
-
             if (response.data?.status) {
-
                 setPlans((previous) =>
                     previous.map((item) =>
                         item.id === plan.id
                             ? {
                                 ...item,
-
                                 status:
                                     response.data
                                         ?.data
@@ -694,7 +533,6 @@ const InsurancePlan = () => {
                             : item
                     )
                 );
-
                 Swal.fire({
                     icon: "success",
                     title: "Status Updated",
@@ -705,14 +543,11 @@ const InsurancePlan = () => {
                         "#351255",
                 });
             }
-
         } catch (error) {
-
             console.error(
                 "Insurance plan status error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -722,62 +557,45 @@ const InsurancePlan = () => {
                 confirmButtonColor:
                     "#351255",
             });
-
         } finally {
-
             setChangingStatusId(
                 null
             );
         }
     };
-
     /* =====================================================
        DELETE
     ===================================================== */
-
     const handleDelete = async (
         id
     ) => {
-
+        if (!canManage) return;
         const result =
             await Swal.fire({
-
                 icon: "warning",
-
                 title:
                     "Delete Insurance Plan?",
-
                 text:
                     "This insurance plan will be permanently deleted.",
-
                 showCancelButton: true,
-
                 confirmButtonText:
                     "Delete",
-
                 cancelButtonText:
                     "Cancel",
-
                 confirmButtonColor:
                     "#f52d91",
-
                 cancelButtonColor:
                     "#77717d",
             });
-
         if (!result.isConfirmed) {
             return;
         }
-
         try {
-
             const response =
                 await deleteInsurancePlan(
                     id
                 );
-
             if (response.data?.status) {
-
                 await Swal.fire({
                     icon: "success",
                     title: "Deleted",
@@ -787,40 +605,31 @@ const InsurancePlan = () => {
                     confirmButtonColor:
                         "#351255",
                 });
-
                 if (
                     editingId === id
                 ) {
                     resetForm();
                 }
-
                 /*
                  * Last row on current page.
                  */
-
                 if (
                     plans.length === 1 &&
                     page > 1
                 ) {
-
                     setPage(
                         (previous) =>
                             previous - 1
                     );
-
                 } else {
-
                     fetchPlans();
                 }
             }
-
         } catch (error) {
-
             console.error(
                 "Insurance plan delete error:",
                 error
             );
-
             Swal.fire({
                 icon: "error",
                 title: "Failed",
@@ -832,30 +641,23 @@ const InsurancePlan = () => {
             });
         }
     };
-
     /* =====================================================
        VALIDATION ERROR
     ===================================================== */
-
     const showValidationError = (
         error,
         fallback
     ) => {
-
         let errorMessage =
             error.response?.data?.message ||
             fallback;
-
         const validationErrors =
             error.response?.data?.errors;
-
         if (validationErrors) {
-
             const firstError =
                 Object.values(
                     validationErrors
                 )[0];
-
             if (
                 Array.isArray(
                     firstError
@@ -865,7 +667,6 @@ const InsurancePlan = () => {
                     firstError[0];
             }
         }
-
         Swal.fire({
             icon: "error",
             title: "Failed",
@@ -874,112 +675,74 @@ const InsurancePlan = () => {
                 "#351255",
         });
     };
-
     /* =====================================================
        SUBMIT
     ===================================================== */
-
     const handleSubmit = (
         event
     ) => {
-
+        if (!canManage) { event.preventDefault(); return; }
         if (editingId) {
-
             handleUpdate(event);
-
         } else {
-
             handleCreate(event);
         }
     };
-
     /* =====================================================
        JSX
     ===================================================== */
-
     return (
-
         <div className="dashboard-layout">
-
             <Sidebar />
-
             <div className="dashboard-main">
-
                 <Navbar />
-
                 <main className="dashboard-content">
-
                     <div className="insurance-plan-page">
-
                         {/* ============================
                             PAGE HEADER
                         ============================ */}
-
                         <div className="insurance-plan-header">
-
                             <div>
-
                                 <h1>
                                     Insurance Plans
                                 </h1>
-
                                 <p>
                                     Manage insurance plans available to users.
                                 </p>
-
                             </div>
-
                         </div>
-
                         {/* ============================
                             CREATE / EDIT
                         ============================ */}
-
+                        {canManage && (
                         <div className="insurance-plan-form-card">
-
                             <div className="insurance-plan-card-header">
-
                                 <h2>
-
                                     {editingId
                                         ? "Edit Insurance Plan"
                                         : "Add Insurance Plan"}
-
                                 </h2>
-
                                 <p>
-
                                     {editingId
                                         ? "Update the selected insurance plan."
                                         : "Create a new insurance plan."}
-
                                 </p>
-
                             </div>
-
                             <form
                                 className="insurance-plan-form"
                                 onSubmit={
                                     handleSubmit
                                 }
                             >
-
                                 <div className="insurance-plan-form-grid">
-
                                     {/* NAME */}
-
                                     <div className="insurance-plan-form-group">
-
                                         <label>
-
                                             Plan Name
-
                                             <span className="required">
                                                 *
                                             </span>
-
                                         </label>
-
                                         <input
                                             type="text"
                                             value={
@@ -997,17 +760,12 @@ const InsurancePlan = () => {
                                             }
                                             required
                                         />
-
                                     </div>
-
                                     {/* PROCESSING */}
-
                                     <div className="insurance-plan-form-group">
-
                                         <label>
                                             Processing Time
                                         </label>
-
                                         <input
                                             type="text"
                                             value={
@@ -1024,17 +782,12 @@ const InsurancePlan = () => {
                                                 saving
                                             }
                                         />
-
                                     </div>
-
                                     {/* TIER */}
-
                                     <div className="insurance-plan-form-group">
-
                                         <label>
                                             Tier
                                         </label>
-
                                         <input
                                             type="text"
                                             value={form.tier}
@@ -1048,15 +801,11 @@ const InsurancePlan = () => {
                                             disabled={saving}
                                         />
                                     </div>
-
                                     {/* STATUS */}
-
                                     <div className="insurance-plan-form-group">
-
                                         <label>
                                             Status
                                         </label>
-
                                         <select
                                             value={
                                                 form.status
@@ -1071,27 +820,19 @@ const InsurancePlan = () => {
                                                 saving
                                             }
                                         >
-
                                             <option value="ACTIVE">
                                                 Active
                                             </option>
-
                                             <option value="INACTIVE">
                                                 Inactive
                                             </option>
-
                                         </select>
-
                                     </div>
-
                                     {/* DISPLAY ORDER */}
-
                                     <div className="insurance-plan-form-group">
-
                                         <label>
                                             Display Order
                                         </label>
-
                                         <input
                                             type="number"
                                             min="0"
@@ -1108,17 +849,12 @@ const InsurancePlan = () => {
                                                 saving
                                             }
                                         />
-
                                     </div>
-
                                     {/* IMAGE */}
-
                                     <div className="insurance-plan-form-group insurance-plan-full-width">
-
                                         <label>
                                             Insurance Image
                                         </label>
-
                                         <input
                                             type="file"
                                             accept=".jpg,.jpeg,.png,.webp"
@@ -1129,21 +865,15 @@ const InsurancePlan = () => {
                                                 saving
                                             }
                                         />
-
                                         <span className="insurance-plan-file-help">
                                             JPG, JPEG, PNG or WEBP. Maximum 5 MB.
                                         </span>
-
                                     </div>
-
                                     {/* SHORT DESCRIPTION */}
-
                                     <div className="insurance-plan-form-group insurance-plan-full-width">
-
                                         <label>
                                             Short Description
                                         </label>
-
                                         <textarea
                                             rows="3"
                                             maxLength="500"
@@ -1161,17 +891,12 @@ const InsurancePlan = () => {
                                                 saving
                                             }
                                         />
-
                                     </div>
-
                                     {/* DESCRIPTION */}
-
                                     <div className="insurance-plan-form-group insurance-plan-full-width">
-
                                         <label>
                                             Description
                                         </label>
-
                                         <textarea
                                             rows="5"
                                             value={
@@ -1188,21 +913,14 @@ const InsurancePlan = () => {
                                                 saving
                                             }
                                         />
-
                                     </div>
-
                                 </div>
-
                                 {/* IMAGE PREVIEW */}
-
                                 {form.imagePreview && (
-
                                     <div className="insurance-plan-image-preview">
-
                                         <span>
                                             Image Preview
                                         </span>
-
                                         <img
                                             src={
                                                 form.imagePreview
@@ -1212,16 +930,11 @@ const InsurancePlan = () => {
                                                 "Insurance plan"
                                             }
                                         />
-
                                     </div>
                                 )}
-
                                 {/* ACTIONS */}
-
                                 <div className="insurance-plan-form-actions">
-
                                     {editingId && (
-
                                         <button
                                             type="button"
                                             className="insurance-plan-cancel-btn"
@@ -1232,14 +945,10 @@ const InsurancePlan = () => {
                                                 saving
                                             }
                                         >
-
                                             <FaTimes />
-
                                             Cancel
-
                                         </button>
                                     )}
-
                                     <button
                                         type="submit"
                                         className="insurance-plan-submit-btn"
@@ -1247,7 +956,6 @@ const InsurancePlan = () => {
                                             saving
                                         }
                                     >
-
                                         {saving
                                             ? editingId
                                                 ? "Updating..."
@@ -1255,150 +963,97 @@ const InsurancePlan = () => {
                                             : editingId
                                                 ? "Update Plan"
                                                 : "Save Plan"}
-
                                     </button>
-
                                 </div>
-
                             </form>
-
                         </div>
-
+                        )}
                         {/* ============================
                             TABLE
                         ============================ */}
-
                         <div className="insurance-plan-table-card">
-
                             <div className="insurance-plan-table-header">
-
                                 <div>
-
                                     <h2>
                                         Insurance Plan List
                                     </h2>
-
                                     <p>
-
                                         {totalPlans}{" "}
-
                                         {totalPlans === 1
                                             ? "plan"
                                             : "plans"}
-
                                     </p>
-
                                 </div>
-
                             </div>
-
                             <div className="insurance-plan-table-responsive">
-
                                 <table className="insurance-plan-table">
-
                                     <thead>
-
                                         <tr>
-
                                             <th>
                                                 S.N.
                                             </th>
-
                                             <th>
                                                 Image
                                             </th>
-
                                             <th>
                                                 Plan
                                             </th>
-
                                             <th>
                                                 Processing Time
                                             </th>
-
                                             <th>
                                                 Tier
                                             </th>
-
                                             <th>
                                                 Display Order
                                             </th>
-
                                             <th>
                                                 Status
                                             </th>
-
-                                            <th>
-                                                Actions
-                                            </th>
-
+                                            {canManage && <th>Actions</th>}
                                         </tr>
-
                                     </thead>
-
                                     <tbody>
-
                                         {loading ? (
-
                                             <tr>
-
                                                 <td
-                                                    colSpan="7"
+                                                    colSpan={canManage ? 8 : 7}
                                                     className="insurance-plan-table-message"
                                                 >
-
                                                     <div className="insurance-plan-loader"></div>
-
                                                     Loading insurance plans...
-
                                                 </td>
-
                                             </tr>
-
                                         ) : plans.length === 0 ? (
-
                                             <tr>
-
                                                 <td
-                                                    colSpan="7"
+                                                    colSpan={canManage ? 8 : 7}
                                                     className="insurance-plan-table-message"
                                                 >
                                                     No insurance plans found.
                                                 </td>
-
                                             </tr>
-
                                         ) : (
-
                                             plans.map(
                                                 (
                                                     plan,
                                                     index
                                                 ) => (
-
                                                     <tr
                                                         key={
                                                             plan.id
                                                         }
                                                     >
-
                                                         {/* SN */}
-
                                                         <td>
-
                                                             {(page - 1) *
                                                                 10 +
                                                                 index +
                                                                 1}
-
                                                         </td>
-
                                                         {/* IMAGE */}
-
                                                         <td>
-
                                                             {plan.insurance_image ? (
-
                                                                 <img
                                                                     className="insurance-plan-table-image"
                                                                     src={
@@ -1408,63 +1063,40 @@ const InsurancePlan = () => {
                                                                         plan.name
                                                                     }
                                                                 />
-
                                                             ) : (
-
                                                                 <div className="insurance-plan-no-image">
                                                                     No Image
                                                                 </div>
                                                             )}
-
                                                         </td>
-
                                                         {/* PLAN */}
-
                                                         <td>
-
                                                             <div className="insurance-plan-name-cell">
-
                                                                 <strong>
                                                                     {plan.name}
                                                                 </strong>
-
                                                                 {plan.short_description && (
-
                                                                     <span>
                                                                         {plan.short_description}
                                                                     </span>
                                                                 )}
-
                                                             </div>
-
                                                         </td>
-
                                                         {/* PROCESSING */}
-
                                                         <td>
-
                                                             {plan.processing_time ||
                                                                 "-"}
-
                                                         </td>
-
                                                         <td>
                                                             {plan.tier || "-"}
                                                         </td>
-
                                                         {/* ORDER */}
-
                                                         <td>
-
                                                             {plan.display_order ??
                                                                 0}
-
                                                         </td>
-
                                                         {/* STATUS */}
-
                                                         <td>
-
                                                             <button
                                                                 type="button"
                                                                 className={`insurance-plan-status ${plan.status ===
@@ -1472,7 +1104,7 @@ const InsurancePlan = () => {
                                                                     ? "active"
                                                                     : "inactive"
                                                                     }`}
-                                                                disabled={
+                                                                disabled={!canManage ||
                                                                     changingStatusId ===
                                                                     plan.id
                                                                 }
@@ -1482,22 +1114,16 @@ const InsurancePlan = () => {
                                                                     )
                                                                 }
                                                             >
-
                                                                 {changingStatusId ===
                                                                     plan.id
                                                                     ? "Updating..."
                                                                     : plan.status}
-
                                                             </button>
-
                                                         </td>
-
                                                         {/* ACTIONS */}
-
+                                                        {canManage && (
                                                         <td>
-
                                                             <div className="insurance-plan-actions">
-
                                                                 <button
                                                                     type="button"
                                                                     className="insurance-plan-edit-btn"
@@ -1508,11 +1134,8 @@ const InsurancePlan = () => {
                                                                     }
                                                                     title="Edit"
                                                                 >
-
                                                                     <FaPen />
-
                                                                 </button>
-
                                                                 <button
                                                                     type="button"
                                                                     className="insurance-plan-delete-btn"
@@ -1523,26 +1146,18 @@ const InsurancePlan = () => {
                                                                     }
                                                                     title="Delete"
                                                                 >
-
                                                                     <FaTrash />
-
                                                                 </button>
-
                                                             </div>
-
                                                         </td>
-
+                                                        )}
                                                     </tr>
                                                 )
                                             )
                                         )}
-
                                     </tbody>
-
                                 </table>
-
                             </div>
-
                             <Pagination
                                 page={page}
                                 totalPages={
@@ -1552,17 +1167,11 @@ const InsurancePlan = () => {
                                     setPage
                                 }
                             />
-
                         </div>
-
                     </div>
-
                 </main>
-
             </div>
-
         </div>
     );
 };
-
 export default InsurancePlan;
