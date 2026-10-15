@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
   getHotels,
   getHotelFaqsCms,
@@ -13,63 +11,50 @@ import {
   changeHotelFaqStatus,
   deleteHotelFaq,
 } from "../../../api/BackendApi";
-
 import "./HotelFaq.css";
-
 const createEmptyFaq = () => ({
   question: "",
   answer: "",
   display_order: 0,
   status: "ACTIVE",
 });
-
 const HotelFaq = () => {
+  const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+  const canManage = ["admin", "cms-admin"].includes(role);
   const [faqs, setFaqs] = useState([]);
   const [hotels, setHotels] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
-
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
   const [hotelId, setHotelId] = useState("");
-
   const [faqRows, setFaqRows] = useState([
     createEmptyFaq(),
   ]);
-
   useEffect(() => {
     fetchFaqs(currentPage);
   }, [currentPage]);
-
   useEffect(() => {
     fetchHotels();
   }, []);
-
   // =========================================================
   // FETCH FAQS
   // =========================================================
-
   const fetchFaqs = async (page = 1) => {
     try {
       setLoading(true);
-
       const response = await getHotelFaqsCms(page);
       const paginationData = response.data?.data;
-
       setFaqs(paginationData?.data || []);
       setCurrentPage(paginationData?.current_page || 1);
       setLastPage(paginationData?.last_page || 1);
       setTotal(paginationData?.total || 0);
     } catch (error) {
       console.error("Failed to fetch hotel FAQs:", error);
-
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -81,16 +66,13 @@ const HotelFaq = () => {
       setLoading(false);
     }
   };
-
   // =========================================================
   // FETCH HOTELS
   // =========================================================
-
   const fetchHotels = async () => {
     try {
       const response = await getHotels();
       const data = response.data?.data;
-
       if (Array.isArray(data)) {
         setHotels(data);
       } else if (Array.isArray(data?.data)) {
@@ -103,34 +85,28 @@ const HotelFaq = () => {
       setHotels([]);
     }
   };
-
   // =========================================================
   // RESET
   // =========================================================
-
   const resetForm = () => {
     setHotelId("");
     setFaqRows([createEmptyFaq()]);
     setIsEditing(false);
     setEditingId(null);
   };
-
   const openCreateModal = () => {
+    if (!canManage) return;
     resetForm();
     setShowModal(true);
   };
-
   const closeModal = () => {
     if (saving) return;
-
     setShowModal(false);
     resetForm();
   };
-
   // =========================================================
   // FAQ ROWS
   // =========================================================
-
   const handleFaqChange = (index, field, value) => {
     setFaqRows((previous) =>
       previous.map((faq, faqIndex) =>
@@ -143,62 +119,49 @@ const HotelFaq = () => {
       )
     );
   };
-
   const addFaqRow = () => {
     setFaqRows((previous) => [
       ...previous,
       createEmptyFaq(),
     ]);
   };
-
   const removeFaqRow = (index) => {
     if (faqRows.length === 1) return;
-
     setFaqRows((previous) =>
       previous.filter(
         (_, faqIndex) => faqIndex !== index
       )
     );
   };
-
   // =========================================================
   // CREATE
   // =========================================================
-
   const handleCreate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!hotelId) {
       Swal.fire({
         icon: "warning",
         title: "Hotel Required",
         text: "Please select a hotel.",
       });
-
       return;
     }
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         faqs: faqRows.map((faq) => ({
           question: faq.question.trim(),
           answer: faq.answer.trim(),
-
           display_order:
             faq.display_order === ""
               ? 0
               : Number(faq.display_order),
-
           status: faq.status || "ACTIVE",
         })),
       };
-
       const response = await createHotelFaqs(payload);
-
       await Swal.fire({
         icon: "success",
         title: "Created",
@@ -206,10 +169,8 @@ const HotelFaq = () => {
           response.data?.message ||
           "Hotel FAQs created successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       if (currentPage === 1) {
         await fetchFaqs(1);
       } else {
@@ -217,13 +178,10 @@ const HotelFaq = () => {
       }
     } catch (error) {
       console.error("Failed to create hotel FAQs:", error);
-
       const errors = error.response?.data?.errors;
-
       const firstError = errors
         ? Object.values(errors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -236,17 +194,14 @@ const HotelFaq = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // EDIT
   // =========================================================
-
   const openEditModal = (faq) => {
+    if (!canManage) return;
     setIsEditing(true);
     setEditingId(faq.id);
-
     setHotelId(String(faq.hotel_id));
-
     setFaqRows([
       {
         question: faq.question || "",
@@ -255,43 +210,32 @@ const HotelFaq = () => {
         status: faq.status || "ACTIVE",
       },
     ]);
-
     setShowModal(true);
   };
-
   // =========================================================
   // UPDATE
   // =========================================================
-
   const handleUpdate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!editingId) return;
-
     const faq = faqRows[0];
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         question: faq.question.trim(),
         answer: faq.answer.trim(),
-
         display_order:
           faq.display_order === ""
             ? 0
             : Number(faq.display_order),
-
         status: faq.status,
       };
-
       const response = await updateHotelFaq(
         editingId,
         payload
       );
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -299,20 +243,15 @@ const HotelFaq = () => {
           response.data?.message ||
           "Hotel FAQ updated successfully.",
       });
-
       setShowModal(false);
       resetForm();
-
       await fetchFaqs(currentPage);
     } catch (error) {
       console.error("Failed to update hotel FAQ:", error);
-
       const errors = error.response?.data?.errors;
-
       const firstError = errors
         ? Object.values(errors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -325,17 +264,15 @@ const HotelFaq = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // STATUS
   // =========================================================
-
   const handleStatusChange = async (faq) => {
+    if (!canManage) return;
     const nextStatus =
       faq.status === "ACTIVE"
         ? "INACTIVE"
         : "ACTIVE";
-
     const result = await Swal.fire({
       icon: "question",
       title: "Change status?",
@@ -343,14 +280,11 @@ const HotelFaq = () => {
       showCancelButton: true,
       confirmButtonText: "Yes, change it",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response = await changeHotelFaqStatus(
         faq.id
       );
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -360,7 +294,6 @@ const HotelFaq = () => {
         timer: 1300,
         showConfirmButton: false,
       });
-
       await fetchFaqs(currentPage);
     } catch (error) {
       Swal.fire({
@@ -372,12 +305,11 @@ const HotelFaq = () => {
       });
     }
   };
-
   // =========================================================
   // DELETE
   // =========================================================
-
   const handleDelete = async (faq) => {
+    if (!canManage) return;
     const result = await Swal.fire({
       icon: "warning",
       title: "Delete FAQ?",
@@ -386,12 +318,9 @@ const HotelFaq = () => {
       confirmButtonText: "Delete",
       confirmButtonColor: "#d33",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response = await deleteHotelFaq(faq.id);
-
       await Swal.fire({
         icon: "success",
         title: "Deleted",
@@ -399,7 +328,6 @@ const HotelFaq = () => {
           response.data?.message ||
           "Hotel FAQ deleted successfully.",
       });
-
       await fetchFaqs(currentPage);
     } catch (error) {
       Swal.fire({
@@ -411,11 +339,9 @@ const HotelFaq = () => {
       });
     }
   };
-
   // =========================================================
   // HOTEL NAME
   // =========================================================
-
   const getHotelName = (faq) => {
     return (
       faq.hotel?.hotel_name ||
@@ -423,21 +349,16 @@ const HotelFaq = () => {
       "-"
     );
   };
-
   // =========================================================
   // UI
   // =========================================================
-
   return (
     <div className="dashboard-layout">
       <Sidebar />
-
       <div className="dashboard-main">
         <Navbar />
-
         <main className="dashboard-content">
           <div className="hotel-faq-page">
-
             <div className="hotel-faq-page-header">
               <div>
                 <h1>Hotel FAQs</h1>
@@ -445,32 +366,26 @@ const HotelFaq = () => {
                   Manage frequently asked questions for hotels.
                 </p>
               </div>
-
-              <button
+              {canManage && <button
                 type="button"
                 className="hotel-faq-add-button"
                 onClick={openCreateModal}
               >
                 + Add FAQs
-              </button>
+              </button>}
             </div>
-
             <div className="hotel-faq-card">
-
               <div className="hotel-faq-card-header">
                 <div>
                   <h2>FAQ List</h2>
-
                   <p>
                     {total}{" "}
                     {total === 1 ? "FAQ" : "FAQs"}
                   </p>
                 </div>
               </div>
-
               <div className="hotel-faq-table-wrapper">
                 <table className="hotel-faq-table">
-
                   <thead>
                     <tr>
                       <th>S.N.</th>
@@ -479,15 +394,14 @@ const HotelFaq = () => {
                       <th>Answer</th>
                       <th>Display Order</th>
                       <th>Status</th>
-                      <th>Actions</th>
+                      {canManage && <th>Actions</th>}
                     </tr>
                   </thead>
-
                   <tbody>
                     {loading ? (
                       <tr>
                         <td
-                          colSpan="7"
+                          colSpan={canManage ? 7 : 6}
                           className="hotel-faq-empty"
                         >
                           Loading hotel FAQs...
@@ -496,7 +410,7 @@ const HotelFaq = () => {
                     ) : faqs.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="7"
+                          colSpan={canManage ? 7 : 6}
                           className="hotel-faq-empty"
                         >
                           No hotel FAQs found.
@@ -505,35 +419,29 @@ const HotelFaq = () => {
                     ) : (
                       faqs.map((faq, index) => (
                         <tr key={faq.id}>
-
                           <td>
                             {(currentPage - 1) * 10 +
                               index +
                               1}
                           </td>
-
                           <td>
                             <strong>
                               {getHotelName(faq)}
                             </strong>
                           </td>
-
                           <td>
                             <div className="hotel-faq-question">
                               {faq.question}
                             </div>
                           </td>
-
                           <td>
                             <div className="hotel-faq-answer">
                               {faq.answer}
                             </div>
                           </td>
-
                           <td>
                             {faq.display_order ?? 0}
                           </td>
-
                           <td>
                             <button
                               type="button"
@@ -542,17 +450,14 @@ const HotelFaq = () => {
                                   ? "active"
                                   : "inactive"
                               }`}
-                              onClick={() =>
-                                handleStatusChange(faq)
-                              }
+                              onClick={() => { if (canManage) handleStatusChange(faq); }}
+                              disabled={!canManage}
                             >
                               {faq.status}
                             </button>
                           </td>
-
-                          <td>
+                          {canManage && <td>
                             <div className="hotel-faq-actions">
-
                               <button
                                 type="button"
                                 className="hotel-faq-edit"
@@ -562,7 +467,6 @@ const HotelFaq = () => {
                               >
                                 Edit
                               </button>
-
                               <button
                                 type="button"
                                 className="hotel-faq-delete"
@@ -572,18 +476,14 @@ const HotelFaq = () => {
                               >
                                 Delete
                               </button>
-
                             </div>
-                          </td>
-
+                          </td>}
                         </tr>
                       ))
                     )}
                   </tbody>
-
                 </table>
               </div>
-
               {!loading && lastPage > 1 && (
                 <div className="hotel-faq-pagination">
                   <Pagination
@@ -593,17 +493,14 @@ const HotelFaq = () => {
                   />
                 </div>
               )}
-
             </div>
           </div>
         </main>
       </div>
-
       {/* =====================================================
           CREATE / EDIT MODAL
       ===================================================== */}
-
-      {showModal && (
+      {canManage && showModal && (
         <div
           className="hotel-faq-modal-overlay"
           onClick={closeModal}
@@ -614,7 +511,6 @@ const HotelFaq = () => {
               event.stopPropagation()
             }
           >
-
             <div className="hotel-faq-modal-header">
               <div>
                 <h2>
@@ -622,23 +518,22 @@ const HotelFaq = () => {
                     ? "Edit Hotel FAQ"
                     : "Add Hotel FAQs"}
                 </h2>
-
                 <p>
                   {isEditing
                     ? "Update this frequently asked question."
                     : "Select a hotel and add one or more frequently asked questions."}
                 </p>
               </div>
-
               <button
                 type="button"
                 className="hotel-faq-modal-close"
                 onClick={closeModal}
+                aria-label="Close modal"
+                style={{ color: "#1f2937", backgroundColor: "#f1f5f9", border: "1px solid #cbd5e1", opacity: 1, fontSize: "24px", fontWeight: 700, lineHeight: 1 }}
               >
                 ×
               </button>
             </div>
-
             <form
               onSubmit={
                 isEditing
@@ -646,14 +541,10 @@ const HotelFaq = () => {
                   : handleCreate
               }
             >
-
               <div className="hotel-faq-modal-body">
-
                 <div className="hotel-faq-hotel-field">
-
                   <div className="hotel-faq-form-group">
                     <label>Hotel *</label>
-
                     <select
                       value={hotelId}
                       onChange={(event) =>
@@ -666,7 +557,6 @@ const HotelFaq = () => {
                       <option value="">
                         Select Hotel
                       </option>
-
                       {hotels.map((hotel) => (
                         <option
                           key={hotel.id}
@@ -679,23 +569,18 @@ const HotelFaq = () => {
                       ))}
                     </select>
                   </div>
-
                 </div>
-
                 {faqRows.map((faq, index) => (
                   <div
                     key={index}
                     className="hotel-faq-row-card"
                   >
-
                     <div className="hotel-faq-row-header">
-
                       <h3>
                         {isEditing
                           ? "FAQ"
                           : `FAQ ${index + 1}`}
                       </h3>
-
                       {!isEditing &&
                         faqRows.length > 1 && (
                           <button
@@ -708,12 +593,9 @@ const HotelFaq = () => {
                             Remove
                           </button>
                         )}
-
                     </div>
-
                     <div className="hotel-faq-form-group">
                       <label>Question *</label>
-
                       <input
                         type="text"
                         maxLength="255"
@@ -729,10 +611,8 @@ const HotelFaq = () => {
                         required
                       />
                     </div>
-
                     <div className="hotel-faq-form-group hotel-faq-answer-field">
                       <label>Answer *</label>
-
                       <textarea
                         rows="5"
                         value={faq.answer}
@@ -747,12 +627,9 @@ const HotelFaq = () => {
                         required
                       />
                     </div>
-
                     <div className="hotel-faq-row-fields">
-
                       <div className="hotel-faq-form-group">
                         <label>Display Order</label>
-
                         <input
                           type="number"
                           min="0"
@@ -766,10 +643,8 @@ const HotelFaq = () => {
                           }
                         />
                       </div>
-
                       <div className="hotel-faq-form-group">
                         <label>Status</label>
-
                         <select
                           value={faq.status}
                           onChange={(event) =>
@@ -783,18 +658,14 @@ const HotelFaq = () => {
                           <option value="ACTIVE">
                             Active
                           </option>
-
                           <option value="INACTIVE">
                             Inactive
                           </option>
                         </select>
                       </div>
-
                     </div>
-
                   </div>
                 ))}
-
                 {!isEditing && (
                   <button
                     type="button"
@@ -804,20 +675,17 @@ const HotelFaq = () => {
                     + Add Another FAQ
                   </button>
                 )}
-
               </div>
-
               <div className="hotel-faq-modal-footer">
-
                 <button
                   type="button"
                   className="hotel-faq-cancel"
                   onClick={closeModal}
+                  style={{ color: "#1f2937", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", opacity: 1, fontWeight: 600 }}
                   disabled={saving}
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   className="hotel-faq-save"
@@ -833,16 +701,12 @@ const HotelFaq = () => {
                           : "FAQs"
                       }`}
                 </button>
-
               </div>
-
             </form>
-
           </div>
         </div>
       )}
     </div>
   );
 };
-
 export default HotelFaq;

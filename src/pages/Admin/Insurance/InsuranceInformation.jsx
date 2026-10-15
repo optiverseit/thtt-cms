@@ -37,6 +37,8 @@ const emptyInformation = () => ({
 ========================================================= */
 
 const InsuranceInformation = () => {
+    const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+    const canManage = ["admin", "cms-admin"].includes(role);
 
     /* =====================================================
        DATA
@@ -329,6 +331,7 @@ const InsuranceInformation = () => {
 
     const handleOpenCreate =
         () => {
+            if (!canManage) return;
 
             resetForm();
 
@@ -449,6 +452,7 @@ const InsuranceInformation = () => {
     const handleEdit = async (
         id
     ) => {
+            if (!canManage) return;
 
         /*
          * Clear previous values.
@@ -648,6 +652,7 @@ const InsuranceInformation = () => {
     ===================================================== */
 
     const handleSave = async () => {
+            if (!canManage) return;
 
         if (!validateForm()) {
             return;
@@ -909,6 +914,7 @@ const InsuranceInformation = () => {
             id,
             currentStatus
         ) => {
+            if (!canManage) return;
 
             if (
                 updatingStatusId !==
@@ -1057,6 +1063,7 @@ const InsuranceInformation = () => {
 
     const handleDelete =
         async (id) => {
+            if (!canManage) return;
 
             const result =
                 await Swal.fire({
@@ -1308,6 +1315,7 @@ const InsuranceInformation = () => {
 
                         </div>
 
+                        {canManage && (
                         <button
                             type="button"
                             className="insurance-information-add-btn"
@@ -1317,6 +1325,7 @@ const InsuranceInformation = () => {
                         >
                             + Add Insurance Information
                         </button>
+                        )}
 
                     </div>
 
@@ -1356,9 +1365,7 @@ const InsuranceInformation = () => {
                                             Status
                                         </th>
 
-                                        <th>
-                                            Actions
-                                        </th>
+                                        {canManage && <th>Actions</th>}
 
                                     </tr>
 
@@ -1371,7 +1378,7 @@ const InsuranceInformation = () => {
                                         <tr>
 
                                             <td
-                                                colSpan="7"
+                                                colSpan={canManage ? 7 : 6}
                                                 className="insurance-information-empty"
                                             >
                                                 Loading insurance information...
@@ -1385,7 +1392,7 @@ const InsuranceInformation = () => {
                                         <tr>
 
                                             <td
-                                                colSpan="7"
+                                                colSpan={canManage ? 7 : 6}
                                                 className="insurance-information-empty"
                                             >
                                                 No insurance information found.
@@ -1485,7 +1492,7 @@ const InsuranceInformation = () => {
                                                                 )
                                                             }
                                                             disabled={
-                                                                updatingStatusId !==
+                                                                !canManage || updatingStatusId !==
                                                                 null
                                                             }
                                                         >
@@ -1501,6 +1508,7 @@ const InsuranceInformation = () => {
 
                                                     {/* ACTIONS */}
 
+                                                    {canManage && (
                                                     <td>
 
                                                         <div className="insurance-information-actions">
@@ -1532,6 +1540,7 @@ const InsuranceInformation = () => {
                                                         </div>
 
                                                     </td>
+                                                    )}
 
                                                 </tr>
                                             )
@@ -1575,7 +1584,7 @@ const InsuranceInformation = () => {
                 CREATE / EDIT MODAL
             ================================================= */}
 
-            {showModal && (
+            {canManage && showModal && (
 
                 <div
                     className="insurance-information-modal-overlay"

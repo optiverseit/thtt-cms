@@ -32,6 +32,8 @@ const createEmptyTier = () => ({
 });
 
 const FeeTier = () => {
+    const role = (localStorage.getItem("role") || "").toLowerCase();
+    const canManage = ["admin", "cms-admin"].includes(role);
     const [feeTiers, setFeeTiers] = useState([]);
     const [countries, setCountries] = useState([]);
     const [countryId, setCountryId] = useState("");
@@ -150,6 +152,7 @@ const FeeTier = () => {
 
     const handleCreate = async (e) => {
         e.preventDefault();
+        if (!canManage) return;
 
         if (!countryId) {
             Swal.fire({
@@ -245,6 +248,7 @@ const FeeTier = () => {
     };
 
     const handleEdit = (tier) => {
+        if (!canManage) return;
         setEditingId(tier.id);
         setCountryId(tier.country_id?.toString() || "");
         setPermitType(tier.permit_type || "");
@@ -281,6 +285,7 @@ const FeeTier = () => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!canManage) return;
 
         if (!permitType) {
             Swal.fire({
@@ -361,6 +366,7 @@ const FeeTier = () => {
     };
 
     const handleStatusChange = async (tier) => {
+        if (!canManage) return;
         if (changingStatusId === tier.id) return;
 
         const newStatus =
@@ -428,6 +434,7 @@ const FeeTier = () => {
     };
 
     const handleDelete = async (id) => {
+        if (!canManage) return;
         if (deletingId === id) return;
 
         const result = await Swal.fire({
@@ -517,7 +524,7 @@ const FeeTier = () => {
                             </div>
                         </div>
 
-                        <div className="fee-tier-form-card">
+                        {canManage && <div className="fee-tier-form-card">
                             <div className="fee-tier-card-header">
                                 <h2>
                                     {editingId
@@ -1009,7 +1016,7 @@ const FeeTier = () => {
                                     </div>
                                 </form>
                             )}
-                        </div>
+                        </div>}
 
                         <div className="fee-tier-table-card">
                             <div className="fee-tier-card-header">
@@ -1041,7 +1048,7 @@ const FeeTier = () => {
                                                     <th>Service Fee</th>
                                                     <th>Total</th>
                                                     <th>Status</th>
-                                                    <th>Actions</th>
+                                                    {canManage && <th>Actions</th>}
                                                 </tr>
                                             </thead>
 
@@ -1138,6 +1145,7 @@ const FeeTier = () => {
                                                                         : ""
                                                                 }`}
                                                                 onClick={() => {
+                                                                    if (!canManage) return;
                                                                     if (
                                                                         changingStatusId !==
                                                                         tier.id
@@ -1155,7 +1163,7 @@ const FeeTier = () => {
                                                             </span>
                                                         </td>
 
-                                                        <td>
+                                                        {canManage && <td>
                                                             <div className="fee-tier-actions">
                                                                 <button
                                                                     type="button"
@@ -1187,7 +1195,7 @@ const FeeTier = () => {
                                                                     <FaTrash />
                                                                 </button>
                                                             </div>
-                                                        </td>
+                                                        </td>}
                                                     </tr>
                                                 ))}
                                             </tbody>

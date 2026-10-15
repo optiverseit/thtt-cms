@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import Pagination from "../../../components/Pagination/Pagination";
-
 import {
   getHotels,
   getHotelPricingTiersCms,
@@ -13,9 +11,7 @@ import {
   changeHotelPricingTierStatus,
   deleteHotelPricingTier,
 } from "../../../api/BackendApi";
-
 import "./HotelPricingTier.css";
-
 const createEmptyTier = () => ({
   room_name: "",
   room_code: "",
@@ -30,52 +26,41 @@ const createEmptyTier = () => ({
   status: "ACTIVE",
   display_order: 0,
 });
-
 const HotelPricingTier = () => {
+  const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+  const canManage = ["admin", "cms-admin"].includes(role);
   const [pricingTiers, setPricingTiers] = useState([]);
   const [hotels, setHotels] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [total, setTotal] = useState(0);
-
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
   const [hotelId, setHotelId] = useState("");
   const [tiers, setTiers] = useState([createEmptyTier()]);
-
   useEffect(() => {
     fetchPricingTiers(currentPage);
   }, [currentPage]);
-
   useEffect(() => {
     fetchHotels();
   }, []);
-
   // =========================================================
   // FETCH CMS PRICING TIERS
   // =========================================================
-
   const fetchPricingTiers = async (page = 1) => {
     try {
       setLoading(true);
-
       const response = await getHotelPricingTiersCms(page);
-
       const paginatedData = response.data?.data;
-
       setPricingTiers(paginatedData?.data || []);
       setCurrentPage(paginatedData?.current_page || 1);
       setLastPage(paginatedData?.last_page || 1);
       setTotal(paginatedData?.total || 0);
     } catch (error) {
       console.error("Failed to fetch hotel pricing tiers:", error);
-
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -87,17 +72,13 @@ const HotelPricingTier = () => {
       setLoading(false);
     }
   };
-
   // =========================================================
   // FETCH HOTELS FOR DROPDOWN
   // =========================================================
-
   const fetchHotels = async () => {
     try {
       const response = await getHotels();
-
       const data = response.data?.data;
-
       if (Array.isArray(data)) {
         setHotels(data);
       } else if (Array.isArray(data?.data)) {
@@ -110,34 +91,28 @@ const HotelPricingTier = () => {
       setHotels([]);
     }
   };
-
   // =========================================================
   // RESET
   // =========================================================
-
   const resetForm = () => {
     setHotelId("");
     setTiers([createEmptyTier()]);
     setIsEditing(false);
     setEditingId(null);
   };
-
   const openCreateModal = () => {
+    if (!canManage) return;
     resetForm();
     setShowModal(true);
   };
-
   const closeModal = () => {
     if (saving) return;
-
     setShowModal(false);
     resetForm();
   };
-
   // =========================================================
   // MULTIPLE CREATE ROWS
   // =========================================================
-
   const handleTierChange = (index, field, value) => {
     setTiers((previous) =>
       previous.map((tier, tierIndex) =>
@@ -150,83 +125,64 @@ const HotelPricingTier = () => {
       )
     );
   };
-
   const addTier = () => {
     setTiers((previous) => [
       ...previous,
       createEmptyTier(),
     ]);
   };
-
   const removeTier = (index) => {
     if (tiers.length === 1) return;
-
     setTiers((previous) =>
       previous.filter((_, tierIndex) => tierIndex !== index)
     );
   };
-
   // =========================================================
   // CREATE
   // =========================================================
-
   const handleCreate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!hotelId) {
       Swal.fire({
         icon: "warning",
         title: "Hotel Required",
         text: "Please select a hotel.",
       });
-
       return;
     }
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         pricing_tiers: tiers.map((tier) => ({
           room_name: tier.room_name,
           room_code: tier.room_code || null,
           room_description:
             tier.room_description || null,
-
           price_npr: Number(tier.price_npr),
-
           pricing_unit:
             tier.pricing_unit || "PER_NIGHT",
-
           max_guests: Number(tier.max_guests),
-
           max_adults:
             tier.max_adults === ""
               ? null
               : Number(tier.max_adults),
-
           max_children:
             tier.max_children === ""
               ? null
               : Number(tier.max_children),
-
           bed_type: tier.bed_type || null,
           room_size: tier.room_size || null,
-
           status: tier.status || "ACTIVE",
-
           display_order:
             tier.display_order === ""
               ? 0
               : Number(tier.display_order),
         })),
       };
-
       const response =
         await createHotelPricingTiers(payload);
-
       await Swal.fire({
         icon: "success",
         title: "Created",
@@ -234,20 +190,16 @@ const HotelPricingTier = () => {
           response.data?.message ||
           "Hotel pricing tiers created successfully.",
       });
-
       closeModal();
       await fetchPricingTiers(1);
       setCurrentPage(1);
     } catch (error) {
       console.error(error);
-
       const validationErrors =
         error.response?.data?.errors;
-
       const firstError = validationErrors
         ? Object.values(validationErrors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -260,102 +212,76 @@ const HotelPricingTier = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // OPEN EDIT
   // =========================================================
-
   const openEditModal = (tier) => {
+    if (!canManage) return;
     setIsEditing(true);
     setEditingId(tier.id);
-
     setHotelId(String(tier.hotel_id));
-
     setTiers([
       {
         room_name: tier.room_name || "",
         room_code: tier.room_code || "",
         room_description:
           tier.room_description || "",
-
         price_npr: tier.price_npr ?? "",
-
         pricing_unit:
           tier.pricing_unit || "PER_NIGHT",
-
         max_guests: tier.max_guests ?? 1,
         max_adults: tier.max_adults ?? "",
         max_children: tier.max_children ?? "",
-
         bed_type: tier.bed_type || "",
         room_size: tier.room_size || "",
-
         status: tier.status || "ACTIVE",
-
         display_order:
           tier.display_order ?? 0,
       },
     ]);
-
     setShowModal(true);
   };
-
   // =========================================================
   // UPDATE
   // =========================================================
-
   const handleUpdate = async (event) => {
     event.preventDefault();
-
+    if (!canManage) return;
     if (!editingId || !hotelId) return;
-
     const tier = tiers[0];
-
     try {
       setSaving(true);
-
       const payload = {
         hotel_id: Number(hotelId),
-
         room_name: tier.room_name,
         room_code: tier.room_code || null,
         room_description:
           tier.room_description || null,
-
         price_npr: Number(tier.price_npr),
-
         pricing_unit:
           tier.pricing_unit || "PER_NIGHT",
-
         max_guests: Number(tier.max_guests),
-
         max_adults:
           tier.max_adults === ""
             ? null
             : Number(tier.max_adults),
-
         max_children:
           tier.max_children === ""
             ? null
             : Number(tier.max_children),
-
         bed_type: tier.bed_type || null,
         room_size: tier.room_size || null,
-
         status: tier.status,
-
         display_order:
           tier.display_order === ""
             ? 0
             : Number(tier.display_order),
       };
-
       const response =
         await updateHotelPricingTier(
           editingId,
           payload
         );
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -363,19 +289,15 @@ const HotelPricingTier = () => {
           response.data?.message ||
           "Hotel pricing tier updated successfully.",
       });
-
       closeModal();
       await fetchPricingTiers(currentPage);
     } catch (error) {
       console.error(error);
-
       const validationErrors =
         error.response?.data?.errors;
-
       const firstError = validationErrors
         ? Object.values(validationErrors)?.[0]?.[0]
         : null;
-
       Swal.fire({
         icon: "error",
         title: "Failed",
@@ -388,17 +310,15 @@ const HotelPricingTier = () => {
       setSaving(false);
     }
   };
-
   // =========================================================
   // STATUS
   // =========================================================
-
   const handleStatusChange = async (tier) => {
+    if (!canManage) return;
     const nextStatus =
       tier.status === "ACTIVE"
         ? "INACTIVE"
         : "ACTIVE";
-
     const result = await Swal.fire({
       icon: "question",
       title: "Change status?",
@@ -406,12 +326,9 @@ const HotelPricingTier = () => {
       showCancelButton: true,
       confirmButtonText: "Yes, change it",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       await changeHotelPricingTierStatus(tier.id);
-
       await Swal.fire({
         icon: "success",
         title: "Updated",
@@ -419,7 +336,6 @@ const HotelPricingTier = () => {
         timer: 1300,
         showConfirmButton: false,
       });
-
       await fetchPricingTiers(currentPage);
     } catch (error) {
       Swal.fire({
@@ -431,12 +347,11 @@ const HotelPricingTier = () => {
       });
     }
   };
-
   // =========================================================
   // DELETE
   // =========================================================
-
   const handleDelete = async (tier) => {
+    if (!canManage) return;
     const result = await Swal.fire({
       icon: "warning",
       title: "Delete pricing tier?",
@@ -445,13 +360,10 @@ const HotelPricingTier = () => {
       confirmButtonText: "Delete",
       confirmButtonColor: "#d33",
     });
-
     if (!result.isConfirmed) return;
-
     try {
       const response =
         await deleteHotelPricingTier(tier.id);
-
       await Swal.fire({
         icon: "success",
         title: "Deleted",
@@ -459,7 +371,6 @@ const HotelPricingTier = () => {
           response.data?.message ||
           "Hotel pricing tier deleted successfully.",
       });
-
       await fetchPricingTiers(currentPage);
     } catch (error) {
       Swal.fire({
@@ -471,46 +382,37 @@ const HotelPricingTier = () => {
       });
     }
   };
-
   const formatPricingUnit = (value) => {
     if (value === "PER_DAY") return "Per Day";
-
     return "Per Night";
   };
-
   return (
     <div className="dashboard-layout">
       <Sidebar />
-
       <div className="dashboard-main">
         <Navbar />
-
         <main className="dashboard-content">
           <div className="hotel-pricing-page">
             <div className="hotel-pricing-page-header">
               <div>
                 <h1>Hotel Pricing Tiers</h1>
-
                 <p>
                   Manage hotel rooms, capacity and
                   pricing.
                 </p>
               </div>
-
-              <button
+              {canManage && <button
                 type="button"
                 className="hotel-pricing-add-button"
                 onClick={openCreateModal}
               >
                 + Add Pricing Tier
-              </button>
+              </button>}
             </div>
-
             <div className="hotel-pricing-card">
               <div className="hotel-pricing-card-header">
                 <div>
                   <h2>Pricing Tier List</h2>
-
                   <p>
                     {total}{" "}
                     {total === 1
@@ -519,7 +421,6 @@ const HotelPricingTier = () => {
                   </p>
                 </div>
               </div>
-
               <div className="hotel-pricing-table-wrapper">
                 <table className="hotel-pricing-table">
                   <thead>
@@ -537,15 +438,14 @@ const HotelPricingTier = () => {
                       <th>Room Size</th>
                       <th>Order</th>
                       <th>Status</th>
-                      <th>Actions</th>
+                      {canManage && <th>Actions</th>}
                     </tr>
                   </thead>
-
                   <tbody>
                     {loading ? (
                       <tr>
                         <td
-                          colSpan="14"
+                          colSpan={canManage ? 14 : 13}
                           className="hotel-pricing-empty"
                         >
                           Loading pricing tiers...
@@ -554,7 +454,7 @@ const HotelPricingTier = () => {
                     ) : pricingTiers.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="14"
+                          colSpan={canManage ? 14 : 13}
                           className="hotel-pricing-empty"
                         >
                           No hotel pricing tiers found.
@@ -570,7 +470,6 @@ const HotelPricingTier = () => {
                                 index +
                                 1}
                             </td>
-
                             <td>
                               <strong>
                                 {tier.hotel
@@ -579,13 +478,11 @@ const HotelPricingTier = () => {
                                   "-"}
                               </strong>
                             </td>
-
                             <td>
                               <div className="hotel-pricing-room">
                                 <strong>
                                   {tier.room_name}
                                 </strong>
-
                                 {tier.room_description && (
                                   <span>
                                     {
@@ -595,50 +492,40 @@ const HotelPricingTier = () => {
                                 )}
                               </div>
                             </td>
-
                             <td>
                               {tier.room_code || "-"}
                             </td>
-
                             <td className="hotel-pricing-price">
                               NPR{" "}
                               {Number(
                                 tier.price_npr
                               ).toLocaleString()}
                             </td>
-
                             <td>
                               {formatPricingUnit(
                                 tier.pricing_unit
                               )}
                             </td>
-
                             <td>
                               {tier.max_guests}
                             </td>
-
                             <td>
                               {tier.max_adults ??
                                 "-"}
                             </td>
-
                             <td>
                               {tier.max_children ??
                                 "-"}
                             </td>
-
                             <td>
                               {tier.bed_type || "-"}
                             </td>
-
                             <td>
                               {tier.room_size || "-"}
                             </td>
-
                             <td>
                               {tier.display_order}
                             </td>
-
                             <td>
                               <button
                                 type="button"
@@ -648,17 +535,14 @@ const HotelPricingTier = () => {
                                     ? "active"
                                     : "inactive"
                                 }`}
-                                onClick={() =>
-                                  handleStatusChange(
-                                    tier
-                                  )
-                                }
+                                onClick={() => canManage && handleStatusChange(tier)}
+                                disabled={!canManage}
+                                style={!canManage ? { cursor: "default", opacity: 1 } : undefined}
                               >
                                 {tier.status}
                               </button>
                             </td>
-
-                            <td>
+                            {canManage && <td>
                               <div className="hotel-pricing-actions">
                                 <button
                                   type="button"
@@ -671,7 +555,6 @@ const HotelPricingTier = () => {
                                 >
                                   Edit
                                 </button>
-
                                 <button
                                   type="button"
                                   className="hotel-pricing-delete"
@@ -684,7 +567,7 @@ const HotelPricingTier = () => {
                                   Delete
                                 </button>
                               </div>
-                            </td>
+                            </td>}
                           </tr>
                         )
                       )
@@ -692,7 +575,6 @@ const HotelPricingTier = () => {
                   </tbody>
                 </table>
               </div>
-
               {!loading && lastPage > 1 && (
                 <div className="hotel-pricing-pagination">
                   <Pagination
@@ -706,8 +588,7 @@ const HotelPricingTier = () => {
           </div>
         </main>
       </div>
-
-      {showModal && (
+      {canManage && showModal && (
         <div
           className="hotel-pricing-modal-overlay"
           onClick={closeModal}
@@ -725,23 +606,22 @@ const HotelPricingTier = () => {
                     ? "Edit Hotel Pricing Tier"
                     : "Add Hotel Pricing Tiers"}
                 </h2>
-
                 <p>
                   {isEditing
                     ? "Update room and pricing information."
                     : "Select one hotel and add one or more room pricing tiers."}
                 </p>
               </div>
-
               <button
                 type="button"
                 className="hotel-pricing-modal-close"
                 onClick={closeModal}
+                aria-label="Close modal"
+                style={{ color: "#1f2937", backgroundColor: "#f1f5f9", border: "1px solid #cbd5e1", fontSize: "24px", fontWeight: 700, opacity: 1 }}
               >
                 ×
               </button>
             </div>
-
             <form
               onSubmit={
                 isEditing
@@ -757,7 +637,6 @@ const HotelPricingTier = () => {
                       *
                     </span>
                   </label>
-
                   <select
                     value={hotelId}
                     onChange={(event) =>
@@ -770,7 +649,6 @@ const HotelPricingTier = () => {
                     <option value="">
                       Select Hotel
                     </option>
-
                     {hotels.map((hotel) => (
                       <option
                         key={hotel.id}
@@ -783,7 +661,6 @@ const HotelPricingTier = () => {
                     ))}
                   </select>
                 </div>
-
                 {tiers.map((tier, index) => (
                   <div
                     className="hotel-pricing-tier-form-card"
@@ -797,7 +674,6 @@ const HotelPricingTier = () => {
                               index + 1
                             }`}
                       </h3>
-
                       {!isEditing &&
                         tiers.length > 1 && (
                           <button
@@ -811,13 +687,11 @@ const HotelPricingTier = () => {
                           </button>
                         )}
                     </div>
-
                     <div className="hotel-pricing-form-grid">
                       <div className="hotel-pricing-form-group">
                         <label>
                           Room Name *
                         </label>
-
                         <input
                           type="text"
                           value={
@@ -834,12 +708,10 @@ const HotelPricingTier = () => {
                           required
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Room Code
                         </label>
-
                         <input
                           type="text"
                           value={
@@ -855,12 +727,10 @@ const HotelPricingTier = () => {
                           placeholder="DLX-01"
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Price (NPR) *
                         </label>
-
                         <input
                           type="number"
                           min="0"
@@ -878,12 +748,10 @@ const HotelPricingTier = () => {
                           required
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Pricing Unit
                         </label>
-
                         <select
                           value={
                             tier.pricing_unit
@@ -899,18 +767,15 @@ const HotelPricingTier = () => {
                           <option value="PER_NIGHT">
                             Per Night
                           </option>
-
                           <option value="PER_DAY">
                             Per Day
                           </option>
                         </select>
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Max Guests *
                         </label>
-
                         <input
                           type="number"
                           min="1"
@@ -927,12 +792,10 @@ const HotelPricingTier = () => {
                           required
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Max Adults
                         </label>
-
                         <input
                           type="number"
                           min="0"
@@ -948,12 +811,10 @@ const HotelPricingTier = () => {
                           }
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Max Children
                         </label>
-
                         <input
                           type="number"
                           min="0"
@@ -969,12 +830,10 @@ const HotelPricingTier = () => {
                           }
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Bed Type
                         </label>
-
                         <input
                           type="text"
                           value={
@@ -990,12 +849,10 @@ const HotelPricingTier = () => {
                           placeholder="King Bed"
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Room Size
                         </label>
-
                         <input
                           type="text"
                           value={
@@ -1011,12 +868,10 @@ const HotelPricingTier = () => {
                           placeholder="35 sq.m"
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>
                           Display Order
                         </label>
-
                         <input
                           type="number"
                           min="0"
@@ -1032,10 +887,8 @@ const HotelPricingTier = () => {
                           }
                         />
                       </div>
-
                       <div className="hotel-pricing-form-group">
                         <label>Status</label>
-
                         <select
                           value={tier.status}
                           onChange={(event) =>
@@ -1049,18 +902,15 @@ const HotelPricingTier = () => {
                           <option value="ACTIVE">
                             Active
                           </option>
-
                           <option value="INACTIVE">
                             Inactive
                           </option>
                         </select>
                       </div>
-
                       <div className="hotel-pricing-form-group hotel-pricing-description">
                         <label>
                           Room Description
                         </label>
-
                         <textarea
                           rows="3"
                           value={
@@ -1079,7 +929,6 @@ const HotelPricingTier = () => {
                     </div>
                   </div>
                 ))}
-
                 {!isEditing && (
                   <button
                     type="button"
@@ -1090,17 +939,16 @@ const HotelPricingTier = () => {
                   </button>
                 )}
               </div>
-
               <div className="hotel-pricing-modal-footer">
                 <button
                   type="button"
                   className="hotel-pricing-cancel"
                   onClick={closeModal}
                   disabled={saving}
+                  style={{ color: "#1f2937", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", opacity: 1 }}
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   className="hotel-pricing-save"
@@ -1126,5 +974,4 @@ const HotelPricingTier = () => {
     </div>
   );
 };
-
 export default HotelPricingTier;

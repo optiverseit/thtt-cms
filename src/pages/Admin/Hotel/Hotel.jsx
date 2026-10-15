@@ -41,6 +41,8 @@ const initialForm = {
   display_order: 0,
 };
 const Hotel = () => {
+  const role = (localStorage.getItem("role") || "").toLowerCase().trim();
+  const canManage = ["admin", "cms-admin"].includes(role);
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -107,6 +109,7 @@ const Hotel = () => {
     setEditingId(null);
   };
   const openCreateModal = () => {
+    if (!canManage) return;
     resetForm();
     setShowModal(true);
   };
@@ -144,6 +147,7 @@ const Hotel = () => {
     );
   };
   const addImage = () => {
+    if (!canManage) return;
     setImages((previous) => [
       ...previous,
       {
@@ -153,6 +157,7 @@ const Hotel = () => {
     ]);
   };
   const removeImage = (index) => {
+    if (!canManage) return;
     setImages((previous) => {
       const target = previous[index];
       if (target?.preview) {
@@ -260,6 +265,7 @@ const Hotel = () => {
   // =========================================================
   const handleCreate = async (event) => {
     event.preventDefault();
+    if (!canManage) return;
     const validImages = images.filter(
       (image) => image.file
     );
@@ -311,6 +317,7 @@ const Hotel = () => {
   // OPEN EDIT
   // =========================================================
   const openEditModal = (hotel) => {
+    if (!canManage) return;
     resetForm();
     setIsEditing(true);
     setEditingId(hotel.id);
@@ -348,6 +355,7 @@ const Hotel = () => {
   // =========================================================
   const handleUpdate = async (event) => {
     event.preventDefault();
+    if (!canManage) return;
     if (!editingId) return;
     try {
       setSaving(true);
@@ -391,6 +399,7 @@ const Hotel = () => {
   // STATUS
   // =========================================================
   const handleStatusChange = async (hotel) => {
+    if (!canManage) return;
     const next =
       hotel.status === "ACTIVE"
         ? "INACTIVE"
@@ -420,6 +429,7 @@ const Hotel = () => {
   // DELETE
   // =========================================================
   const handleDelete = async (hotel) => {
+    if (!canManage) return;
     const result = await Swal.fire({
       icon: "warning",
       title: "Delete hotel?",
@@ -478,12 +488,12 @@ const Hotel = () => {
                   Manage hotels, availability and images.
                 </p>
               </div>
-              <button
+              {canManage && <button
                 className="hotel-add-button"
                 onClick={openCreateModal}
               >
                 + Add Hotel
-              </button>
+              </button>}
             </div>
             <div className="hotel-card">
               <div className="hotel-card-header">
@@ -506,14 +516,14 @@ const Hotel = () => {
                       <th>Popular</th>
                       <th>Best Value</th>
                       <th>Status</th>
-                      <th>Actions</th>
+                      {canManage && <th>Actions</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {loading ? (
                       <tr>
                         <td
-                          colSpan="11"
+                          colSpan={canManage ? 11 : 10}
                           className="hotel-empty"
                         >
                           Loading hotels...
@@ -522,7 +532,7 @@ const Hotel = () => {
                     ) : hotels.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="11"
+                          colSpan={canManage ? 11 : 10}
                           className="hotel-empty"
                         >
                           No hotels found.
@@ -607,7 +617,7 @@ const Hotel = () => {
                                 {hotel.status}
                               </button>
                             </td>
-                            <td>
+                            {canManage && <td>
                               <div className="hotel-actions">
                                 <button
                                   className="hotel-edit"
@@ -630,7 +640,7 @@ const Hotel = () => {
                                   Delete
                                 </button>
                               </div>
-                            </td>
+                            </td>}
                           </tr>
                         );
                       })
@@ -651,7 +661,13 @@ const Hotel = () => {
           </div>
         </main>
       </div>
-      {showModal && (
+      <style>{`
+        .hotel-modal .hotel-modal-close { color: #253047 !important; background: #f1f5f9 !important; opacity: 1 !important; visibility: visible !important; }
+        .hotel-modal .hotel-cancel { color: #253047 !important; background: #ffffff !important; border: 1px solid #cbd5e1 !important; opacity: 1 !important; visibility: visible !important; }
+        .hotel-modal .hotel-modal-close:hover { background: #e2e8f0 !important; }
+        .hotel-modal .hotel-cancel:hover { background: #f1f5f9 !important; }
+      `}</style>
+      {canManage && showModal && (
         <div
           className="hotel-modal-overlay"
           onClick={closeModal}
@@ -675,6 +691,8 @@ const Hotel = () => {
                 type="button"
                 className="hotel-modal-close"
                 onClick={closeModal}
+                aria-label="Close hotel form"
+                style={{ color: "#253047", backgroundColor: "#f1f5f9", opacity: 1, fontSize: "26px", fontWeight: 600, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
               >
                 ×
               </button>
@@ -1072,6 +1090,7 @@ const Hotel = () => {
                   type="button"
                   className="hotel-cancel"
                   onClick={closeModal}
+                  style={{ color: "#253047", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", opacity: 1, fontWeight: 600, minWidth: "96px" }}
                   disabled={saving}
                 >
                   Cancel
