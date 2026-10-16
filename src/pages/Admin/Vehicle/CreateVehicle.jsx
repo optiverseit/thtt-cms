@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { createVehicle } from "../../../api/BackendApi";
@@ -14,6 +14,7 @@ const CreateVehicle = () => {
     |--------------------------------------------------------------------------
     */
     const [imagePreviews, setImagePreviews] = useState([]);
+    const imageInputRef = useRef(null);
     /*
     |--------------------------------------------------------------------------
     | FORM DATA
@@ -26,8 +27,7 @@ const CreateVehicle = () => {
         trip_type: "",
         capacity: "",
         reserved_seats: "",
-        from_location: "",
-        to_location: "",
+        routes: [{ from_location: "", to_location: "" }],
         duration: "",
         bags_per_person: "",
         max_luggage: "",
@@ -47,6 +47,26 @@ const CreateVehicle = () => {
         setFormData((prev) => ({
             ...prev,
             [name]: value,
+        }));
+    };
+    const handleRouteChange = (index, field, value) => {
+        setFormData((prev) => ({
+            ...prev,
+            routes: prev.routes.map((route, i) =>
+                i === index ? { ...route, [field]: value } : route
+            ),
+        }));
+    };
+    const handleAddRoute = () => {
+        setFormData((prev) => ({
+            ...prev,
+            routes: [...prev.routes, { from_location: "", to_location: "" }],
+        }));
+    };
+    const handleRemoveRoute = (index) => {
+        setFormData((prev) => ({
+            ...prev,
+            routes: prev.routes.filter((_, i) => i !== index),
         }));
     };
     /*
@@ -181,11 +201,16 @@ const CreateVehicle = () => {
         if (formData.reserved_seats !== "" && (Number(formData.reserved_seats) < 0 || Number(formData.reserved_seats) > Number(formData.capacity) || !Number.isInteger(Number(formData.reserved_seats)))) {
             return "Reserved seats must be a whole number between 0 and capacity.";
         }
-        if (!formData.from_location.trim()) {
-            return "From location is required.";
+        if (!formData.routes.length) {
+            return "At least one route is required.";
         }
-        if (!formData.to_location.trim()) {
-            return "To location is required.";
+        for (const [index, route] of formData.routes.entries()) {
+            if (!route.from_location.trim()) {
+                return `From location is required for route ${index + 1}.`;
+            }
+            if (!route.to_location.trim()) {
+                return `To location is required for route ${index + 1}.`;
+            }
         }
         if (
             formData.price === "" ||
@@ -262,14 +287,10 @@ const CreateVehicle = () => {
         if (formData.reserved_seats !== "") {
             data.append("reserved_seats", formData.reserved_seats);
         }
-        data.append(
-            "from_location",
-            formData.from_location.trim()
-        );
-        data.append(
-            "to_location",
-            formData.to_location.trim()
-        );
+        formData.routes.forEach((route, index) => {
+            data.append(`routes[${index}][from_location]`, route.from_location.trim());
+            data.append(`routes[${index}][to_location]`, route.to_location.trim());
+        });
         data.append(
             "price",
             formData.price
@@ -601,51 +622,32 @@ const CreateVehicle = () => {
                                                 }
                                             />
                                         </div>
-                                        {/* FROM */}
-                                        <div className="create-vehicle-group">
-                                            <label>
-                                                From Location
-                                                <span className="required">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="from_location"
-                                                value={
-                                                    formData.from_location
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                placeholder="e.g. Kathmandu"
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
-                                        </div>
-                                        {/* TO */}
-                                        <div className="create-vehicle-group">
-                                            <label>
-                                                To Location
-                                                <span className="required">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="to_location"
-                                                value={
-                                                    formData.to_location
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                placeholder="e.g. Pokhara"
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
+                                        {/* ROUTES */}
+                                        <div className="create-vehicle-routes">
+                                            <div className="create-vehicle-routes-header">
+                                                <label>Vehicle Routes <span className="required">*</span></label>
+                                                <button type="button" className="create-vehicle-add-route" onClick={handleAddRoute} disabled={saving}>+ Add Route</button>
+                                            </div>
+                                            {formData.routes.map((route, index) => (
+                                                <div className="create-vehicle-route-card" key={index}>
+                                                    <div className="create-vehicle-route-heading">
+                                                        <span>Route {index + 1}</span>
+                                                        {formData.routes.length > 1 && (
+                                                            <button type="button" className="create-vehicle-remove-route" onClick={() => handleRemoveRoute(index)} disabled={saving}>Remove</button>
+                                                        )}
+                                                    </div>
+                                                    <div className="create-vehicle-route-row">
+                                                        <div className="create-vehicle-group">
+                                                            <label>From Location <span className="required">*</span></label>
+                                                            <input type="text" value={route.from_location} onChange={(e) => handleRouteChange(index, "from_location", e.target.value)} placeholder="e.g. Kathmandu" disabled={saving} />
+                                                        </div>
+                                                        <div className="create-vehicle-group">
+                                                            <label>To Location <span className="required">*</span></label>
+                                                            <input type="text" value={route.to_location} onChange={(e) => handleRouteChange(index, "to_location", e.target.value)} placeholder="e.g. Pokhara" disabled={saving} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                         {/* PRICE */}
                                         <div className="create-vehicle-group">
@@ -808,72 +810,22 @@ const CreateVehicle = () => {
                                 </div>
                                 <div className="create-vehicle-card-body">
                                     <div className="create-vehicle-image-section">
-                                        <div className="create-vehicle-image-upload">
-                                            <label>
-                                                Vehicle Images
-                                            </label>
-                                            <input
-                                                type="file"
-                                                multiple
-                                                accept=".jpg,.jpeg,.png,.webp"
-                                                onChange={
-                                                    handleImageChange
-                                                }
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
-                                            <span>
-                                                JPG, JPEG,
-                                                PNG or WEBP.
-                                                Maximum 5 MB
-                                                per image.
-                                            </span>
+                                        <div className="create-vehicle-image-toolbar">
+                                            <div>
+                                                <label>Vehicle Images</label>
+                                                <p>JPG, JPEG, PNG or WEBP. Maximum 5 MB per image.</p>
+                                            </div>
+                                            <input ref={imageInputRef} className="create-vehicle-hidden-file" type="file" multiple accept=".jpg,.jpeg,.png,.webp" onChange={handleImageChange} disabled={saving} />
+                                            <button type="button" className="create-vehicle-add-image" onClick={() => imageInputRef.current?.click()} disabled={saving}>+ Add Image</button>
                                         </div>
                                         {imagePreviews.length > 0 && (
                                             <div className="create-vehicle-images-preview-grid">
-                                                {imagePreviews.map(
-                                                    (
-                                                        preview,
-                                                        index
-                                                    ) => (
-                                                        <div
-                                                            className="create-vehicle-image-preview"
-                                                            key={
-                                                                preview
-                                                            }
-                                                        >
-                                                            <img
-                                                                src={
-                                                                    preview
-                                                                }
-                                                                alt={`Vehicle preview ${
-                                                                    index +
-                                                                    1
-                                                                }`}
-                                                            />
-                                                            <p>
-                                                                Image{" "}
-                                                                {index +
-                                                                    1}
-                                                            </p>
-                                                            <button
-                                                                type="button"
-                                                                className="create-vehicle-remove-image"
-                                                                onClick={() =>
-                                                                    handleRemoveImage(
-                                                                        index
-                                                                    )
-                                                                }
-                                                                disabled={
-                                                                    saving
-                                                                }
-                                                            >
-                                                                Remove
-                                                            </button>
-                                                        </div>
-                                                    )
-                                                )}
+                                                {imagePreviews.map((preview, index) => (
+                                                    <div className="create-vehicle-image-tile" key={preview}>
+                                                        <img src={preview} alt={`Vehicle preview ${index + 1}`} />
+                                                        <button type="button" className="create-vehicle-remove-image" onClick={() => handleRemoveImage(index)} disabled={saving}>Remove</button>
+                                                    </div>
+                                                ))}
                                             </div>
                                         )}
                                     </div>
