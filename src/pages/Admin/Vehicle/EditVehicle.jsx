@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
@@ -19,8 +19,10 @@ const EditVehicle = () => {
     |--------------------------------------------------------------------------
     */
     const [existingImages, setExistingImages] = useState([]);
+    const [removedImageIds, setRemovedImageIds] = useState([]);
     const [newImages, setNewImages] = useState([]);
     const [newImagePreviews, setNewImagePreviews] = useState([]);
+    const imageInputRef = useRef(null);
     /*
     |--------------------------------------------------------------------------
     | FORM
@@ -34,8 +36,7 @@ const EditVehicle = () => {
         capacity: "",
         // remaining_seats: "",
         reserved_seats: "",
-        from_location: "",
-        to_location: "",
+        routes: [{ from_location: "", to_location: "" }],
         duration: "",
         bags_per_person: "",
         max_luggage: "",
@@ -93,10 +94,12 @@ const EditVehicle = () => {
                     vehicle.capacity ?? "",
                 // remaining_seats: vehicle.remaining_seats ?? "",
                 reserved_seats: vehicle.reserved_seats ?? "",
-                from_location:
-                    vehicle.from_location || "",
-                to_location:
-                    vehicle.to_location || "",
+                routes: Array.isArray(vehicle.routes) && vehicle.routes.length > 0
+                    ? vehicle.routes.map((route) => ({
+                        from_location: route.from_location || "",
+                        to_location: route.to_location || "",
+                    }))
+                    : [{ from_location: "", to_location: "" }],
                 duration:
                     vehicle.duration || "",
                 bags_per_person:
@@ -121,6 +124,7 @@ const EditVehicle = () => {
             | EXISTING IMAGES
             |--------------------------------------------------------------------------
             */
+            setRemovedImageIds([]);
             setExistingImages(
                 Array.isArray(vehicle.images)
                     ? vehicle.images
@@ -154,6 +158,27 @@ const EditVehicle = () => {
         setFormData((prev) => ({
             ...prev,
             [name]: value,
+        }));
+    };
+    // MULTIPLE ROUTES
+    const handleRouteChange = (index, field, value) => {
+        setFormData((prev) => ({
+            ...prev,
+            routes: prev.routes.map((route, routeIndex) =>
+                routeIndex === index ? { ...route, [field]: value } : route
+            ),
+        }));
+    };
+    const handleAddRoute = () => {
+        setFormData((prev) => ({
+            ...prev,
+            routes: [...prev.routes, { from_location: "", to_location: "" }],
+        }));
+    };
+    const handleRemoveRoute = (index) => {
+        setFormData((prev) => ({
+            ...prev,
+            routes: prev.routes.filter((_, routeIndex) => routeIndex !== index),
         }));
     };
     /*
@@ -232,6 +257,11 @@ const EditVehicle = () => {
     | REMOVE NEWLY SELECTED IMAGE
     |--------------------------------------------------------------------------
     */
+    const handleRemoveExistingImage = (image) => {
+        if (image.id == null) return;
+        setRemovedImageIds((prev) => [...prev, image.id]);
+        setExistingImages((prev) => prev.filter((item) => item.id !== image.id));
+    };
     const handleRemoveNewImage = (index) => {
         const preview =
             newImagePreviews[index];
@@ -295,11 +325,16 @@ const EditVehicle = () => {
         if (formData.reserved_seats !== "" && (Number(formData.reserved_seats) < 0 || Number(formData.reserved_seats) > Number(formData.capacity) || !Number.isInteger(Number(formData.reserved_seats)))) {
             return "Reserved seats must be a whole number between 0 and capacity.";
         }
-        if (!formData.from_location.trim()) {
-            return "From location is required.";
+        if (formData.routes.length === 0) {
+            return "At least one route is required.";
         }
-        if (!formData.to_location.trim()) {
-            return "To location is required.";
+        for (const [index, route] of formData.routes.entries()) {
+            if (!route.from_location.trim()) {
+                return `From location is required for route ${index + 1}.`;
+            }
+            if (!route.to_location.trim()) {
+                return `To location is required for route ${index + 1}.`;
+            }
         }
         if (
             formData.price === "" ||
@@ -384,14 +419,10 @@ const EditVehicle = () => {
         if (reservedSeatsValue !== "") {
             data.append("reserved_seats", reservedSeatsValue);
         }
-        data.append(
-            "from_location",
-            formData.from_location.trim()
-        );
-        data.append(
-            "to_location",
-            formData.to_location.trim()
-        );
+        formData.routes.forEach((route, index) => {
+            data.append(`routes[${index}][from_location]`, route.from_location.trim());
+            data.append(`routes[${index}][to_location]`, route.to_location.trim());
+        });
         data.append(
             "price",
             formData.price
@@ -452,6 +483,7 @@ const EditVehicle = () => {
         | NEW IMAGES
         |--------------------------------------------------------------------------
         */
+        removedImageIds.forEach((imageId) => data.append("deleted_image_ids[]", imageId));
         newImages.forEach((image) => {
             data.append(
                 "images[]",
@@ -745,51 +777,34 @@ const EditVehicle = () => {
                                             <label>Reserved Seats</label>
                                             <input type="number" name="reserved_seats" min="0" max={formData.capacity || undefined} value={formData.reserved_seats} onChange={handleChange} placeholder="e.g. 8" disabled={saving} />
                                         </div>
-                                        {/* FROM LOCATION */}
-                                        <div className="edit-vehicle-group">
-                                            <label>
-                                                From Location
-                                                <span className="required">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="from_location"
-                                                value={
-                                                    formData.from_location
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                placeholder="e.g. Kathmandu"
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
-                                        </div>
-                                        {/* TO LOCATION */}
-                                        <div className="edit-vehicle-group">
-                                            <label>
-                                                To Location
-                                                <span className="required">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="to_location"
-                                                value={
-                                                    formData.to_location
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                placeholder="e.g. Pokhara"
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
+                                        {/* MULTIPLE ROUTES */}
+                                        <div className="edit-vehicle-routes">
+                                            <div className="edit-vehicle-section-top">
+                                                <label className="edit-vehicle-section-label">
+                                                    Vehicle Routes <span className="required">*</span>
+                                                </label>
+                                                <button type="button" className="edit-vehicle-add-route" onClick={handleAddRoute} disabled={saving}>
+                                                    + Add Route
+                                                </button>
+                                            </div>
+                                            {formData.routes.map((route, index) => (
+                                                <div className="edit-vehicle-route-card" key={index}>
+                                                    <div className="edit-vehicle-route-card-top">
+                                                        <span className="edit-vehicle-route-number">Route {index + 1}</span>
+                                                        <button type="button" className="edit-vehicle-remove-route" onClick={() => handleRemoveRoute(index)} disabled={saving || formData.routes.length === 1}>Remove</button>
+                                                    </div>
+                                                    <div className="edit-vehicle-route-row">
+                                                        <div className="edit-vehicle-group">
+                                                            <label>From Location <span className="required">*</span></label>
+                                                            <input type="text" value={route.from_location} onChange={(e) => handleRouteChange(index, "from_location", e.target.value)} placeholder="e.g. Kathmandu" disabled={saving} />
+                                                        </div>
+                                                        <div className="edit-vehicle-group">
+                                                            <label>To Location <span className="required">*</span></label>
+                                                            <input type="text" value={route.to_location} onChange={(e) => handleRouteChange(index, "to_location", e.target.value)} placeholder="e.g. Pokhara" disabled={saving} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                         {/* DURATION */}
                                         <div className="edit-vehicle-group">
@@ -976,123 +991,45 @@ const EditVehicle = () => {
                                 </div>
                                 <div className="edit-vehicle-card-body">
                                     <div className="edit-vehicle-image-section">
-                                        {/* EXISTING IMAGES */}
+                                        <div className="edit-vehicle-image-toolbar">
+                                            <div>
+                                                <label className="edit-vehicle-section-label">Vehicle Images</label>
+                                                <p>JPG, JPEG, PNG or WEBP. Maximum 5 MB per image.</p>
+                                            </div>
+                                            <input ref={imageInputRef} type="file" multiple accept=".jpg,.jpeg,.png,.webp" onChange={handleImageChange} disabled={saving} className="edit-vehicle-hidden-file" />
+                                            <button type="button" className="edit-vehicle-add-image" onClick={() => imageInputRef.current?.click()} disabled={saving}>
+                                                + Add Image
+                                            </button>
+                                        </div>
                                         {existingImages.length > 0 && (
                                             <div className="edit-vehicle-existing-images">
-                                                <label>
-                                                    Current Images
-                                                </label>
+                                                <label className="edit-vehicle-section-label">Current Images</label>
                                                 <div className="edit-vehicle-images-preview-grid">
-                                                    {existingImages.map(
-                                                        (
-                                                            image,
-                                                            index
-                                                        ) => {
-                                                            const imageUrl =
-                                                                image.image ||
-                                                                image.image_url;
-                                                            if (!imageUrl) {
-                                                                return null;
-                                                            }
-                                                            return (
-                                                                <div
-                                                                    className="edit-vehicle-image-preview"
-                                                                    key={
-                                                                        image.id ||
-                                                                        index
-                                                                    }
-                                                                >
-                                                                    <img
-                                                                        src={
-                                                                            imageUrl
-                                                                        }
-                                                                        alt={`Vehicle ${index +
-                                                                            1
-                                                                            }`}
-                                                                    />
-                                                                    <p>
-                                                                        Image{" "}
-                                                                        {index +
-                                                                            1}
-                                                                    </p>
-                                                                </div>
-                                                            );
-                                                        }
-                                                    )}
+                                                    {existingImages.map((image, index) => {
+                                                        const imageUrl = image.image || image.image_url;
+                                                        if (!imageUrl) return null;
+                                                        return (
+                                                            <div className="edit-vehicle-image-tile" key={image.id || index}>
+                                                                <img src={imageUrl} alt={`Vehicle ${index + 1}`} />
+                                                                <button type="button" className="edit-vehicle-remove-image" onClick={() => handleRemoveExistingImage(image)} disabled={saving || image.id == null}>Remove</button>
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                         )}
-                                        {/* ADD NEW IMAGES */}
-                                        <div className="edit-vehicle-image-upload">
-                                            <label>
-                                                Add Images
-                                            </label>
-                                            <input
-                                                type="file"
-                                                multiple
-                                                accept=".jpg,.jpeg,.png,.webp"
-                                                onChange={
-                                                    handleImageChange
-                                                }
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
-                                            <span>
-                                                JPG, JPEG,
-                                                PNG or WEBP.
-                                                Maximum 5 MB
-                                                per image.
-                                            </span>
-                                        </div>
-                                        {/* NEW IMAGE PREVIEWS */}
                                         {newImagePreviews.length > 0 && (
                                             <div className="edit-vehicle-new-images">
-                                                <label>
-                                                    New Images
-                                                </label>
+                                                <label className="edit-vehicle-section-label">New Images</label>
                                                 <div className="edit-vehicle-images-preview-grid">
-                                                    {newImagePreviews.map(
-                                                        (
-                                                            preview,
-                                                            index
-                                                        ) => (
-                                                            <div
-                                                                className="edit-vehicle-image-preview"
-                                                                key={
-                                                                    preview
-                                                                }
-                                                            >
-                                                                <img
-                                                                    src={
-                                                                        preview
-                                                                    }
-                                                                    alt={`New vehicle ${index +
-                                                                        1
-                                                                        }`}
-                                                                />
-                                                                <p>
-                                                                    New Image{" "}
-                                                                    {index +
-                                                                        1}
-                                                                </p>
-                                                                <button
-                                                                    type="button"
-                                                                    className="edit-vehicle-remove-image"
-                                                                    onClick={() =>
-                                                                        handleRemoveNewImage(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                    disabled={
-                                                                        saving
-                                                                    }
-                                                                >
-                                                                    Remove
-                                                                </button>
-                                                            </div>
-                                                        )
-                                                    )}
+                                                    {newImagePreviews.map((preview, index) => (
+                                                        <div className="edit-vehicle-image-tile" key={preview}>
+                                                            <img src={preview} alt={`New vehicle ${index + 1}`} />
+                                                            <button type="button" className="edit-vehicle-remove-image" onClick={() => handleRemoveNewImage(index)} disabled={saving}>
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         )}
