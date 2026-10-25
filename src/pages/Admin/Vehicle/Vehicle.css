@@ -1,3 +1,4 @@
+
 .vehicle-page {
     width: 100%;
 }
@@ -44,7 +45,6 @@
     box-shadow: 0 6px 16px rgba(245, 45, 145, 0.22);
 }
 
-
 /* CARD */
 
 .vehicle-card {
@@ -55,7 +55,6 @@
     box-shadow: 0 3px 12px rgba(53, 18, 85, 0.04);
     overflow: hidden;
 }
-
 
 /* TABLE */
 
@@ -101,7 +100,6 @@
 .vehicle-table tbody tr:hover {
     background: #fdfbfe;
 }
-
 
 /* VEHICLE */
 
@@ -162,7 +160,6 @@
     text-overflow: ellipsis;
 }
 
-
 /* ROUTE */
 
 .vehicle-route {
@@ -180,18 +177,39 @@
     font-weight: 700;
 }
 
-
-/* CAPACITY */
-
-.vehicle-capacity {
-    padding: 5px 8px;
-    color: #351255;
-    background: #f5eff8;
-    border-radius: 5px;
-    font-size: 10px;
-    font-weight: 600;
+.vehicle-routes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
+.vehicle-routes-list .vehicle-route {
+    min-width: 180px;
+    flex-wrap: wrap;
+}
+
+/* CAPACITY - FIXED */
+
+.vehicle-table th:nth-child(4),
+.vehicle-table td:nth-child(4) {
+    min-width: 145px;
+    width: 145px;
+    white-space: nowrap;
+}
+
+.vehicle-capacity {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 12px;
+    color: #351255;
+    background: #f5eff8;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    width: max-content;
+}
 
 /* PRICE */
 
@@ -200,7 +218,6 @@
     font-size: 11px;
     font-weight: 700;
 }
-
 
 /* STATUS */
 
@@ -234,7 +251,6 @@
     color: #dc3545;
     background: #fff0f2;
 }
-
 
 /* ACTIONS */
 
@@ -297,7 +313,6 @@
     flex-shrink: 0;
 }
 
-
 /* LOADING */
 
 .vehicle-loading {
@@ -326,7 +341,6 @@
     }
 }
 
-
 /* EMPTY */
 
 .vehicle-empty {
@@ -349,7 +363,6 @@
     color: #918995;
     font-size: 11px;
 }
-
 
 /* RESPONSIVE */
 
