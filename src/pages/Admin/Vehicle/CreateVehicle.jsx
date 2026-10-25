@@ -27,13 +27,11 @@ const CreateVehicle = () => {
         trip_type: "",
         capacity: "",
         reserved_seats: "",
-        routes: [{ from_location: "", to_location: "" }],
-        duration: "",
+        routes: [{ from_location: "", to_location: "", price: "", duration: "" }],
         bags_per_person: "",
         max_luggage: "",
         available_from: "",
         available_to: "",
-        price: "",
         description: "",
         images: [],
     });
@@ -60,7 +58,7 @@ const CreateVehicle = () => {
     const handleAddRoute = () => {
         setFormData((prev) => ({
             ...prev,
-            routes: [...prev.routes, { from_location: "", to_location: "" }],
+            routes: [...prev.routes, { from_location: "", to_location: "", price: "", duration: "" }],
         }));
     };
     const handleRemoveRoute = (index) => {
@@ -211,12 +209,9 @@ const CreateVehicle = () => {
             if (!route.to_location.trim()) {
                 return `To location is required for route ${index + 1}.`;
             }
-        }
-        if (
-            formData.price === "" ||
-            Number(formData.price) < 0
-        ) {
-            return "Please enter a valid price.";
+            if (route.price === "" || !Number.isFinite(Number(route.price)) || Number(route.price) < 0) {
+                return `Please enter a valid price for route ${index + 1}.`;
+            }
         }
         if (
             formData.bags_per_person !== "" &&
@@ -290,22 +285,14 @@ const CreateVehicle = () => {
         formData.routes.forEach((route, index) => {
             data.append(`routes[${index}][from_location]`, route.from_location.trim());
             data.append(`routes[${index}][to_location]`, route.to_location.trim());
+            data.append(`routes[${index}][price]`, route.price);
+            if (route.duration.trim()) data.append(`routes[${index}][duration]`, route.duration.trim());
         });
-        data.append(
-            "price",
-            formData.price
-        );
         /*
         |--------------------------------------------------------------------------
         | OPTIONAL FIELDS
         |--------------------------------------------------------------------------
         */
-        if (formData.duration.trim()) {
-            data.append(
-                "duration",
-                formData.duration.trim()
-            );
-        }
         if (
             formData.bags_per_person !== ""
         ) {
@@ -602,26 +589,6 @@ const CreateVehicle = () => {
                                             <label>Reserved Seats</label>
                                             <input type="number" name="reserved_seats" min="0" max={formData.capacity || undefined} value={formData.reserved_seats} onChange={handleChange} placeholder="e.g. 2" disabled={saving} />
                                         </div>
-                                        {/* DURATION */}
-                                        <div className="create-vehicle-group">
-                                            <label>
-                                                Duration
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="duration"
-                                                value={
-                                                    formData.duration
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                placeholder="e.g. 1 Day"
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
-                                        </div>
                                         {/* ROUTES */}
                                         <div className="create-vehicle-routes">
                                             <div className="create-vehicle-routes-header">
@@ -645,34 +612,17 @@ const CreateVehicle = () => {
                                                             <label>To Location <span className="required">*</span></label>
                                                             <input type="text" value={route.to_location} onChange={(e) => handleRouteChange(index, "to_location", e.target.value)} placeholder="e.g. Pokhara" disabled={saving} />
                                                         </div>
+                                                        <div className="create-vehicle-group">
+                                                            <label>Duration</label>
+                                                            <input type="text" value={route.duration} onChange={(e) => handleRouteChange(index, "duration", e.target.value)} placeholder="e.g. 5 Hours" disabled={saving} />
+                                                        </div>
+                                                        <div className="create-vehicle-group">
+                                                            <label>Price Per Person <span className="required">*</span></label>
+                                                            <input type="number" min="0" step="0.01" value={route.price} onChange={(e) => handleRouteChange(index, "price", e.target.value)} placeholder="e.g. 1200" disabled={saving} />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}
-                                        </div>
-                                        {/* PRICE */}
-                                        <div className="create-vehicle-group">
-                                            <label>
-                                                Price Per Person
-                                                <span className="required">
-                                                    *
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                name="price"
-                                                min="0"
-                                                step="0.01"
-                                                value={
-                                                    formData.price
-                                                }
-                                                onChange={
-                                                    handleChange
-                                                }
-                                                placeholder="e.g. 1200"
-                                                disabled={
-                                                    saving
-                                                }
-                                            />
                                         </div>
                                     </div>
                                 </div>

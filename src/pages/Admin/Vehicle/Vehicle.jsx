@@ -370,20 +370,14 @@ const Vehicle = () => {
                                                                 </td>
                                                                 {/* ROUTE */}
                                                                 <td>
-                                                                    <div className="vehicle-route">
-                                                                        <span>
-                                                                            {
-                                                                                vehicle.from_location
-                                                                            }
-                                                                        </span>
-                                                                        <span className="route-arrow">
-                                                                            →
-                                                                        </span>
-                                                                        <span>
-                                                                            {
-                                                                                vehicle.to_location
-                                                                            }
-                                                                        </span>
+                                                                    <div className="vehicle-routes-list">
+                                                                        {Array.isArray(vehicle.routes) && vehicle.routes.length > 0 ? vehicle.routes.map((route, routeIndex) => (
+                                                                            <div className="vehicle-route" key={route.id ?? routeIndex}>
+                                                                                <span>{route.from_location}</span>
+                                                                                <span className="route-arrow">→</span>
+                                                                                <span>{route.to_location}</span>
+                                                                            </div>
+                                                                        )) : "-"}
                                                                     </div>
                                                                 </td>
                                                                 {/* CAPACITY / RESERVED SEATS */}
@@ -401,17 +395,31 @@ const Vehicle = () => {
                                                                 </td>
                                                                 {/* DURATION */}
                                                                 <td>
-                                                                    {vehicle.duration ||
-                                                                        "-"}
+                                                                    <div className="vehicle-routes-list">
+                                                                        {Array.isArray(vehicle.routes) && vehicle.routes.length > 0
+                                                                            ? vehicle.routes.map((route, routeIndex) => (
+                                                                                <div className="vehicle-route" key={route.id ?? routeIndex}>
+                                                                                    {route.duration || "-"}
+                                                                                </div>
+                                                                            ))
+                                                                            : "-"}
+                                                                    </div>
                                                                 </td>
                                                                 {/* PRICE */}
                                                                 <td>
-                                                                    <span className="vehicle-price">
-                                                                        Rs.{" "}
-                                                                        {
-                                                                            vehicle.price
-                                                                        }
-                                                                    </span>
+                                                                    <div className="vehicle-routes-list">
+                                                                        {Array.isArray(vehicle.routes) && vehicle.routes.length > 0
+                                                                            ? vehicle.routes.map((route, routeIndex) => (
+                                                                                <div className="vehicle-route" key={route.id ?? routeIndex}>
+                                                                                    <span className="vehicle-price">
+                                                                                        {route.price !== null && route.price !== undefined && route.price !== ""
+                                                                                            ? `Rs. ${route.price}`
+                                                                                            : "-"}
+                                                                                    </span>
+                                                                                </div>
+                                                                            ))
+                                                                            : "-"}
+                                                                    </div>
                                                                 </td>
                                                                 {/* STATUS */}
                                                                 <td>
