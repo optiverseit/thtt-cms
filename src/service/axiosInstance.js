@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const rawBaseURL = import.meta.env.VITE_BASE_URL || "https://thtt-backend.onrender.com/api";
+const apiBaseURL = rawBaseURL.replace(/\/+$/, "");
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: apiBaseURL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,7 +14,9 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log("Token from localStorage:", token);
+    if (import.meta.env.DEV && token) {
+      console.log("Token from localStorage:", token);
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -34,13 +39,15 @@ axiosInstance.interceptors.response.use(
     if (
       (error.response?.status === 401 || error.response?.status === 403) &&
       !originalRequest._retry &&
-      !originalRequest.url.includes("/auth/refresh")
+      !originalRequest.url?.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
 
       try {
         const refreshToken = localStorage.getItem("refreshToken");
-        console.log("Refresh token from localStorage:", refreshToken);
+        if (import.meta.env.DEV && refreshToken) {
+          console.log("Refresh token from localStorage:", refreshToken);
+        }
 
         if (!refreshToken) {
           localStorage.clear();
@@ -49,7 +56,7 @@ axiosInstance.interceptors.response.use(
         }
 
         const refreshResponse = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/auth/refresh`,
+          `${apiBaseURL}/auth/refresh`,
           refreshToken,
           {
             headers: {

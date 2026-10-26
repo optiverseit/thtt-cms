@@ -7,7 +7,7 @@ import App from './App.jsx'
 createRoot(document.getElementById('root')).render(
  
    <GoogleOAuthProvider
-    clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+    clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}
   >
     <App />
   </GoogleOAuthProvider>
