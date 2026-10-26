@@ -282,6 +282,15 @@ const HotelBooking = () => {
       "-"
     );
   };
+  const getPricingUnit = (booking) => {
+    const unit = booking?.pricing_tier?.pricing_unit || booking?.pricingTier?.pricing_unit;
+    if (!unit) return "-";
+    return unit
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
   const getLatestPayment = (booking) => {
     if (
       !booking?.payments ||
@@ -650,6 +659,14 @@ const HotelBooking = () => {
                         </strong>
                       </div>
                       <div className="hotel-booking-detail-item">
+                        <span>Pricing Unit</span>
+                        <strong>
+                          {getPricingUnit(
+                            selectedBooking
+                          )}
+                        </strong>
+                      </div>
+                      <div className="hotel-booking-detail-item">
                         <span>Check-in Date</span>
                         <strong>
                           {formatDate(
@@ -666,9 +683,9 @@ const HotelBooking = () => {
                         </strong>
                       </div>
                       <div className="hotel-booking-detail-item">
-                        <span>Number of Days</span>
+                        <span>Stays</span>
                         <strong>
-                          {selectedBooking.number_of_days ??
+                          {selectedBooking.stays ??
                             "-"}
                         </strong>
                       </div>
@@ -680,9 +697,9 @@ const HotelBooking = () => {
                         </strong>
                       </div>
                       <div className="hotel-booking-detail-item">
-                        <span>Beds in Room</span>
+                        <span>Number of Rooms</span>
                         <strong>
-                          {selectedBooking.beds_in_room ??
+                          {selectedBooking.number_of_rooms ??
                             "-"}
                         </strong>
                       </div>
