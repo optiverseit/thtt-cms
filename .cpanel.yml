@@ -1,8 +1,8 @@
 ---
 deployment:
   tasks:
-    # Exact Document Root for thttcms.triphimalaya.com.np from cPanel File Manager
+    # 1. Exact document root for thttcms.triphimalaya.com.np
     - export DEPLOYPATH=/home8/triphima/thttcms.triphimalaya.com.np
     - /bin/mkdir -p $DEPLOYPATH
-    # Execute deployment script
-    - /bin/bash deploy.sh
+    # 2. Copy compiled production assets and .htaccess directly to the website root
+    - /bin/cp -a dist/. $DEPLOYPATH/
