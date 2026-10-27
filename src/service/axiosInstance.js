@@ -1,7 +1,40 @@
 import axios from "axios";
 
-const rawBaseURL = import.meta.env.VITE_BASE_URL || "https://thtt-backend.onrender.com/api";
-const apiBaseURL = rawBaseURL.replace(/\/+$/, "");
+/**
+ * Normalizes an API base URL:
+ * - Ensures protocol (https://) is present
+ * - Strips trailing slashes
+ * - Ensures /api suffix is present
+ */
+export const normalizeApiUrl = (url) => {
+  if (!url) return "";
+  let cleaned = url.trim().replace(/\/+$/, "");
+  if (!/^https?:\/\//i.test(cleaned)) {
+    cleaned = `https://${cleaned}`;
+  }
+  if (!cleaned.endsWith("/api")) {
+    cleaned = `${cleaned}/api`;
+  }
+  return cleaned;
+};
+
+export const getApiBaseURL = () => {
+  // 1. Runtime environment override (e.g. window.__ENV__ if configured on server)
+  if (typeof window !== "undefined" && window.__ENV__?.VITE_BASE_URL) {
+    return normalizeApiUrl(window.__ENV__.VITE_BASE_URL);
+  }
+  // 2. Vite environment variable from .env.development or .env.production
+  if (import.meta.env.VITE_BASE_URL) {
+    return normalizeApiUrl(import.meta.env.VITE_BASE_URL);
+  }
+  // 3. Fallbacks: Local development -> Render API, Production -> cPanel backend
+  if (import.meta.env.DEV) {
+    return "https://thtt-backend.onrender.com/api";
+  }
+  return "https://thtt-backend.triphimalaya.com.np/api";
+};
+
+const apiBaseURL = getApiBaseURL();
 
 const axiosInstance = axios.create({
   baseURL: apiBaseURL,
