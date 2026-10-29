@@ -1909,3 +1909,62 @@ export const changePackagePolicyStatus = (id) => {
 export const deletePackagePolicy = (id) => {
     return axiosInstance.delete(`/package-policies/${id}`);
 };
+
+// DASHBOARD PAGES IMAGE
+export const getPagesCms = (page = 1) => {
+    return axiosInstance.get(`/pages/cms?page=${page}`);
+};
+
+export const createPage = (formData) => {
+    return axiosInstance.post("/pages/store", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updatePage = (id, formData) => {
+    return axiosInstance.post(`/pages/${id}/update`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const changePageStatus = (id) => {
+    return axiosInstance.put(`/pages/${id}/status`);
+};
+
+export const deletePage = (id) => {
+    return axiosInstance.delete(`/pages/${id}`);
+};
+
+
+// GALLERY
+export const getGalleriesCms = (page = 1) => {
+    return axiosInstance.get(`/galleries/cms?page=${page}`);
+};
+
+export const createGallery = (formData) => {
+    return axiosInstance.post("/galleries/store", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const updateGallery = (id, formData) => {
+    return axiosInstance.post(`/galleries/${id}/update`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+export const changeGalleryStatus = (id) => {
+    return axiosInstance.put(`/galleries/${id}/status`);
+};
+
+export const deleteGallery = (id) => {
+    return axiosInstance.delete(`/galleries/${id}`);
+};
