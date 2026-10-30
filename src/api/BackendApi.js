@@ -1016,6 +1016,9 @@ export const updateVisaCategory = (id, formData) => {
         `/visa-categories/update/${id}`,
         formData,
         {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
             params: {
                 _method: "PUT",
             },
