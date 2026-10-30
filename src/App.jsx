@@ -63,6 +63,8 @@ import PackagePolicy from './pages/Admin/PackagePolicy/PackagePolicy';
 import WorkPermitHighlights from './pages/Admin/WorkPermitHighlights/WorkPermitHighlights';
 import Role from './pages/Admin/Role/Role';
 import Permission from './pages/Admin/Permission/Permission';
+import PageManager from './pages/Admin/PageManager/PageManager';
+import GalleryManager from './pages/Admin/GalleryManager/GalleryManager';
 
 const ALL_ROLES = ["admin", "cms-admin", "booking-admin"];
 const CMS_ROLES = ["admin", "cms-admin"];
@@ -558,6 +560,26 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={CMS_ROLES}>
               <TravelGuide />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* page manager */}
+        <Route
+          path="/page-manager"
+          element={
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
+              <PageManager />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* gallery manager */}
+        <Route
+          path="/gallery-manager"
+          element={
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
+              <GalleryManager />
             </ProtectedRoute>
           }
         />
