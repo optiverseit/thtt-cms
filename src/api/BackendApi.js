@@ -1012,15 +1012,15 @@ export const createVisaCategories = (formData) => {
 };
 
 export const updateVisaCategory = (id, formData) => {
+    // Append _method directly to the FormData object, matching your vehicle function
+    formData.append("_method", "PUT");
+
     return axiosInstance.post(
         `/visa-categories/update/${id}`,
         formData,
         {
             headers: {
                 "Content-Type": "multipart/form-data",
-            },
-            params: {
-                _method: "PUT",
             },
         }
     );
