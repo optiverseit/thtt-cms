@@ -139,6 +139,20 @@ export const deleteBooking = (id) => {
     return axiosInstance.delete(`/bookings/${id}`);
 };
 
+export const createBookingCms = (data) => {
+    return axiosInstance.post("/cms/bookings", data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+
+export const initiatePayment = (paymentData) => {
+    return axiosInstance.post("/payments/initiate", paymentData);
+};
+
+
 // ROLES
 
 export const getAllRoles = (page = 1) => {
@@ -227,12 +241,18 @@ export const removeRolePermission = (roleId, permissionId) => {
     return axiosInstance.delete(`/role-permissions/${roleId}/${permissionId}`);
 };
 
-
+export const getPackagesByCategory = (categoryName) => {
+    return axiosInstance.get(`/packageByCategory?category=${encodeURIComponent(categoryName)}`);
+};
 
 // USERS
 
 export const getAllUsersCms = (page = 1) => {
     return axiosInstance.get(`/users/cms?page=${page}`);
+};
+
+export const getActiveUsersCms = () => {
+    return axiosInstance.get("/cms/users/active");
 };
 
 // Get single user
@@ -331,6 +351,10 @@ export const getPackageById = (id) => {
 // VEHICLES
 export const getAllVehiclesCms = (page = 1) => {
     return axiosInstance.get(`/vehicles/cms?page=${page}`);
+};
+// ACTIVE VEHICLE
+export const getVehicles = () => {
+    return axiosInstance.get('/vehicles');
 };
 
 export const createVehicle = (data) => {
