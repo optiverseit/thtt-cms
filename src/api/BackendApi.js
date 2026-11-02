@@ -257,7 +257,7 @@ export const getActiveUsersCms = () => {
 
 // Get single user
 export const getUserById = (id) => {
-    return axiosInstance.get(`/users/${id}`);
+    return axiosInstance.get(`user/show/${id}`);
 };
 
 // Create user
