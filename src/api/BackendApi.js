@@ -1995,3 +1995,23 @@ export const changeGalleryStatus = (id) => {
 export const deleteGallery = (id) => {
     return axiosInstance.delete(`/galleries/${id}`);
 };
+
+export const getBlogsCms = (page = 1) => axiosInstance.get(`/blogs/cms?page=${page}`);
+
+export const createBlog = (data) =>
+    axiosInstance.post("/blogs/store", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+
+// Your route is already POST /blogs/{id}/update, so no _method override is needed
+export const updateBlog = (id, data) =>
+    axiosInstance.post(`/blogs/${id}/update`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+
+export const changeBlogStatus = (id) => axiosInstance.put(`/blogs/${id}/status`);
+
+export const deleteBlog = (id) => axiosInstance.delete(`/blogs/${id}`);
+
+// Active categories (public route)
+export const getActiveCategories = () => axiosInstance.get("/categories");
