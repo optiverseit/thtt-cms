@@ -670,6 +670,16 @@ const Sidebar = () => {
           </button>
         )}
 
+        {canViewCMS && (
+          <button
+            className={`menu-item ${isActive("/blog-manager") ? "active" : ""
+              }`}
+            onClick={() => navigate("/blog-manager")}
+          >
+            <span className="menu-icon"><FaImages /></span>
+            <span>Blog Manager</span>
+          </button>
+        )}
 
         {isAdmin && (
           <button

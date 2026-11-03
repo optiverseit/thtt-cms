@@ -1,0 +1,256 @@
+/*
+  BlogManager.css
+  Only blog-specific additions. It reuses the shared classes you already have
+  (.modal-overlay, .modal-card, .modal-header, .form-group, .modal-select,
+  .badge-count, .existing-images-grid, .btn-cancel, etc.).
+  If those modal styles currently live only in PageManager.css, move them into a
+  shared/global stylesheet or copy them above this file.
+*/
+
+/* ---------- Table ---------- */
+.blog-table-image {
+    width: 56px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #eee9f0;
+    display: block;
+}
+
+.blog-title-cell {
+    display: inline-block;
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.badge-count.blog-badge-yes {
+    background: #e8f7ee;
+    color: #1e7e46;
+}
+
+/* ---------- Modal sizing ---------- */
+.modal-card.blog-modal-card {
+    max-width: 860px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-modal-form {
+    overflow-y: auto;
+}
+
+/* ---------- Extra form controls (base CSS only styles input[type="text"]) ---------- */
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #351255;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group textarea:focus {
+    border-color: #f52d91;
+}
+
+.blog-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+}
+
+/* ---------- Image previews ---------- */
+.blog-cover-preview {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd8e2;
+}
+
+.blog-cover-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.blog-avatar-preview {
+    margin-top: 10px;
+    border-radius: 50%;
+}
+
+/* ---------- Rich text editor ---------- */
+.blog-rich-editor .ql-toolbar.ql-snow {
+    border: 1px solid #ddd8e2;
+    border-radius: 8px 8px 0 0;
+    background: #faf8fb;
+}
+
+.blog-rich-editor .ql-container.ql-snow {
+    border: 1px solid #ddd8e2;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    font-size: 13px;
+}
+
+.blog-rich-editor .ql-editor {
+    min-height: 200px;
+    max-height: 340px;
+    overflow-y: auto;
+    color: #351255;
+}
+
+/* ---------- Tags ---------- */
+.blog-tag-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid #ddd8e2;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.blog-tag-box:focus-within {
+    border-color: #f52d91;
+}
+
+.blog-tag-box input[type="text"] {
+    flex: 1;
+    min-width: 140px;
+    border: none;
+    padding: 6px 4px;
+    font-size: 13px;
+    outline: none;
+}
+
+.blog-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1edf3;
+    color: #351255;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.blog-tag-chip button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #847b89;
+    font-size: 9px;
+    cursor: pointer;
+    display: flex;
+}
+
+.blog-tag-chip button:hover {
+    color: #d33;
+}
+
+/* ---------- Insights ---------- */
+.blog-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.blog-section-head label {
+    margin-bottom: 0;
+}
+
+.blog-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 12px;
+    background: #f1edf3;
+    color: #351255;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.blog-add-btn:hover {
+    background: #e2dce5;
+}
+
+.blog-insight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #eee9f0;
+    border-radius: 8px;
+    background: #faf8fb;
+}
+
+.blog-insight-fields {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.blog-insight-remove {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fdecee;
+    color: #d33;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.blog-insight-remove:hover {
+    background: #fbd5da;
+}
+
+/* ---------- Checkbox ---------- */
+.blog-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #351255;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.blog-checkbox input {
+    width: 16px;
+    height: 16px;
+    accent-color: #351255;
+    cursor: pointer;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+    .blog-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
