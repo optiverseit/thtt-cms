@@ -2015,3 +2015,32 @@ export const deleteBlog = (id) => axiosInstance.delete(`/blogs/${id}`);
 
 // Active categories (public route)
 export const getActiveCategories = () => axiosInstance.get("/categories");
+
+// PAGE TESTIMONIALS
+export const getPageTestimonialsCms = (page = 1) => {
+    return axiosInstance.get(`/page-testimonials/cms?page=${page}`);
+};
+
+export const getPageTestimonialsByPage = (pageName) => {
+    return axiosInstance.get(`/page-testimonials/page/${pageName}`);
+};
+
+export const createPageTestimonials = (formData) => {
+    return axiosInstance.post("/page-testimonials/store", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+};
+
+export const updatePageTestimonial = (id, formData) => {
+    return axiosInstance.post(`/page-testimonials/${id}/update`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+};
+
+export const changePageTestimonialStatus = (id) => {
+    return axiosInstance.put(`/page-testimonials/${id}/status`);
+};
+
+export const deletePageTestimonial = (id) => {
+    return axiosInstance.delete(`/page-testimonials/${id}`);
+};

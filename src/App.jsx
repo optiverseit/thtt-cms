@@ -66,6 +66,7 @@ import Permission from './pages/Admin/Permission/Permission';
 import PageManager from './pages/Admin/PageManager/PageManager';
 import GalleryManager from './pages/Admin/GalleryManager/GalleryManager';
 import BlogManager from './pages/Admin/BlogManager/BlogManager';
+import PageTestimonialManager from './pages/Admin/PageTestimonialManager/PageTestimonialManager';
 
 const ALL_ROLES = ["admin", "cms-admin", "booking-admin"];
 const CMS_ROLES = ["admin", "cms-admin"];
@@ -590,6 +591,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={CMS_ROLES}>
               <BlogManager />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/page-testimonial-manager"
+          element={
+            <ProtectedRoute allowedRoles={CMS_ROLES}>
+              <PageTestimonialManager />
             </ProtectedRoute>
           }
         />
