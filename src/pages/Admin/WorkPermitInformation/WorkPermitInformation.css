@@ -240,10 +240,32 @@
     color: #351255;
 }
 
-.work-permit-info-add-more-btn:hover {
+.work-permit-info-add-more-btn:hover:not(:disabled) {
     background: #e5ddeb;
 }
 
+/* Muted state (e.g. when type is Description) */
+.work-permit-info-add-more-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Grouped by country */
+.work-permit-info-table tbody tr.work-permit-info-group-start td {
+    border-top: 2px solid #ddd8e2;
+}
+
+.work-permit-info-country-cell {
+    background: #fcfbfd;
+    vertical-align: top !important;
+}
+
+.work-permit-info-country-count {
+    display: block;
+    margin-top: 4px;
+    color: #918995;
+    font-size: 12px;
+}
 
 /* =========================================
    CREATE ACTIONS

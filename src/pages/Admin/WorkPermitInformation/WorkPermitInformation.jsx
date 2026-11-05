@@ -34,6 +34,10 @@ const INFORMATION_TYPES = [
         value: "INCLUDED",
         label: "What's Included",
     },
+    {
+        value: "DESCRIPTION",
+        label: "Description",
+    },
 ];
 // ==========================================
 // EMPTY ITEM
@@ -144,9 +148,22 @@ const WorkPermitInformation = () => {
         }
     };
     // ==========================================
+    // TYPE CHANGE (CREATE FORM)
+    // Description allows only one item
+    // ==========================================
+    const handleTypeChange = (value) => {
+        setInformationType(value);
+        if (value === "DESCRIPTION") {
+            setItems((previous) => previous.slice(0, 1));
+        }
+    };
+    // ==========================================
     // ADD ITEM
     // ==========================================
     const addItem = () => {
+        if (informationType === "DESCRIPTION") {
+            return;
+        }
         setItems((previous) => [
             ...previous,
             emptyItem(previous.length),
@@ -179,9 +196,9 @@ const WorkPermitInformation = () => {
             previous.map((item, i) =>
                 i === index
                     ? {
-                          ...item,
-                          [field]: value,
-                      }
+                        ...item,
+                        [field]: value,
+                    }
                     : item
             )
         );
@@ -244,8 +261,8 @@ const WorkPermitInformation = () => {
                         item.display_order === ""
                             ? index
                             : Number(
-                                  item.display_order
-                              ),
+                                item.display_order
+                            ),
                 })),
         };
         try {
@@ -528,6 +545,24 @@ const WorkPermitInformation = () => {
             )?.label || value
         );
     };
+
+    // ==========================================
+    // GROUP BY COUNTRY (current page)
+    // ==========================================
+    const groupedInformation = Array.from(
+        information
+            .reduce((map, item) => {
+                if (!map.has(item.country_id)) {
+                    map.set(item.country_id, {
+                        country: item.country,
+                        items: [],
+                    });
+                }
+                map.get(item.country_id).items.push(item);
+                return map;
+            }, new Map())
+            .values()
+    );
     // ==========================================
     // UI
     // ==========================================
@@ -761,7 +796,7 @@ const WorkPermitInformation = () => {
                                                     informationType
                                                 }
                                                 onChange={(e) =>
-                                                    setInformationType(
+                                                    handleTypeChange(
                                                         e.target.value
                                                     )
                                                 }
@@ -864,6 +899,16 @@ const WorkPermitInformation = () => {
                                             type="button"
                                             className="work-permit-info-add-more-btn"
                                             onClick={addItem}
+                                            disabled={
+                                                informationType ===
+                                                "DESCRIPTION"
+                                            }
+                                            title={
+                                                informationType ===
+                                                    "DESCRIPTION"
+                                                    ? "Description allows only one item"
+                                                    : undefined
+                                            }
                                         >
                                             <FaPlus />
                                             Add Item
@@ -925,129 +970,103 @@ const WorkPermitInformation = () => {
                                                     <th>
                                                         Status
                                                     </th>
-{canManage && (
-                                                    <th>
-                                                        Actions
-                                                    </th>
+                                                    {canManage && (
+                                                        <th>
+                                                            Actions
+                                                        </th>
                                                     )}
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {information.map(
-                                                    (
-                                                        item,
-                                                        index
-                                                    ) => (
+                                                {groupedInformation.flatMap((group) =>
+                                                    group.items.map((item, index) => (
                                                         <tr
-                                                            key={
-                                                                item.id
+                                                            key={item.id}
+                                                            className={
+                                                                index === 0
+                                                                    ? "work-permit-info-group-start"
+                                                                    : ""
                                                             }
                                                         >
-                                                            <td>
-                                                                {(page -
-                                                                    1) *
-                                                                    10 +
-                                                                    index +
-                                                                    1}
-                                                            </td>
-                                                            <td>
-                                                                <span className="work-permit-info-country-name">
-                                                                    {item
-                                                                        .country
-                                                                        ?.country_name ||
-                                                                        "N/A"}
-                                                                </span>
-                                                            </td>
+                                                            <td>{index + 1}</td>
+
+                                                            {/* COUNTRY (merged across the group) */}
+                                                            {index === 0 && (
+                                                                <td
+                                                                    rowSpan={group.items.length}
+                                                                    className="work-permit-info-country-cell"
+                                                                >
+                                                                    <span className="work-permit-info-country-name">
+                                                                        {group.country?.country_name || "N/A"}
+                                                                    </span>
+                                                                    <small className="work-permit-info-country-count">
+                                                                        {group.items.length}{" "}
+                                                                        {group.items.length === 1 ? "item" : "items"}
+                                                                    </small>
+                                                                </td>
+                                                            )}
+
                                                             <td>
                                                                 <span className="work-permit-info-type">
-                                                                    {getTypeLabel(
-                                                                        item.type
-                                                                    )}
+                                                                    {getTypeLabel(item.type)}
                                                                 </span>
                                                             </td>
                                                             <td>
                                                                 <div className="work-permit-info-content">
-                                                                    {
-                                                                        item.content
-                                                                    }
+                                                                    {item.content}
                                                                 </div>
                                                             </td>
                                                             <td>
                                                                 <span className="work-permit-info-order">
-                                                                    {item.display_order ??
-                                                                        0}
+                                                                    {item.display_order ?? 0}
                                                                 </span>
                                                             </td>
+
                                                             {/* CLICKABLE STATUS */}
                                                             <td>
                                                                 <span
-                                                                    className={`work-permit-info-status ${
-                                                                        item.status ===
-                                                                        "ACTIVE"
-                                                                            ? "active"
-                                                                            : "inactive"
-                                                                    } ${
-                                                                        statusUpdatingId ===
-                                                                        item.id
-                                                                            ? "updating"
-                                                                            : ""
-                                                                    }`}
+                                                                    className={`work-permit-info-status ${item.status === "ACTIVE" ? "active" : "inactive"
+                                                                        } ${statusUpdatingId === item.id ? "updating" : ""}`}
                                                                     onClick={() => {
-                                                                        if (
-                                                                            statusUpdatingId !==
-                                                                            item.id
-                                                                        ) {
-                                                                            handleStatusChange(
-                                                                                item
-                                                                            );
+                                                                        if (statusUpdatingId !== item.id) {
+                                                                            handleStatusChange(item);
                                                                         }
                                                                     }}
                                                                     role={canManage ? "button" : undefined}
-                                                                    tabIndex={
-                                                                        statusUpdatingId ===
-                                                                        item.id
-                                                                            ? -1
-                                                                            : 0
-                                                                    }
+                                                                    tabIndex={statusUpdatingId === item.id ? -1 : 0}
                                                                     title={canManage ? "Click to change status" : undefined}
                                                                 >
-                                                                    {statusUpdatingId ===
-                                                                    item.id
+                                                                    {statusUpdatingId === item.id
                                                                         ? "UPDATING..."
                                                                         : item.status}
                                                                 </span>
                                                             </td>
+
                                                             {/* ACTIONS */}
-                                                            {canManage && (<td>
-                                                                <div className="work-permit-info-actions">
-                                                                    <button
-                                                                        type="button"
-                                                                        className="work-permit-info-edit-btn"
-                                                                        onClick={() =>
-                                                                            handleEdit(
-                                                                                item
-                                                                            )
-                                                                        }
-                                                                        title="Edit"
-                                                                    >
-                                                                        <FaPen />
-                                                                    </button>
-                                                                    <button
-                                                                        type="button"
-                                                                        className="work-permit-info-delete-btn"
-                                                                        onClick={() =>
-                                                                            handleDelete(
-                                                                                item
-                                                                            )
-                                                                        }
-                                                                        title="Delete"
-                                                                    >
-                                                                        <FaTrash />
-                                                                    </button>
-                                                                </div>
-                                                            </td>)}
+                                                            {canManage && (
+                                                                <td>
+                                                                    <div className="work-permit-info-actions">
+                                                                        <button
+                                                                            type="button"
+                                                                            className="work-permit-info-edit-btn"
+                                                                            onClick={() => handleEdit(item)}
+                                                                            title="Edit"
+                                                                        >
+                                                                            <FaPen />
+                                                                        </button>
+                                                                        <button
+                                                                            type="button"
+                                                                            className="work-permit-info-delete-btn"
+                                                                            onClick={() => handleDelete(item)}
+                                                                            title="Delete"
+                                                                        >
+                                                                            <FaTrash />
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            )}
                                                         </tr>
-                                                    )
+                                                    ))
                                                 )}
                                             </tbody>
                                         </table>
